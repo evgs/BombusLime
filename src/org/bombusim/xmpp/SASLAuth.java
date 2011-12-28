@@ -33,9 +33,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
+import org.bombusim.util.strconv;
 import org.bombusim.xmpp.stanza.Iq;
 
-import util.strconv;
 
 import android.util.Log;
 

@@ -31,9 +31,9 @@ package org.bombusim.xmpp;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.bombusim.util.strconv;
 import org.bombusim.xmpp.stanza.Iq;
 
-import util.strconv;
 
 
 /**

@@ -28,7 +28,7 @@
 
 package org.bombusim.xmpp;
 
-import util.strconv;
+import org.bombusim.util.strconv;
 
 public class XmppJid {
     
