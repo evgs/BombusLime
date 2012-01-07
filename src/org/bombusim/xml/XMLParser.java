@@ -39,8 +39,6 @@ public class XMLParser {
     private final static int ATRVALQS=4;
     private final static int ATRVALQD=5;
     private final static int CDATA=6;
-    //private final static int BASE64=7;
-    //private final static int BASE64_INIT=8;
 
     private int state;
     
@@ -119,8 +117,6 @@ public class XMLParser {
                 if (c==' ') { state=ATRNAME; continue; }
                 if (c=='>') { 
                     state=PLAIN_TEXT; 
-                    //if (eventListener.tagStart(tagName.toString(), attr))
-                    //    state=BASE64_INIT; 
                     eventListener.tagStart(tagName.toString(), attr);
                     
                     continue; 
@@ -187,56 +183,6 @@ public class XMLParser {
                 continue;
             }
         
-        /*case BASE64_INIT: 
-            {
-                baos=new ByteArrayOutputStream(MAX_BIN_DATASIZE);
-                ibuf=1;
-                padding=0;
-                state=BASE64;
-            }
-        case BASE64: 
-            {
-                int base64=-1;
-                if (c > 'A'-1  &&  c < 'Z'+1) base64 =  c - 'A';
-                else if (c > 'a'-1  &&  c < 'z'+1) base64 =  c +26-'a';
-                else if (c > '0'-1  &&  c < '9'+1) base64 =  c +52-'0';
-                else if (c == '+') base64=62;
-                else if (c == '/') base64=63;
-                else if (c == '=') {base64=0; padding++;}
-                
-                else if (c == '<') {
-                    try { 
-                        baos.close(); 
-                        
-                        if (baos.size()<MAX_BIN_DATASIZE)
-                            eventListener.binValueEncountered( baos.toByteArray() );
-                        else {
-                            eventListener.binValueEncountered( new byte[1] );
-                        }
-                    } catch (Exception ex) { ex.printStackTrace(); }
-                    
-                    baos=null;
-                    sbuf.setLength(0);
-                    tagName.setLength(0);
-                    state=TAGNAME;
-                    continue;
-                }
-                
-                if (base64>=0) ibuf=(ibuf<<6)+base64;
-                if (baos.size()<MAX_BIN_DATASIZE) {
-                    if (ibuf>=0x01000000){
-                        baos.write((ibuf>>16) &0xff);
-                        if (padding<2) baos.write((ibuf>>8) &0xff);
-                        if (padding==0) baos.write(ibuf &0xff);
-                        //len+=3;
-                        ibuf=1;
-                    }
-                    
-                }
-                
-                continue;
-            }
-            */
         }
     }
         
