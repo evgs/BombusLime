@@ -40,7 +40,7 @@ public class XmppAccount {
 
 	public boolean specificHostPort = false;
 	public String xmppHost = null;
-	public int    xmppPort = 5222;
+	public int    xmppPort = DEFAULT_XMPP_PORT;
 	
 	public final static int SECURE_CONNECTION_DISABLED=0;
 	public final static int SECURE_CONNECTION_IF_AVAILABLE=1;
@@ -52,13 +52,19 @@ public class XmppAccount {
 	public final static int PLAIN_AUTH_ALWAYS = 0;
 	public final static int PLAIN_AUTH_OVER_SSL = 1;
 	public final static int PLAIN_AUTH_NEVER = 2;
+
+	public static final int DEFAULT_XMPP_PORT        = 5222;
+	public static final int DEFAULT_SECURE_XMPP_PORT = 5223;
 	
 	public int enablePlainAuth = PLAIN_AUTH_OVER_SSL;
 	
 	public boolean trafficCompression = true;
 	
+	public long _id;
+	
 	public XmppAccount() {
 		//TODO: resource initialization here
+		_id = -1;
 	};
 	
 	public XmppAccount(String userJid, String password) {
