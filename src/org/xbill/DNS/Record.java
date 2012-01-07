@@ -300,7 +300,7 @@ rdataToString() {
  */
 public String
 toString() {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	sb.append(name);
 	if (sb.length() < 8)
 		sb.append("\t");
@@ -399,7 +399,7 @@ byteArrayFromString(String s) throws TextParseException {
  */
 protected static String
 byteArrayToString(byte [] array, boolean quote) {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	if (quote)
 		sb.append('"');
 	for (int i = 0; i < array.length; i++) {
@@ -423,7 +423,7 @@ byteArrayToString(byte [] array, boolean quote) {
  */
 protected static String
 unknownToString(byte [] data) {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	sb.append("\\# ");
 	sb.append(data.length);
 	sb.append(" ");

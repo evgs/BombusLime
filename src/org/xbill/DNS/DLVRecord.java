@@ -73,7 +73,7 @@ rdataFromString(Tokenizer st, Name origin) throws IOException {
  */
 String
 rrToString() {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	sb.append(footprint);
 	sb.append(" ");
 	sb.append(alg);

@@ -97,7 +97,7 @@ private String
 substitute(String spec, long n) throws IOException {
 	boolean escaped = false;
 	byte [] str = spec.getBytes();
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 
 	for (int i = 0; i < str.length; i++) {
 		char c = (char)(str[i] & 0xFF);
@@ -246,7 +246,7 @@ expand() throws IOException {
  */
 public String
 toString() {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	sb.append("$GENERATE ");
 	sb.append(start + "-" + end);
 	if (step > 1)

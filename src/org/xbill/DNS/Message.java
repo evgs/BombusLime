@@ -538,7 +538,7 @@ sectionToString(int i) {
 	if (i > 3)
 		return null;
 
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 
 	Record [] records = getSectionArray(i);
 	for (int j = 0; j < records.length; j++) {
@@ -560,7 +560,7 @@ sectionToString(int i) {
  */
 public String
 toString() {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	OPTRecord opt = getOPT();
 	if (opt != null)
 		sb.append(header.toStringWithRcode(getRcode()) + "\n");

@@ -171,7 +171,7 @@ rdataFromString(Tokenizer st, Name origin) throws IOException {
 }
 
 private void
-renderFixedPoint(StringBuffer sb, NumberFormat formatter, long value,
+renderFixedPoint(StringBuilder sb, NumberFormat formatter, long value,
 		 long divisor)
 {
 	sb.append(value / divisor);
@@ -184,7 +184,7 @@ renderFixedPoint(StringBuffer sb, NumberFormat formatter, long value,
 
 private String
 positionToString(long value, char pos, char neg) {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	char direction;
 
 	long temp = value - (1L << 31);
@@ -214,7 +214,7 @@ positionToString(long value, char pos, char neg) {
 /** Convert to a String */
 String
 rrToString() {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 
 	/* Latitude */
 	sb.append(positionToString(latitude, 'N', 'S'));

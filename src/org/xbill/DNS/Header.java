@@ -240,7 +240,7 @@ getCount(int field) {
 /** Converts the header's flags into a String */
 public String
 printFlags() {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 
 	for (int i = 0; i < 16; i++)
 		if (validFlag(i) && getFlag(i)) {
@@ -252,7 +252,7 @@ printFlags() {
 
 String
 toStringWithRcode(int newrcode) {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 
 	sb.append(";; ->>HEADER<<- "); 
 	sb.append("opcode: " + Opcode.string(getOpcode()));

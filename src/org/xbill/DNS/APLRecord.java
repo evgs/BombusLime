@@ -54,7 +54,7 @@ public static class Element {
 
 	public String
 	toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (negative)
 			sb.append("!");
 		sb.append(family);
@@ -232,7 +232,7 @@ rdataFromString(Tokenizer st, Name origin) throws IOException {
 
 String
 rrToString() {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	for (Iterator it = elements.iterator(); it.hasNext(); ) {
 		Element element = (Element) it.next();
 		sb.append(element);

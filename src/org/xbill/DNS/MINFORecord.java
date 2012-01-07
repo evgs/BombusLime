@@ -59,7 +59,7 @@ rdataFromString(Tokenizer st, Name origin) throws IOException {
 /** Converts the MINFO Record to a String */
 String
 rrToString() {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	sb.append(responsibleAddress);
 	sb.append(" ");
 	sb.append(errorAddress);

@@ -519,7 +519,7 @@ AXFR() {
 }
 
 private void
-nodeToString(StringBuffer sb, Object node) {
+nodeToString(StringBuilder sb, Object node) {
 	RRset [] sets = allRRsets(node);
 	for (int i = 0; i < sets.length; i++) {
 		RRset rrset = sets[i];
@@ -538,7 +538,7 @@ nodeToString(StringBuffer sb, Object node) {
 public synchronized String
 toMasterFile() {
 	Iterator zentries = data.entrySet().iterator();
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	nodeToString(sb, originNode);
 	while (zentries.hasNext()) {
 		Map.Entry entry = (Map.Entry) zentries.next();

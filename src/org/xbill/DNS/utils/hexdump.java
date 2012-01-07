@@ -21,7 +21,7 @@ private static final char [] hex = "0123456789ABCDEF".toCharArray();
  */
 public static String
 dump(String description, byte [] b, int offset, int length) {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 
 	sb.append(length + "b");
 	if (description != null)

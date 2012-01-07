@@ -578,7 +578,7 @@ private void
 checkDone() {
 	if (done && result != -1)
 		return;
-	StringBuffer sb = new StringBuffer("Lookup of " + name + " ");
+	StringBuilder sb = new StringBuilder("Lookup of " + name + " ");
 	if (dclass != DClass.IN)
 		sb.append(DClass.string(dclass) + " ");
 	sb.append(Type.string(type) + " isn't done");

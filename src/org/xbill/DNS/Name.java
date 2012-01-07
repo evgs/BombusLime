@@ -563,7 +563,7 @@ subdomain(Name domain) {
 
 private String
 byteString(byte [] array, int pos) {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	int len = array[pos++];
 	for (int i = pos; i < pos + len; i++) {
 		int b = array[i] & 0xFF;
@@ -594,7 +594,7 @@ toString() {
 		return "@";
 	else if (labels == 1 && name[offset(0)] == 0)
 		return ".";
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	for (int i = 0, pos = offset(0); i < labels; i++) {
 		int len = name[pos];
 		if (len > MAXLABEL)

@@ -67,7 +67,7 @@ EDNSOption(int code) {
 
 public String 
 toString() {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 
 	sb.append("{");
 	sb.append(EDNSOption.Code.string(code));

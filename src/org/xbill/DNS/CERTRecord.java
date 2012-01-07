@@ -163,7 +163,7 @@ rdataFromString(Tokenizer st, Name origin) throws IOException {
  */
 String
 rrToString() {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	sb.append (certType);
 	sb.append (" ");
 	sb.append (keyTag);

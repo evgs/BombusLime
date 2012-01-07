@@ -223,7 +223,7 @@ first() {
 
 private String
 iteratorToString(Iterator it) {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	while (it.hasNext()) {
 		Record rr = (Record) it.next();
 		sb.append("[");
@@ -240,7 +240,7 @@ public String
 toString() {
 	if (rrs == null)
 		return ("{empty}");
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	sb.append("{ ");
 	sb.append(getName() + " ");
 	sb.append(getTTL() + " ");

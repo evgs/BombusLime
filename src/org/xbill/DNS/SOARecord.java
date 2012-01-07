@@ -75,7 +75,7 @@ rdataFromString(Tokenizer st, Name origin) throws IOException {
 /** Convert to a String */
 String
 rrToString() {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	sb.append(host);
 	sb.append(" ");
 	sb.append(admin);

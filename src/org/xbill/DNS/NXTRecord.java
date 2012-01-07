@@ -72,7 +72,7 @@ rdataFromString(Tokenizer st, Name origin) throws IOException {
 /** Converts rdata to a String */
 String
 rrToString() {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	sb.append(next);
 	int length = bitmap.length();
 	for (short i = 0; i < length; i++)

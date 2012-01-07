@@ -58,7 +58,7 @@ private int multiline;
 private boolean quoting;
 private String delimiters;
 private Token current;
-private StringBuffer sb;
+private StringBuilder sb;
 private boolean wantClose;
 
 private String filename;
@@ -78,7 +78,7 @@ public static class Token {
 	}
 
 	private Token
-	set(int type, StringBuffer value) {
+	set(int type, StringBuilder value) {
 		if (type < 0)
 			throw new IllegalArgumentException();
 		this.type = type;
@@ -152,7 +152,7 @@ Tokenizer(InputStream is) {
 	quoting = false;
 	delimiters = delim;
 	current = new Token();
-	sb = new StringBuffer();
+	sb = new StringBuilder();
 	filename = "<none>";
 	line = 1;
 }
@@ -559,13 +559,13 @@ getEOL() throws IOException {
  */
 private String
 remainingStrings() throws IOException {
-        StringBuffer buffer = null;
+        StringBuilder buffer = null;
         while (true) {
                 Tokenizer.Token t = get();
                 if (!t.isString())
                         break;
                 if (buffer == null)
-                        buffer = new StringBuffer();
+                        buffer = new StringBuilder();
                 buffer.append(t.value);
         }
         unget();
