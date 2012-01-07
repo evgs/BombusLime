@@ -31,6 +31,7 @@
 
 package org.bombusim.xmpp.handlers;
 
+import org.bombusim.lime.Lime;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppObjectListener;
 import org.bombusim.xmpp.XmppStream;
@@ -41,6 +42,11 @@ import org.bombusim.xmpp.stanza.Iq;
  * @author Eugene Stahov
  */
 public class IqVersionReply implements XmppObjectListener {
+	
+    private final static String CAPS_XMLNS = "jabber:iq:version";
+	@Override
+	public String capsXmlns() {	return CAPS_XMLNS; }
+	
     public IqVersionReply(){};
 
     public int blockArrived(XmppObject data, XmppStream stream) {
@@ -48,7 +54,7 @@ public class IqVersionReply implements XmppObjectListener {
         String type=data.getAttribute("type");
         if (type.equals("get")) {
             
-            XmppObject query=data.findNamespace("query", "jabber:iq:version");
+            XmppObject query=data.findNamespace("query", CAPS_XMLNS);
             if (query==null) return BLOCK_REJECTED;
             
             Iq reply=new Iq(data.getAttribute("from"), Iq.TYPE_RESULT, data.getAttribute("id"));
@@ -56,7 +62,7 @@ public class IqVersionReply implements XmppObjectListener {
             //TODO: remove hardcoded values
             query.addChild("name", "Bombus");
             query.addChild("version","0.0");
-            query.addChild("os", "Green Robot");
+            query.addChild("os", Lime.getInstance().getOsId());
             
             stream.send(reply);
             
@@ -104,7 +110,7 @@ public class IqVersionReply implements XmppObjectListener {
 
     private String dispatchVersion(XmppObject data) {
         if (!data.isJabberNameSpace("jabber:iq:version")) return "unknown version namespace";
-        StringBuffer vc=new StringBuffer();
+        StringBuilder vc=new StringBuilder();
         //vc.append((char)0x01);
         for (int i=0; i<TOPFIELDS.length; i++){
             String field=data.getChildBlockText(TOPFIELDS[i]);
