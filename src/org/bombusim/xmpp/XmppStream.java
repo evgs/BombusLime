@@ -112,7 +112,7 @@ public class XmppStream extends XmppParser implements Runnable {
         
         //sendQueue=new Vector();
         
-        StringBuffer header=new StringBuffer("<stream:stream to='" )
+        StringBuilder header=new StringBuilder("<stream:stream to='" )
             .append( server )
             .append( "' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' version='1.0'");
         

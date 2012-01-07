@@ -46,9 +46,9 @@ public class XMLParser {
     
     private XMLEventListener eventListener;
     
-    private StringBuffer sbuf;
+    private StringBuilder sbuf;
     
-    private StringBuffer tagName;
+    private StringBuilder tagName;
     private Attributes attr;
     private String atrName;
     
@@ -59,8 +59,8 @@ public class XMLParser {
     public XMLParser(XMLEventListener eventListener) {
         this.eventListener=eventListener;
         state=PLAIN_TEXT;
-        sbuf=new StringBuffer();
-        tagName=new StringBuffer();
+        sbuf=new StringBuilder();
+        tagName=new StringBuilder();
     }
  
     public void parse(byte indata[], int size) throws XMLException, IOException{

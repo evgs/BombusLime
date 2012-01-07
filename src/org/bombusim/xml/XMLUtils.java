@@ -30,7 +30,7 @@
 package org.bombusim.xml;
 
 public final class XMLUtils {
-    public final static String parsePlainText(StringBuffer sb) throws XMLException {
+    public final static String parsePlainText(StringBuilder sb) throws XMLException {
         //1. output text length will be not greather than source
         //2. sb may be destroyed - all calls to parsePlainText succeeds flushing of sb
         int ipos=0;
@@ -38,7 +38,7 @@ public final class XMLUtils {
         while (ipos<sb.length()) {
             char c=sb.charAt(ipos++);
             if (c=='&') { 
-                StringBuffer xmlChar=new StringBuffer(6);
+                StringBuilder xmlChar=new StringBuilder(6);
                 while (true) {
                     c=sb.charAt(ipos++);
                     if (c==';') break;
@@ -95,7 +95,7 @@ public final class XMLUtils {
     }
 
     
-    public final static void appendPlainText(StringBuffer dest, String src){
+    public final static void appendPlainText(StringBuilder dest, String src){
         if (src==null) return;
         int len=src.length();
         for (int i=0;i<len;i++){

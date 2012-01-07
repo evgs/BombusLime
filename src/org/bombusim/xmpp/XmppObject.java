@@ -288,12 +288,12 @@ public class XmppObject
 
   public String toString()
   {
-    StringBuffer data = new StringBuffer();
+    StringBuilder data = new StringBuilder();
     constructXML(data);
     return data.toString();
   }
 
-  public void constructXML(StringBuffer data) {
+  public void constructXML(StringBuilder data) {
       data.append('<').append( getTagName() );
       
       if( attributes != null )

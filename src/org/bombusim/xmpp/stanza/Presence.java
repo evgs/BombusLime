@@ -57,7 +57,7 @@ public final class Presence extends XmppObject
   public void dispathch(){
       String show;
       String errText=null;
-      StringBuffer sb=new StringBuffer();
+      StringBuilder sb=new StringBuilder();
       String type=getTypeAttribute();
       presenceCode=PRESENCE_AUTH;
       

@@ -41,7 +41,7 @@ public final class strconv {
     
     public static final String convCp1251ToUnicode(final String s){
         if (s==null) return null;
-        StringBuffer b=new StringBuffer(s.length());
+        StringBuilder b=new StringBuilder(s.length());
         for (int i=0;i<s.length();i++){
             char ch=s.charAt(i);
             if (ch>0xbf) ch+=0x410-0xc0;
@@ -55,7 +55,7 @@ public final class strconv {
     
     public static final String convUnicodeToCp1251(final String s){
         if (s==null) return null;
-        StringBuffer b=new StringBuffer(s.length());
+        StringBuilder b=new StringBuilder(s.length());
         for (int i=0;i<s.length();i++){
             char ch=s.charAt(i);
             if (ch==0x401) ch=0xa8; //Ё
@@ -127,9 +127,9 @@ public final class strconv {
         return new String(out);
     }
     
-    public static StringBuffer toUTFSb(StringBuffer str) {
+    public static StringBuilder toUTFSb(StringBuilder str) {
         int srcLen = str.length();
-        StringBuffer outbuf=new StringBuffer( srcLen );
+        StringBuilder outbuf=new StringBuilder( srcLen );
         for(int i=0; i < srcLen; i++) {
             int c = (int)str.charAt(i);
             //TODO: ескэйпить коды <0x20
@@ -209,14 +209,14 @@ public final class strconv {
     */
     
     public static String unicodeToUTF(String src) {
-        return toUTFSb(new StringBuffer(src)).toString();
+        return toUTFSb(new StringBuilder(src)).toString();
     }
     
     public static String toLowerCase(String src){
     	return src.toLowerCase();
     	
     	/*
-        StringBuffer dst=new StringBuffer(src);
+        StringBuilder dst=new StringBuilder(src);
         int len=dst.length();
         for (int i=0; i<len; i++) {
             char c=dst.charAt(i);
@@ -231,7 +231,7 @@ public final class strconv {
     
     public static String urlPrep(String src){
         String mask=" #$%&/:;<=>?@[\\]^'{|}";
-        StringBuffer out=new StringBuffer();
+        StringBuilder out=new StringBuilder();
         
         for (int i=0; i<src.length(); i++) {
             char s=src.charAt(i);
@@ -246,7 +246,7 @@ public final class strconv {
     }
     
     public static String hexByteToString(byte b){
-        StringBuffer out=new StringBuffer();
+        StringBuilder out=new StringBuilder();
         char c = (char) ((b >> 4) & 0xf);
         if (c > 9)   c = (char) ((c - 10) + 'a');
         else  c = (char) (c + '0');
@@ -262,7 +262,7 @@ public final class strconv {
     }
     
     public static String byteArrayToHexString(byte[] buf) {
-        StringBuffer out=new StringBuffer();
+        StringBuilder out=new StringBuilder();
         
         for (int index = 0; index < buf.length; index++) {
         	byte b = buf[index];

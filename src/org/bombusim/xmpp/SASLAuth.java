@@ -288,7 +288,7 @@ public class SASLAuth implements XmppObjectListener{
     private String decodeBase64(String src)  {
         int len=0;
         int ibuf=1;
-        StringBuffer out=new StringBuffer();
+        StringBuilder out=new StringBuilder();
         
         for (int i=0; i<src.length(); i++) {
             int nextChar = src.charAt(i);
