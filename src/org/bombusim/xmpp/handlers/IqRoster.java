@@ -79,4 +79,8 @@ public class IqRoster implements XmppObjectListener{
 		} catch (Exception e) { /* normal case */ }
 		return BLOCK_REJECTED;
 	}
+	
+	@Override
+	public String capsXmlns() {	return null; }
+	
 }

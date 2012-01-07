@@ -45,5 +45,7 @@ public interface XmppObjectListener {
    */
 
   public int blockArrived(XmppObject data, XmppStream stream) throws IOException, XmppException;
+  
+  public String capsXmlns();
     
 }

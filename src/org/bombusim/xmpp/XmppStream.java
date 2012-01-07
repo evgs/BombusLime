@@ -28,21 +28,29 @@
 
 package org.bombusim.xmpp;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+import org.bombusim.lime.Lime;
+import org.bombusim.lime.logger.LoggerData;
+import org.bombusim.lime.logger.LoggerEvent;
 import org.bombusim.networking.NetworkDataStream;
 import org.bombusim.networking.NetworkSocketDataStream;
 import org.bombusim.xml.Attributes;
 import org.bombusim.xml.XMLException;
 import org.bombusim.xml.XMLParser;
 import org.bombusim.xmpp.handlers.IqRoster;
+import org.bombusim.xmpp.handlers.IqTimeReply;
+import org.bombusim.xmpp.handlers.IqVcard;
 import org.bombusim.xmpp.handlers.IqVersionReply;
 import org.bombusim.xmpp.stanza.Iq;
 import org.bombusim.xmpp.stanza.Presence;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.SRVRecord;
+import org.xbill.DNS.TextParseException;
 import org.xbill.DNS.Type;
 
 import android.content.Context;
@@ -53,7 +61,7 @@ import android.util.Log;
  * The stream to a jabber server.
  */
 
-public class XmppStream extends XmppParser implements Runnable {
+public class XmppStream extends XmppParser {
     
     String sessionId;
     
@@ -100,12 +108,21 @@ public class XmppStream extends XmppParser implements Runnable {
     	dispatcherQueue = new ArrayList<XmppObjectListener>();
     }
 
+    /*
     public void connect() {
-    	Thread thread=new Thread( this );
-    	thread.setName("XmppStream->"+server);
-    	thread.start();
-    }
+    	
+    } catch( Exception e ) {
+    	//TODO: handle exceptions
+    	
+        System.out.println("Exception in parser:");
+        e.printStackTrace();
+        broadcastTerminatedConnection(e);
+    };
     
+    loggedIn = false;
+    	
+    }
+    */
 
     
     public void initiateStream() throws IOException {
@@ -192,107 +209,95 @@ public class XmppStream extends XmppParser implements Runnable {
         keepAlive=new TimerTaskKeepAlive(account.keepAlivePeriod, account.keepAliveType);
     }*/
     
-    /**
-     * The threads run method. Handles the parsing of incomming data in its
-     * own thread.
-     */
-    public void run() {
+    public void connect() throws UnknownHostException, IOException, XMLException, XmppException {
         loggedIn = false;
 
 		addBlockListener(new SASLAuth());
 		
 		incomingQueue = new ArrayList<XmppObject>();
         
-        try {
+    	if (host == null) {
+    		
+    		if (account.specificHostPort) {
+    			host = account.xmppHost;
+    			port = account.xmppPort;
+    		} else {
+    		
+        		// workaround for org.xbill.DNS
+        		// see http://stackoverflow.com/questions/2879455/android-2-2-and-bad-address-family-on-socket-connect
+        		// TODO: try other API levels
+    			
+    			java.lang.System.setProperty("java.net.preferIPv4Stack", "true");
+    			java.lang.System.setProperty("java.net.preferIPv6Addresses", "false");
         	
-        	if (host == null) {
-        		
-        		if (account.specificHostPort) {
-        			host = account.xmppHost;
-        			port = account.xmppPort;
-        		} else {
-        		
-            		// workaround for org.xbill.DNS
-            		// see http://stackoverflow.com/questions/2879455/android-2-2-and-bad-address-family-on-socket-connect
-            		// TODO: try other API levels
-        			
-        			java.lang.System.setProperty("java.net.preferIPv4Stack", "true");
-        			java.lang.System.setProperty("java.net.preferIPv6Addresses", "false");
-	        	
-        			Lookup l = new Lookup("_xmpp-client._tcp." + server, Type.SRV);
-	        	
-        			//TODO: caching SRV requests
-        			//l.setCache(null);
-        			//l.setResolver(new SimpleResolver("8.8.8.8"));
-	        	
-        			Record [] records = l.run();
-	        	
-        			if (records == null) {
-        				Log.i("SRV", server + " has no SRV record");
-        				host = server;
-        				port = 5222;
-        			} else {
-        				host = ((SRVRecord)records[0]).getTarget().toString();
-        				port = ((SRVRecord)records[0]).getPort();
-        			}
-	        	
-        		}
-        		
-        		if (host==null) {
-    				Log.i("SRV", "Assuming host = "+ server);
-   			
-        			host = server;
-        		}
-        		
-        		if (port == 0) port = 5222;
-        		if (port == 5222  && account.secureConnection == XmppAccount.SECURE_CONNECTION_LEGACY_SSL) {
-        			port = 5223;
-        		}
-        	}
+    			Lookup l = new Lookup("_xmpp-client._tcp." + server, Type.SRV);
         	
-        	dataStream = new NetworkSocketDataStream(host, port);
+    			//TODO: caching SRV requests
+    			//l.setCache(null);
+    			//l.setResolver(new SimpleResolver("8.8.8.8"));
         	
-        	if (account.secureConnection == XmppAccount.SECURE_CONNECTION_LEGACY_SSL) {
-        		((NetworkSocketDataStream)dataStream).setTLS();
-        	}
+    			Record [] records = l.run();
         	
-            XMLParser parser = new XMLParser( this );
-            
-            initiateStream();
-            
-            byte cbuf[]=new byte[4096];
-            
-            while (true) {
+    			if (records == null) {
+    				Log.i("SRV", server + " has no SRV record");
+    				host = server;
+    				port = 5222;
+    			} else {
+    				host = ((SRVRecord)records[0]).getTarget().toString();
+    				port = ((SRVRecord)records[0]).getPort();
+    			}
+        	
+    		}
+    		
+    		if (host==null) {
+				Log.i("SRV", "Assuming host = "+ server);
+		
+    			host = server;
+    		}
+    		
+    		if (port == 0) port = XmppAccount.DEFAULT_XMPP_PORT;
+    		if (port == XmppAccount.DEFAULT_XMPP_PORT  && account.secureConnection == XmppAccount.SECURE_CONNECTION_LEGACY_SSL) {
+    			port = XmppAccount.DEFAULT_SECURE_XMPP_PORT;
+    		}
+    	}
+    	
+    	dataStream = new NetworkSocketDataStream(host, port);
+    	
+    	if (account.secureConnection == XmppAccount.SECURE_CONNECTION_LEGACY_SSL) {
+    		((NetworkSocketDataStream)dataStream).setTLS();
+    	}
+    	
+        XMLParser parser = new XMLParser( this );
+        
+        initiateStream();
+        
+        byte cbuf[]=new byte[4096];
+        
+        while (true) {
 
-            	//blocking operation
-            	int length=dataStream.read(cbuf);
-                
-                if (length==0) {
-                    try { Thread.sleep(100); } catch (Exception e) {};
-                    continue;
-                }
-
-                StringBuffer dbg=new StringBuffer(4096);
-                for (int i=0; i<length; i++) {
-                	dbg.append((char)cbuf[i]);
-                }
-            	Log.d("lime<< ", dbg.toString());
-                
-                parser.parse(cbuf, length);
-                
-                dispatchIncomingQueue();
+        	//blocking operation
+        	int length = 0;
+        	try {
+        		length=dataStream.read(cbuf);
+        	} catch (NullPointerException npe) {
+        		//TODO: Exception in ZLIB (check why)
+        		throw new IOException("Unexpected end of packed stream");
+        	}
+            
+            if (length==0) {
+                try { Thread.sleep(100); } catch (Exception e) {};
+                continue;
             }
+
+        	Lime.getInstance().getLog().addLogStreamingEvent(LoggerEvent.XMLIN, jid, cbuf, length);
+        	if (Lime.getInstance().localXmlEnabled)   sendBroadcast(LoggerData.UPDATE_LOG);
+            
+            parser.parse(cbuf, length);
+            
+            dispatchIncomingQueue();
+        }
             
             //dispatcher.broadcastTerminatedConnection( null );
-        } catch( Exception e ) {
-        	//TODO: handle exceptions
-        	
-            System.out.println("Exception in parser:");
-            e.printStackTrace();
-            broadcastTerminatedConnection(e);
-        };
-        
-        loggedIn = false;
     }
     
     /**
@@ -319,7 +324,7 @@ public class XmppStream extends XmppParser implements Runnable {
 			// TODO: handle exception
         	e.printStackTrace();
 		}
-        broadcastTerminatedConnection(new Exception("Connection closed"));
+        broadcastTerminatedConnection(new XmppException("Connection closed"));
     }
     
     private void broadcastTerminatedConnection(Exception exception) {
@@ -372,15 +377,18 @@ public class XmppStream extends XmppParser implements Runnable {
         send(ping);
     }
 
-    
-    public void send( String data ) throws IOException {
-    	Log.d("lime>> ", data);
-    	dataStream.write(data.getBytes());
+  
+    public void send(byte[] data, int length) throws IOException {
+    	Lime.getInstance().getLog().addLogStreamingEvent(LoggerEvent.XMLOUT, jid, data, length);
+    	if (Lime.getInstance().localXmlEnabled)   sendBroadcast(LoggerData.UPDATE_LOG);
+    	
+    	if (dataStream == null) throw new IOException("Writing to closed stream");
+    	dataStream.write(data, length);
     }
     
-    public void sendBuf( StringBuffer data ) throws IOException {
-    	dataStream.write(data);
-        //System.out.println(data);
+    public void send( String data ) throws IOException {
+    	byte[] bytes = data.getBytes(); 
+    	send(bytes, bytes.length);
     }
     
     /**
@@ -390,13 +398,22 @@ public class XmppStream extends XmppParser implements Runnable {
      */
     
     public void send( XmppObject block )  {
-    	Log.d("lime>> ", block.toString());
     	
-    	
-    	StringBuffer data=new StringBuffer(4096);
+    	StringBuilder data=new StringBuilder(4096);
     	block.constructXML(data);
+    	
+   		ByteArrayOutputStream baos = new ByteArrayOutputStream(4096);
+   		int dp=0;
+    		
+   		while (dp<data.length()) {
+    		baos.write((byte)data.charAt(dp++));
+    	}
+    		
+   		byte[] bytes = baos.toByteArray();
+   		int length = baos.size();
+    		
     	try {
-    		sendBuf(data);
+    		send(bytes, length);
     	} catch (Exception e) {
     		//TODO: verify action on error
     		e.printStackTrace();
@@ -415,7 +432,8 @@ public class XmppStream extends XmppParser implements Runnable {
     	dispatcherQueue.remove(listener);
     }
     
-    public void cancelBlockListenerByClass(Class removeClass) {
+    @SuppressWarnings("rawtypes")
+	public void cancelBlockListenerByClass(Class removeClass) {
     	int i=0;
     	while (i<dispatcherQueue.size()) {
     		if (dispatcherQueue.get(i).getClass().equals(removeClass)) {
@@ -449,7 +467,9 @@ public class XmppStream extends XmppParser implements Runnable {
     	addBlockListener(iqroster);
 
     	addBlockListener(new IqVersionReply());
-
+    	
+    	addBlockListener(new IqTimeReply());
+    	
     	iqroster.queryRoster(this);
 
     	

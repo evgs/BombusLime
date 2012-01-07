@@ -368,5 +368,8 @@ public class SASLAuth implements XmppObjectListener{
         
         return resp;
     }
+
+	@Override
+	public String capsXmlns() {	return null; }
     
 }

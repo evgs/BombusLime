@@ -151,4 +151,6 @@ public class NonSASLAuth implements XmppObjectListener{
         return XmppObjectListener.BLOCK_REJECTED;        
     }
     
+	@Override
+	public String capsXmlns() {	return null; }
 }
