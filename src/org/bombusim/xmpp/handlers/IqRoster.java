@@ -58,7 +58,9 @@ public class IqRoster implements XmppObjectListener{
 			if (iq.getTypeAttribute().equals("result")) {
 				XmppObject query=iq.findNamespace("query", "jabber:iq:roster");
 				
+				String from = data.getAttribute("from");
 				//TODO: verify from equals my jid
+				
 				ArrayList<XmppObject> items=query.getChildBlocks();
 				
 				ArrayList<Contact> r=new ArrayList<Contact>();
@@ -67,10 +69,11 @@ public class IqRoster implements XmppObjectListener{
 					XmppObject item=items.get(i);
 					Contact c=new Contact( item.getAttribute("jid"), item.getAttribute("name") );
 					c.setSubscription( item.getAttribute("subscription") );
+					c.setRJid(from);
 					r.add(c);
 				}
 				
-				Lime.getInstance().getRoster().replaceRoster(r);
+				Lime.getInstance().getRoster().replaceRoster(r, from);
 				
 				stream.sendBroadcast(Roster.UPDATE_ROSTER);
 				
