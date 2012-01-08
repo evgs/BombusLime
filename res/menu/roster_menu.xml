@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/cmdLogin" android:title="@string/buttonLogon" android:orderInCategory="1" android:icon="@drawable/status_online"></item>
+    <item android:id="@+id/cmdLogout" android:orderInCategory="2" android:title="@string/buttonLogout" android:icon="@drawable/status_offline"></item>
+    <item android:id="@+id/cmdAccount" android:title="@string/account" android:orderInCategory="3" android:icon="@android:drawable/ic_menu_manage"></item>
+    <item android:id="@+id/cmdChat" android:title="Chat" android:orderInCategory="4" android:icon="@android:drawable/ic_menu_send"></item>
+    <item android:id="@+id/cmdLog" android:title="Log" android:orderInCategory="5" android:icon="@android:drawable/ic_menu_report_image"></item>
+    <item android:id="@+id/cmdSettings" android:orderInCategory="6" android:title="@string/buttonPreferences" android:icon="@android:drawable/ic_menu_preferences"/>
+    <item android:id="@+id/cmdAddContact" android:orderInCategory="7" android:icon="@android:drawable/ic_menu_add" android:title="Add Contact"/>
+    <item android:id="@+id/cmdDisco" android:orderInCategory="8" android:icon="@android:drawable/ic_menu_search" android:title="Service Discovery"/>
+    
+
+</menu>
