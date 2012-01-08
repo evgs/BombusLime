@@ -58,9 +58,10 @@ public class NetworkSocketDataStream extends NetworkDataStream{
 		
 		//TODO: check on different devices:
 		// !!! ENSURE TLS enabled in account settings before test
-		// 1. emulator/2.2 - SSLPeerUnverifiedException (jabber.ru, google.com) - bug in 2.2?
+		// 1. emulator/2.2 - SSLPeerUnverifiedException (jabber.ru, google.com) - bug in emulator v2.2
 		// 2. cyanogen/2.3 - works (all hosts)
 		// 3. emulator/ics - works
+		// 4. Gratia/2.2 - works
 		SSLSocketFactory sf = 
 						//SSLCertificateSocketFactory.getDefault(20000, null);
 						SSLCertificateSocketFactory.getInsecure(20000, null);
