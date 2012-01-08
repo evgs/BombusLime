@@ -38,6 +38,8 @@ import org.bombusim.xmpp.XmppObjectListener;
 import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.stanza.Iq;
 
+import android.text.format.Time;
+
 /**
  *
  * @author EvgS
@@ -62,7 +64,7 @@ public class IqTimeReply implements XmppObjectListener{
 		
 		if (query!=null) {
 
-			android.text.format.Time t = new android.text.format.Time();
+			android.text.format.Time t = getCurrentTime();
 
 			query.addChild("display", t.format("%d/%m/%Y %H:%M"));
 
@@ -73,7 +75,7 @@ public class IqTimeReply implements XmppObjectListener{
 			query=data.findNamespace("time", CAPS_XMLNS);
 			if (query==null) return BLOCK_REJECTED;
 			
-			android.text.format.Time t = new android.text.format.Time();
+			android.text.format.Time t = getCurrentTime();
 
 			StringBuilder tzo = new StringBuilder(t.format("%z"));
 			if (tzo.length()==0) tzo.append("+0000");
@@ -92,4 +94,10 @@ public class IqTimeReply implements XmppObjectListener{
         return BLOCK_PROCESSED;
 
     }
+	
+	Time getCurrentTime() {
+		Time current=new Time(Time.getCurrentTimezone());
+		current.set(System.currentTimeMillis());
+		return current;
+	}
 }
