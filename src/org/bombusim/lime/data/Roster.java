@@ -4,10 +4,6 @@ import java.util.ArrayList;
 
 import org.bombusim.lime.Lime;
 
-import android.content.IntentSender.SendIntentException;
-import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
-
 public class Roster {
 	
 	public static final String UPDATE_ROSTER = "org.bombusim.lime.data.UPDATE_ROSTER";

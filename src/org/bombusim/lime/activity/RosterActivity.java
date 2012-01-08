@@ -14,11 +14,9 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class RosterActivity extends ListActivity {
 	@Override

@@ -1,9 +1,5 @@
 package org.bombusim.lime.data;
 
-import java.util.ArrayList;
-
-import org.bombusim.xmpp.XmppAccount;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -26,12 +22,10 @@ public class RosterDbAdapter  {
 	public final static String KEY_SUBSCR =   "subscr";
 	public final static String KEY_AVATAR =   "avatar";
 
-	private Context context;
 	private ContactDbHelper dbHelper;
 	private SQLiteDatabase db;
 	
 	public RosterDbAdapter(Context context) {
-		this.context = context;
 		dbHelper = new ContactDbHelper(context);
 	}
 	

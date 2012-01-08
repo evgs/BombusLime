@@ -4,10 +4,6 @@ import java.io.IOException;
 
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.security.KeyStore;
-
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -80,7 +76,6 @@ public class NetworkSocketDataStream extends NetworkDataStream{
 			
 		SSLSocket ssls=(SSLSocket) sf.createSocket(socket, host, port, true);
 		ssls.startHandshake();
-		SSLSession sess=ssls.getSession();
 	    socket = ssls;
 		    
 		    
@@ -100,5 +95,6 @@ public class NetworkSocketDataStream extends NetworkDataStream{
 	}
 
 	public boolean isSecure() { return ssl; }
+	public boolean isCompressed() { return zlib; }
 }
 

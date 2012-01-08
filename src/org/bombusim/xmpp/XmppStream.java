@@ -43,7 +43,6 @@ import org.bombusim.xml.XMLException;
 import org.bombusim.xml.XMLParser;
 import org.bombusim.xmpp.handlers.IqRoster;
 import org.bombusim.xmpp.handlers.IqTimeReply;
-import org.bombusim.xmpp.handlers.IqVcard;
 import org.bombusim.xmpp.handlers.IqVersionReply;
 import org.bombusim.xmpp.handlers.PresenceDispatcher;
 import org.bombusim.xmpp.stanza.Iq;
@@ -51,7 +50,6 @@ import org.bombusim.xmpp.stanza.Presence;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.SRVRecord;
-import org.xbill.DNS.TextParseException;
 import org.xbill.DNS.Type;
 
 import android.content.Context;

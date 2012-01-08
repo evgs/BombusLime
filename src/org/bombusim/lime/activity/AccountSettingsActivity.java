@@ -11,7 +11,6 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 public class AccountSettingsActivity extends Activity {

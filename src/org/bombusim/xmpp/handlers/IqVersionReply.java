@@ -32,7 +32,6 @@
 package org.bombusim.xmpp.handlers;
 
 import org.bombusim.lime.Lime;
-import org.bombusim.lime.R;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppObjectListener;
 import org.bombusim.xmpp.XmppStream;

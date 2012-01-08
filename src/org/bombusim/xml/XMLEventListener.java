@@ -28,8 +28,6 @@
 
 package org.bombusim.xml;
 
-import java.io.IOException;
-
 public interface XMLEventListener {
     
   public boolean tagStart( String name, Attributes attributes );

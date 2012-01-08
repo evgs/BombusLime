@@ -1,7 +1,5 @@
 package org.bombusim.lime.data;
 
-import java.util.ArrayList;
-
 import org.bombusim.xmpp.XmppAccount;
 
 import android.content.ContentValues;
@@ -29,12 +27,10 @@ public class AccountDbAdapter  {
 	public final static String KEY_PLAINPWD = "pwdplain";
 	public final static String KEY_ZLIB =     "zlib";
 
-	private Context context;
 	private AccountDbHelper dbHelper;
 	private SQLiteDatabase db;
 	
 	public AccountDbAdapter(Context context) {
-		this.context = context;
 		dbHelper = new AccountDbHelper(context);
 	}
 	

@@ -11,7 +11,6 @@ import org.bombusim.xmpp.XmppAccount;
 import org.bombusim.xmpp.XmppStream;
 
 import android.app.Application;
-import android.app.ListActivity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +19,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.IBinder;
-import android.widget.BaseAdapter;
 
 public class Lime extends Application {
 	private static Lime instance;
@@ -65,7 +63,7 @@ public class Lime extends Application {
 	public final void onCreate() {
 		super.onCreate();
 		
-		this.instance = this;
+		instance = this;
 		
 		prefs = new Preferences(getApplicationContext());
 		

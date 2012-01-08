@@ -29,8 +29,6 @@
 package org.bombusim.xmpp.handlers;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.TimeZone;
 
 import org.bombusim.xmpp.XmppException;
 import org.bombusim.xmpp.XmppObject;

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 import org.bombusim.lime.data.Contact;
-import org.bombusim.lime.data.Roster;
 
 import android.content.Context;
 import android.graphics.Bitmap;

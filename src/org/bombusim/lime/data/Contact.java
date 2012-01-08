@@ -10,7 +10,7 @@ public class Contact {
 	private String name;
 	
 	private int presence;
-	private String resource; 
+	
 	private String statusMessage;
 	
 	private long _id;
