@@ -16,6 +16,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.IBinder;
 import android.widget.BaseAdapter;
@@ -127,5 +129,21 @@ public class Lime extends Application {
 		XmppStream s = xmppService.getXmppStream(rosterJid);
 		
 		return s;
+	}
+
+	private String version;
+	
+	public String getVersion() {
+		if (version==null) {
+			try {
+				PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+
+				version = pinfo.versionName + " ("+ pinfo.versionCode + ")";
+			} catch (NameNotFoundException e) {
+				version = "unknown";
+			}
+			
+		}
+		return version;
 	}
 }

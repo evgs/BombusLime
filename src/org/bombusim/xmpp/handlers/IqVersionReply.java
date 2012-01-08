@@ -32,6 +32,7 @@
 package org.bombusim.xmpp.handlers;
 
 import org.bombusim.lime.Lime;
+import org.bombusim.lime.R;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppObjectListener;
 import org.bombusim.xmpp.XmppStream;
@@ -61,7 +62,7 @@ public class IqVersionReply implements XmppObjectListener {
             reply.addChild(query);
             //TODO: remove hardcoded values
             query.addChild("name", "Bombus");
-            query.addChild("version","0.0");
+            query.addChild("version",Lime.getInstance().getVersion());
             query.addChild("os", Lime.getInstance().getOsId());
             
             stream.send(reply);
