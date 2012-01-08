@@ -116,5 +116,17 @@ public class Roster {
 		updateDB();
 	}
 
+	public Contact findContact(String from, String rosterJid) {
+		// TODO Auto-generated method stub
+		for (int i=0; i<contacts.size(); i++) {
+			Contact c = contacts.get(i);
+			if (c.getJid().equals(from))
+				if (c.getRosterJid().equals(rosterJid))
+					return c;
+		}
+		
+		return null;
+	}
+
 
 }

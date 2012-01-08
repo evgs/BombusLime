@@ -14,6 +14,16 @@
         android:src="@drawable/ic_contact_picture" />
 
     <TextView
+        android:id="@+id/rit_jid"
+        android:layout_width="fill_parent"
+        android:layout_height="35dip"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@id/rit_photo"
+        android:gravity="center_vertical"
+        android:text="jid" />
+    
+    <TextView
         android:id="@+id/rit_presence"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -24,16 +34,6 @@
         android:singleLine="true"
         android:layout_below="@id/rit_jid"
         android:text="presence" />
-    
-    <TextView
-        android:id="@+id/rit_jid"
-        android:layout_width="fill_parent"
-        android:layout_height="35dip"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@id/rit_photo"
-        android:gravity="center_vertical"
-        android:text="jid" />
 
     <ImageView
         android:id="@+id/rit_statusIcon"

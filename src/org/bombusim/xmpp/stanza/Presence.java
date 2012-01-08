@@ -1,6 +1,8 @@
 package org.bombusim.xmpp.stanza;
 
+import org.bombusim.lime.R;
 import org.bombusim.xml.Attributes;
+import org.bombusim.xmpp.XmppError;
 import org.bombusim.xmpp.XmppObject;
 
 public final class Presence extends XmppObject
@@ -48,34 +50,32 @@ public final class Presence extends XmppObject
     }
   }
 
+  
   private String text;
   private int presenceCode;
   
-  
-  //TODO: dispatch presence
-  /*
   public void dispathch(){
+	  StringBuilder text = new StringBuilder();
       String show;
       String errText=null;
-      StringBuilder sb=new StringBuilder();
       String type=getTypeAttribute();
       presenceCode=PRESENCE_AUTH;
       
       if (type!=null) {
           if (type.equals(PRS_OFFLINE)) { 
               presenceCode=PRESENCE_OFFLINE;
-              text.append(SR.getPresence(PRS_OFFLINE));
+              text.append(R.string.presence_offline);
           };
           if (type.equals("subscribe")) {
               presenceCode=PRESENCE_AUTH_ASK;
-              text.append(SR.MS_SUBSCRIPTION_REQUEST_FROM_USER);
+              text.append(R.string.subscr_request_from);
           } 
-          if (type.equals("subscribed")) text.append(SR.MS_SUBSCRIPTION_RECEIVED);
-          if (type.equals("unsubscribed")) text.append(SR.MS_SUBSCRIPTION_DELETED);
+          if (type.equals("subscribed")) text.append(R.string.subscr_received);
+          if (type.equals("unsubscribed")) text.append(R.string.subscr_deleted);
           
           if (type.equals(PRS_ERROR)) {
               presenceCode=PRESENCE_ERROR;
-              text.append(PRS_ERROR);
+              text.append(R.string.presence_error);
               errText=XmppError.findInStanza(this).toString();
           }
           
@@ -86,12 +86,23 @@ public final class Presence extends XmppObject
           }
       } else {
           // online-kinds
-          show=getShow(); text.append(SR.getPresence(show));
-          presenceCode=PRESENCE_ONLINE;
-          if (show.equals(PRS_CHAT)) presenceCode=PRESENCE_CHAT;
-          if (show.equals(PRS_AWAY)) presenceCode=PRESENCE_AWAY;
-          if (show.equals(PRS_XA)) presenceCode=PRESENCE_XA;
-          if (show.equals(PRS_DND)) presenceCode=PRESENCE_DND;
+          show=getShow(); 
+          if (show.equals(PRS_CHAT)) {
+        	  presenceCode=PRESENCE_CHAT;
+        	  text.append(R.string.presence_chat);
+          } else if (show.equals(PRS_AWAY)) {
+        	  presenceCode=PRESENCE_AWAY;
+        	  text.append(R.string.presence_away);
+          } else if (show.equals(PRS_XA)) { 
+        	  presenceCode=PRESENCE_XA;
+        	  text.append(R.string.presence_xa);
+          } else if (show.equals(PRS_DND)) { 
+        	  presenceCode=PRESENCE_DND;
+        	  text.append(R.string.presence_dnd);
+          } else {
+        	  presenceCode=PRESENCE_ONLINE;
+        	  text.append(R.string.presence_online);
+          }
       }
           
       String status=(errText==null)? getChildBlockText("status"):errText;
@@ -107,14 +118,12 @@ public final class Presence extends XmppObject
           
       
   }
-*/
 
   /**
    * Method to set the presence type
    */
 
-  public void setType( String type )
-  {
+  public void setType( String type ) {
     setAttribute("type", type);
   }
   
@@ -134,11 +143,7 @@ public final class Presence extends XmppObject
    * Method to get the name of the tag
    */
 
-  public String getTagName()
-  {
-    return "presence";
-  }
-
+  public String getTagName()  { return "presence";  }
   
   public int getTypeIndex() { return presenceCode;}
 
@@ -156,12 +161,12 @@ public final class Presence extends XmppObject
   public String getFrom() {
       return getAttribute("from");
   }
-  public final static int PRESENCE_ONLINE=0;
-  public final static int PRESENCE_CHAT=1;
-  public final static int PRESENCE_AWAY=2;
-  public final static int PRESENCE_XA=3;
-  public final static int PRESENCE_DND=4;
-  public final static int PRESENCE_OFFLINE=5;
+  public final static int PRESENCE_OFFLINE=0;
+  public final static int PRESENCE_ONLINE=1;
+  public final static int PRESENCE_CHAT=2;
+  public final static int PRESENCE_AWAY=3;
+  public final static int PRESENCE_XA=4;
+  public final static int PRESENCE_DND=5;
   public final static int PRESENCE_ASK=6;
   public final static int PRESENCE_UNKNOWN=7;
   public final static int PRESENCE_INVISIBLE=8;

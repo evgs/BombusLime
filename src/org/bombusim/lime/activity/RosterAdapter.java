@@ -21,7 +21,7 @@ public class RosterAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
     private Bitmap mIconRobot;
-    private Bitmap mIconStar;
+    private Bitmap[] mIconStar;
 
     public RosterAdapter(Context context) {
         // Cache the LayoutInflate to avoid asking for a new one each time.
@@ -29,7 +29,17 @@ public class RosterAdapter extends BaseAdapter {
 
         // Icons bound to the rows.
         mIconRobot = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_contact_picture);
-        mIconStar = BitmapFactory.decodeResource(context.getResources(), R.drawable.status_online);
+        mIconStar = new Bitmap[] { 
+        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_offline),
+        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_online),
+        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_chat),
+        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_away),
+        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_xa),
+        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_dnd),
+        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_ask),
+        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_unknown),
+        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_invisible)
+        		};
     }
 	
 	private ArrayList<Contact> getContacts() {
@@ -88,10 +98,9 @@ public class RosterAdapter extends BaseAdapter {
         Bitmap avatar = c.getLazyAvatar(true);
         if (avatar == null) avatar = mIconRobot;
         holder.photo.setImageBitmap(avatar);
-        holder.status.setImageBitmap(mIconStar);
+        holder.status.setImageBitmap(mIconStar[c.getPresence()]);
         holder.jid.setText(c.getScreenName());
-        holder.presence.setText(c.getJid());
-//        holder.icon.setImageBitmap(((position & 1) == 1 ? mIcon1 : mIcon2);
+        holder.presence.setText(c.getStatusMessage());
 
         return convertView;
     }

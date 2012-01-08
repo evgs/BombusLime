@@ -39,6 +39,15 @@ public class Contact {
 	public long getId() { return _id; }
 	public void setId(long id) { this._id = id; } 
 
+	public void setPresence(int presenceIndex, String resource, int priority) {
+		//TODO: manage resources and priority
+		this.presence = presenceIndex; 
+	}
+	public int getPresence() { return presence; }
+	
+	public void setStatusMessage(String statusMessage) { this.statusMessage = statusMessage; }
+	public String getStatusMessage() { return statusMessage; }
+	
 	public String getJid() { return jid; }
 	public String getName() { return name; }
 	public void setName(String name) { this.name = name; }
@@ -101,6 +110,11 @@ public class Contact {
 	  *  n - data to update
 	  */
 	
+	public void updateAvatarHash(String avatarId) {
+		if (!compareNStrings(this.avatarId, avatarId)) 
+			avatar = null;
+	}
+	
 	public void update(Contact n) {
 		//if (!compareNStrings(avatarId, n.avatarId)) {
 		//	avatarId = n.avatarId;
@@ -159,6 +173,7 @@ public class Contact {
 		//fallback - avatar request already queried
 		return null;
 	}
+
 
 	
 }

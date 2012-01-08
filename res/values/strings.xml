@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+   
     <string name="xmppDefaultPort">5222</string>
     
     <!-- localized presence representation -->
-    <string name="presence_unavailable">unavailable</string>
+    <string name="presence_offline">unavailable</string>
     <string name="presence_error">error</string>
     <string name="presence_chat">ready for chat</string>
     <string name="presence_away">away</string>
@@ -11,12 +12,15 @@
     <string name="presence_dnd">do not disturb</string>
     <string name="presence_online">online</string>
     <string name="presence_invisible">invisible</string>
+
+    <!-- TODO More friendly subscription -->
+    <string name="subscr_request_from">This user wants to subscribe to your presence</string>
+    <string name="subscr_received">You are now authorized</string>
+    <string name="subscr_deleted">Your authorization has been removed</string>
     
-    <string name="hello">Hello World, BombusActivity!</string>
     <string name="app_name">BombusLime</string>
     <string name="labelJidUserName">User Name</string>
     <string name="labelPassword">Password</string>
-    <string name="labelJidServer">Server</string>
     <string name="labelResource">Resource</string>
     <string name="defaultResource">Lime</string>
     <string name="labelBareJid">Jabber ID</string>

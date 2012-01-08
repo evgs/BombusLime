@@ -45,6 +45,7 @@ import org.bombusim.xmpp.handlers.IqRoster;
 import org.bombusim.xmpp.handlers.IqTimeReply;
 import org.bombusim.xmpp.handlers.IqVcard;
 import org.bombusim.xmpp.handlers.IqVersionReply;
+import org.bombusim.xmpp.handlers.PresenceDispatcher;
 import org.bombusim.xmpp.stanza.Iq;
 import org.bombusim.xmpp.stanza.Presence;
 import org.xbill.DNS.Lookup;
@@ -67,7 +68,8 @@ public class XmppStream extends XmppParser {
     
     final XmppAccount account;
     
-    public String jid; //binded JID, should be used instead of account data 
+    public String jid;        //bareJid, should be used to refer account 
+    public String jidSession; //binded JID, should be used instead of account data 
     
     private String server;
     private String host;  //evaluated from SRV record or specified manually in account
@@ -103,7 +105,8 @@ public class XmppStream extends XmppParser {
 
 		server = new XmppJid(account.userJid).getServer();
 		
-		jid = account.userJid + '/' + account.resource;
+		jid = account.userJid;
+		jidSession = jid + '/' + account.resource;
     	
     	dispatcherQueue = new ArrayList<XmppObjectListener>();
     }
@@ -472,10 +475,13 @@ public class XmppStream extends XmppParser {
     	
     	addBlockListener(new IqTimeReply());
     	
+    	addBlockListener(new PresenceDispatcher());
+    	
     	iqroster.queryRoster(this);
 
     	
     	Presence online = new Presence(Presence.PRESENCE_ONLINE, -1, "hello, jabber world!", "evgs");
+    	//offline messages will be delivered after this presence
     	send(online);
 
     }

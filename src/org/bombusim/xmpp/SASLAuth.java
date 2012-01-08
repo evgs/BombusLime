@@ -260,7 +260,7 @@ public class SASLAuth implements XmppObjectListener{
                 // second stream - step 2. resource binded - opening session
                 if (data.getAttribute("id").equals("bind")) {
 
-                	stream.jid = data.getChildBlock("bind").getChildBlockText("jid");
+                	stream.jidSession = data.getChildBlock("bind").getChildBlockText("jid");
                     
             		Log.i("XMPP", "Starting session");
                     
