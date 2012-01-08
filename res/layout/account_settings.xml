@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/accountSettingsLayout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <TextView
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:text="@string/account"
+            android:layout_marginTop="5dip"
+        />
+	        
+        <EditText android:id="@+id/jid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:hint="@string/labelBareJid"
+            />
+        
+        <EditText android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="@string/labelPassword"
+            />
+
+        <CheckBox
+            android:id="@+id/showPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/showPassword" />
+
+        <Button
+            android:id="@+id/advancedSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/advancedSettings" />
+
+        <LinearLayout
+            android:id="@+id/layoutAdvancedSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+	        <TextView
+	            style="?android:attr/listSeparatorTextViewStyle"
+	            android:layout_marginTop="5dip"
+	            android:text="@string/accountResource" />
+	       
+	        <EditText android:id="@+id/resource"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:inputType="text|textAutoComplete"
+	            android:hint="@string/labelResource"
+	            />
+	        
+	        <TextView
+	            style="?android:attr/listSeparatorTextViewStyle"
+	            android:text="@string/accountSecurity"
+	            android:layout_marginTop="5dip"
+	        />
+	
+	        <Spinner
+	            android:id="@+id/ssl"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:entries="@array/sslOptions" 
+	            android:prompt="@string/sslPrompt"
+	            >
+	            
+	        </Spinner>
+	        
+	        <Spinner
+	            android:id="@+id/plainpassword"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:entries="@array/plainPassword" 
+	            android:prompt="@string/plainPasswordPromt"
+	             />
+	        
+	        <TextView
+	            style="?android:attr/listSeparatorTextViewStyle"
+	            android:layout_marginTop="5dip"
+	            android:text="@string/accountConnection" />
+	
+	        <CheckBox
+	            android:id="@+id/specificHostPort"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/specificXmppHostPort" />
+	
+	        <LinearLayout
+	            android:id="@+id/linearLayotHost"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content" >
+	
+	            <EditText
+	                android:id="@+id/xmpphost"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="4"
+	                android:hint="@string/xmppHost" >
+	
+	                <requestFocus />
+	            </EditText>
+	
+	            <TextView
+	                android:id="@+id/textView1"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="0"
+	                android:text=":"
+	                 />
+	
+	            <EditText
+	                android:id="@+id/xmppport"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:hint="@string/xmppPort"
+	                android:text="@string/xmppDefaultPort" />
+	
+	        </LinearLayout>
+	                    
+	        <CheckBox
+	            android:id="@+id/zlib"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/streamCompression" />
+	        
+	        </LinearLayout>
+        
+    </LinearLayout>
+    
+
+</ScrollView>
