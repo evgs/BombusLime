@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <CheckBoxPreference android:key="AUTO_SERVICE_STARTUP" android:defaultValue="false" android:summary="Login when phone is turned on" android:summaryOff="Disabled" android:summaryOn="Enabled" android:title="Login Automatically" android:order="1"/>
+    <PreferenceCategory 
+        android:key="PREFS_DEBUG" 
+        android:title="Debug" 
+        android:order="100">
+
+	    <CheckBoxPreference 
+	        android:key="ADB_XML_LOG" 
+	        android:title="ADB XMPP logging" 
+	        android:summary="Dump XMPP stream into ADB log" 
+	        android:defaultValue="true" 
+	        android:summaryOff="Disabled" 
+	        android:summaryOn="Enabled" android:order="101"
+	        />
+        
+    </PreferenceCategory>
+    <RingtonePreference 
+        android:title="Incoming message sound" 
+        android:order="10" 
+        android:key="RINGTONE_MESSAGE" 
+        android:ringtoneType="notification"
+        />
+    
+
+</PreferenceScreen>
