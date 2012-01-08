@@ -31,7 +31,6 @@ public class IqVcard implements XmppObjectListener {
 		
 		stream.sendBroadcast(Roster.UPDATE_ROSTER);
 		
-		// TODO Auto-generated method stub
 		return NO_MORE_BLOCKS;
 	}
 
