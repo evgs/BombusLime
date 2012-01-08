@@ -1,0 +1,18 @@
+GPLv2:
+org.bombusim.lime: 
+Author: Eugene Stahov <evgs@bombus-im.org>
+http://bombus-im.org/
+
+
+Modified BSD:
+
+com.jcraft.JZlib: 
+jzlib-1.1.0    Copyright (c) 2000-2011 ymnk, JCraft,Inc. All rights reserved.
+http://www.jcraft.com/jzlib
+Author: ymnk@jcraft.com, JCraft,Inc.
+
+org.xbill.DNS:   
+dnsjava-2.1.3  Copyright (c) 1998-2011, Brian Wellington. All rights reserved.
+http://dnsjava.org
+http://xbill.org/dnsjava
+Author: Brian Wellington (bwelling@xbill.org)
