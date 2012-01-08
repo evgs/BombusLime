@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- localized presence representation -->
-    <string name="presence_unavailable">отключен</string>
+    <string name="presence_offline">отключен</string>
     <string name="presence_error">Ошибка</string>
     <string name="presence_chat">готов поболтать</string>
     <string name="presence_away">отошёл</string>
@@ -10,12 +10,14 @@
     <string name="presence_online">в сети</string>
     <string name="presence_invisible">невидимка</string>
     
+    <!-- TODO Более дружелюбная подписка -->
+    <string name="subscr_request_from">Пользователь прислал запрос подписки на присутствие</string>
+    <string name="subscr_received">Вы получили подписку</string>
+    <string name="subscr_deleted">Подписка на присутствие удалена!</string>
     
-    <string name="hello">Привет, мир! BombusActivity!</string>
     <string name="app_name">BombusLime</string>
     <string name="labelJidUserName">Имя пользователя</string>
     <string name="labelPassword">Пароль</string>
-    <string name="labelJidServer">Сервер</string>
     <string name="labelResource">Ресурс</string>
     <string name="labelBareJid">Jabber ID</string>
     <string name="buttonLogon">Войти</string>
@@ -61,7 +63,7 @@
     </string-array>
     
     <string name="xmppPort">порт</string>
-    <string name="xmppHost">Имя сервера</string>
+    <string name="xmppHost">Сервер</string>
     <string name="showPassword">Показывать вводимый пароль</string>
     <string name="advancedSettings">Дополнительные настройки</string>
     <string name="specificXmppHostPort">Указать адрес сервера вручную</string>
