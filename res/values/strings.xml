@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="xmppDefaultPort">5222</string>
+    
+    <!-- localized presence representation -->
+    <string name="presence_unavailable">unavailable</string>
+    <string name="presence_error">error</string>
+    <string name="presence_chat">ready for chat</string>
+    <string name="presence_away">away</string>
+    <string name="presence_xa">not available</string>
+    <string name="presence_dnd">do not disturb</string>
+    <string name="presence_online">online</string>
+    <string name="presence_invisible">invisible</string>
+    
+    <string name="hello">Hello World, BombusActivity!</string>
+    <string name="app_name">BombusLime</string>
+    <string name="labelJidUserName">User Name</string>
+    <string name="labelPassword">Password</string>
+    <string name="labelJidServer">Server</string>
+    <string name="labelResource">Resource</string>
+    <string name="defaultResource">Lime</string>
+    <string name="labelBareJid">Jabber ID</string>
+    <string name="buttonLogon">Sign in</string>
+    <string name="logEnable">Enable</string>
+    <string name="logFreeze">Freeze</string>
+    <string name="logClear">Clear</string>
+    <string name="loggerActivity">XML console</string>
+    <string name="buttonLogout">Logout</string>
+    <string name="buttonPreferences">Preferences</string>
+    
+    <string name="accountSecurity">Security</string>
+    <string name="accountConnection">Connection settings</string>
+    <string name="accountResource">Resource</string>
+    
+    <string name="sslPrompt">Choose encryption</string>
+    <string-array name="sslOptions">
+        <item>Disabled</item>
+        <item>Enabled if available</item>
+        <item>Always required</item>
+        <item>Using legacy SSL</item>
+    </string-array>
+
+    <string-array name="sslOptionsVals">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    
+    
+    <string name="plainPasswordPromt">Use plain password</string>
+    <string-array name="plainPassword">
+        <item>Always</item>
+        <item>Over encrypted connection</item>
+        <item>Never</item>
+    </string-array>
+    
+    <string-array name="plainPasswordVals">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    
+    <string name="xmppPort">port</string>
+    <string name="xmppHost">Host name or IP</string>
+    <string name="showPassword">Show password</string>
+    <string name="advancedSettings">Show Advanced settings</string>
+    <string name="specificXmppHostPort">Specific XMPP server address</string>
+	<string name="account">Account</string>        
+     
+    <string name="streamCompression">Stream Compression</string>
+    <string-array name="vcardFields">
+        <item>FN</item>
+        <item>NICKNAME</item>
+        <item>BDAY</item>
+        <item>ADR/STREET</item>
+        <item>ADR/EXTADR</item>
+        <item>ADR/LOCALITY</item>
+        <item>ADR/REGION</item>
+        <item>ADR/PCODE</item>
+        <item>ADR/CTRY</item>
+        <item>TEL/HOME</item>
+        <item>TEL/NUMBER</item>
+        <item>EMAIL/USERID</item>
+        <item>TITLE</item>
+        <item>ORG/ORGNAME</item>
+        <item>ORG/UNIT</item>
+        <item>URL</item>
+        <item>DESC</item>
+    </string-array>
+    
+    <string-array name="vcardLabels">
+        <item>Full Name</item>
+        <item>Nick</item>
+        <item>Birthday</item>
+        <item>Street</item>
+        <item>Street2</item>
+        <item>City</item>
+        <item>State</item>
+        <item>Post code</item>
+        <item>Country</item>
+        <item>Home phone number</item>
+        <item>Phone number</item>
+        <item>E-mail</item>
+        <item>Position</item>
+        <item>Organization</item>
+        <item>Dept</item>
+        <item>Website</item>
+        <item>About</item>
+    </string-array>
+    
+    <dimen name="avatarSize">48dp</dimen>
+    
+    <string name="xmppServiceDescription">Provides XMPP connectivity layer</string>
+    
+</resources>
