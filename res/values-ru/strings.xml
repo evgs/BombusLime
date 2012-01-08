@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- localized presence representation -->
+    <string name="presence_unavailable">отключен</string>
+    <string name="presence_error">Ошибка</string>
+    <string name="presence_chat">готов поболтать</string>
+    <string name="presence_away">отошёл</string>
+    <string name="presence_xa">недоступен</string>
+    <string name="presence_dnd">не беспокоить</string>
+    <string name="presence_online">в сети</string>
+    <string name="presence_invisible">невидимка</string>
+    
+    
+    <string name="hello">Привет, мир! BombusActivity!</string>
+    <string name="app_name">BombusLime</string>
+    <string name="labelJidUserName">Имя пользователя</string>
+    <string name="labelPassword">Пароль</string>
+    <string name="labelJidServer">Сервер</string>
+    <string name="labelResource">Ресурс</string>
+    <string name="labelBareJid">Jabber ID</string>
+    <string name="buttonLogon">Войти</string>
+    <string name="logEnable">Enable</string>
+    <string name="logFreeze">Freeze</string>
+    <string name="logClear">Очистить</string>
+    <string name="loggerActivity">XML консоль</string>
+    <string name="buttonLogout">Отключиться</string>
+    <string name="buttonPreferences">Настройки</string>
+    
+
+    <string name="accountSecurity">Безопасность</string>
+    <string name="accountConnection">Настройки соединения</string>
+    <string name="accountResource">Ресурс клиента</string>
+   
+    <string name="sslPrompt">Шифрование соединения TLS/SSL</string>
+    <string-array name="sslOptions">
+        <item>Не использовать шифорвание</item>
+        <item>Шифровать при поддержке сервером</item>
+        <item>Всегда шифровать соединение</item>
+        <item>Использовать устаревший порт SSL (5223)</item>
+    </string-array>
+
+    <string-array name="sslOptionsVals">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    
+    
+    <string name="plainPasswordPromt">Передача пароля открытым текстом</string>
+    <string-array name="plainPassword">
+        <item>Всегда</item>
+        <item>Только по зашифрованному каналу</item>
+        <item>Никогда</item>
+    </string-array>
+    
+    <string-array name="plainPasswordVals">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    
+    <string name="xmppPort">порт</string>
+    <string name="xmppHost">Имя сервера</string>
+    <string name="showPassword">Показывать вводимый пароль</string>
+    <string name="advancedSettings">Дополнительные настройки</string>
+    <string name="specificXmppHostPort">Указать адрес сервера вручную</string>
+	<string name="account">Account</string>        
+     
+    <string name="streamCompression">Сжатие траффика</string>
+    
+</resources>
