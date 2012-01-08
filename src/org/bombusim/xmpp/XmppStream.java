@@ -463,6 +463,8 @@ public class XmppStream extends XmppParser {
     void loginSuccess() {
     	loggedIn=true;
     	
+    	Lime.getInstance().online = true;
+    	
     	IqRoster iqroster=new IqRoster();
     	addBlockListener(iqroster);
 
@@ -475,6 +477,7 @@ public class XmppStream extends XmppParser {
     	
     	Presence online = new Presence(Presence.PRESENCE_ONLINE, -1, "hello, jabber world!", "evgs");
     	send(online);
+
     }
     
     private Context serviceContext;
