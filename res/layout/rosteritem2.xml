@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="?android:attr/listPreferredItemHeight" >
+
+    <ImageView
+        android:id="@+id/rit_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+		android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="6dip"
+        android:src="@drawable/ic_contact_picture" />
+
+    <TextView
+        android:id="@+id/rit_presence"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/rit_photo"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:layout_below="@id/rit_jid"
+        android:text="presence" />
+    
+    <TextView
+        android:id="@+id/rit_jid"
+        android:layout_width="fill_parent"
+        android:layout_height="35dip"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@id/rit_photo"
+        android:gravity="center_vertical"
+        android:text="jid" />
+
+    <ImageView
+        android:id="@+id/rit_statusIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/rit_photo"
+        android:layout_alignTop="@+id/rit_presence"
+        android:src="@drawable/status_online" />
+    
+</RelativeLayout>
