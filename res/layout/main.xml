@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- TODO: OBSOLETE, REMOVE ASAP -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -91,7 +92,7 @@
     <LinearLayout
         android:id="@+id/buttons"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="wrap_content" >
 
         <Button
             android:id="@+id/buttonLogon"
@@ -106,7 +107,55 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/buttonLogout" />
+    </LinearLayout>
+        
+    <LinearLayout
+        android:id="@+id/buttons2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        
+        <Button
+            android:id="@+id/buttonAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/account" />
 
+        <Button
+            android:id="@+id/buttonChat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Chat" />
+        
+        <Button
+            android:id="@+id/buttonLog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Log" />
+        
     </LinearLayout>
  
+    <LinearLayout
+        android:id="@+id/buttons2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        
+        <Button
+            android:id="@+id/buttonPrefs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/buttonPreferences" />
+
+        
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/imageButton1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/btn_star" />
+
 </LinearLayout>
