@@ -32,10 +32,10 @@
 
     </LinearLayout>
 
-    <org.bombusim.lime.logger.LoggerTextBox
-        android:id="@+id/loggerBox"
+    <ListView
+        android:id="@+id/loggerListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="" />
+        android:layout_height="wrap_content" >
+    </ListView>
 
 </LinearLayout>
