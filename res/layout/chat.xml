@@ -3,6 +3,54 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+	<RelativeLayout 
+	    android:layout_width="wrap_content"
+	    android:layout_height="?android:attr/listPreferredItemHeight" 
+        android:id="@+id/contact_head" >
+	    	
+	    <ImageView
+	        android:id="@+id/rit_photo"
+	        android:layout_width="wrap_content"
+	        android:layout_height="fill_parent"
+	        android:layout_alignParentLeft="true"
+			android:layout_alignParentTop="true"
+	        android:layout_alignParentBottom="true"
+	        android:layout_marginRight="6dip"
+	        android:src="@drawable/ic_contact_picture" />
+	
+	    <TextView
+	        android:id="@+id/rit_jid"
+	        android:layout_width="fill_parent"
+	        android:layout_height="35dip"
+	        android:layout_alignParentTop="true"
+	        android:layout_alignRight="@+id/rit_presence"
+	        android:layout_toRightOf="@id/rit_photo"
+	        android:ellipsize="marquee"
+	        android:gravity="center_vertical"
+	        android:text="jid" />
+	    
+	    <TextView
+	        android:id="@+id/rit_presence"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentBottom="true"
+	        android:layout_below="@id/rit_jid"
+	        android:layout_toLeftOf="@+id/rit_chatIcon"
+	        android:layout_toRightOf="@id/rit_photo"
+	        android:ellipsize="marquee"
+	        android:singleLine="true"
+	        android:text="presence" />
+	
+	    <ImageView
+	        android:id="@+id/rit_statusIcon"
+	        android:layout_width="wrap_content"
+	        android:layout_height="fill_parent"
+	        android:layout_alignRight="@+id/rit_photo"
+	        android:layout_alignTop="@+id/rit_presence"
+	        android:src="@drawable/status_online" />
+	    
+	    
+	</RelativeLayout>    
     
     <ImageButton
         android:id="@+id/imageButton1"
@@ -29,10 +77,9 @@
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@id/editText1"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" 
-        android:layout_above="@id/editText1" 
-        >
+        android:layout_below="@+id/contact_head" >
         
     </ListView>
     

@@ -18,6 +18,8 @@ public class Contact {
 	
 	private Bitmap avatar;
 	private String avatarId;
+	
+	private boolean activeChats;
 
 	private int updateMark;
 
@@ -198,6 +200,6 @@ public class Contact {
 		return null;
 	}
 
+	public boolean hasActiveChats() { return activeChats; }
 
-	
 }
