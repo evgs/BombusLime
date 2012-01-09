@@ -2,6 +2,7 @@ package org.bombusim.lime.activity;
 
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
+import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.logger.LoggerActivity;
 import org.bombusim.lime.service.XmppService;
@@ -34,7 +35,12 @@ public class RosterActivity extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		//String item = (String) getListAdapter().getItem(position);
 		//Toast.makeText(this, item + " selected", Toast.LENGTH_LONG).show();
-		
+		Contact c = (Contact) getListAdapter().getItem(position);
+	
+		Intent openChat =  new Intent(getBaseContext(), ChatActivity.class);
+		openChat.putExtra(ChatActivity.FROM_JID, c.getRosterJid());
+		openChat.putExtra(ChatActivity.TO_JID,   c.getJid());
+		startActivityForResult(openChat, 0);
 	}
 	
 	@Override
@@ -54,13 +60,13 @@ public class RosterActivity extends ListActivity {
 			break;
 		}
 		case R.id.cmdLogout:   {
+			stopService(new Intent(getBaseContext(), XmppService.class));
 			Lime.getInstance().doUnbindService();
-			stopService(new Intent(getBaseContext(), XmppService.class)); 
 			break;
 		}
 		
 		case R.id.cmdAccount:  startActivityForResult(new Intent(getBaseContext(), AccountSettingsActivity.class), 0); break;
-		case R.id.cmdChat:     startActivityForResult(new Intent(getBaseContext(), ChatActivity.class),            0); break;
+		//case R.id.cmdChat:     startActivityForResult(new Intent(getBaseContext(), ChatActivity.class),            0); break;
 		case R.id.cmdLog:      startActivityForResult(new Intent(getBaseContext(), LoggerActivity.class),          0); break;
 		case R.id.cmdSettings: startActivityForResult(new Intent(getBaseContext(), LimePrefs.class),               0); break;
 			
