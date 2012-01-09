@@ -9,6 +9,7 @@ import org.bombusim.lime.data.Contact;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.opengl.Visibility;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,6 +84,7 @@ public class RosterAdapter extends BaseAdapter {
             holder.status = (ImageView) convertView.findViewById(R.id.rit_statusIcon);
             holder.jid = (TextView) convertView.findViewById(R.id.rit_jid);
             holder.presence = (TextView) convertView.findViewById(R.id.rit_presence);
+            holder.chatIcon = (ImageView) convertView.findViewById(R.id.rit_chatIcon);
 
             convertView.setTag(holder);
         } else {
@@ -100,6 +102,7 @@ public class RosterAdapter extends BaseAdapter {
         holder.status.setImageBitmap(mIconStar[c.getPresence()]);
         holder.jid.setText(c.getScreenName());
         holder.presence.setText(c.getStatusMessage());
+        holder.chatIcon.setVisibility(c.hasActiveChats() ? View.VISIBLE : View.GONE);
 
         return convertView;
     }
@@ -109,6 +112,8 @@ public class RosterAdapter extends BaseAdapter {
         ImageView status;
         TextView jid;
         TextView presence;
+        
+        ImageView chatIcon;
     }
 	
 }
