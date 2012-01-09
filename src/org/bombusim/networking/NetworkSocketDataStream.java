@@ -7,14 +7,15 @@ import java.net.UnknownHostException;
 import javax.net.ssl.SSLSocket;
 
 import javax.net.ssl.SSLSocketFactory;
+
+import org.bombusim.lime.logger.LimeLog;
+
 import android.net.SSLCertificateSocketFactory;
 
 //import org.apache.http.conn.ssl.SSLSocketFactory;
 
 import com.jcraft.jzlib.DeflaterOutputStream;
 import com.jcraft.jzlib.InflaterInputStream;
-
-import android.util.Log;
 
 public class NetworkSocketDataStream extends NetworkDataStream{
 
@@ -31,7 +32,7 @@ public class NetworkSocketDataStream extends NetworkDataStream{
 		this.host=server;
 		this.port=port;
 		
-		Log.i("Socket", "Connecting to "+host+":"+port);
+		LimeLog.i("Socket", "Connecting to "+host+":"+port, null);
 		socket = new Socket(server, port);
 		
 		istream = socket.getInputStream();
@@ -40,7 +41,7 @@ public class NetworkSocketDataStream extends NetworkDataStream{
 	}
 	
 	public void setCompression() throws IOException{
-		Log.i("Socket", "Binding ZLIB");
+		LimeLog.i("Socket", "Binding ZLIB", null);
 		
 		istream = new InflaterInputStream(istream);
 
@@ -54,7 +55,7 @@ public class NetworkSocketDataStream extends NetworkDataStream{
 	}
 	
 	public void setTLS() throws IOException{
-		Log.i("Socket", "STARTTLS");
+		LimeLog.i("Socket", "STARTTLS", null);
 		
 		//TODO: check on different devices:
 		// !!! ENSURE TLS enabled in account settings before test

@@ -8,6 +8,7 @@ import javax.net.ssl.SSLException;
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 import org.bombusim.lime.activity.RosterActivity;
+import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.xml.XMLException;
 import org.bombusim.xmpp.XmppAccount;
 import org.bombusim.xmpp.XmppException;
@@ -25,7 +26,6 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
 
 public class XmppService extends Service implements Runnable {
 
@@ -70,7 +70,7 @@ public class XmppService extends Service implements Runnable {
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i("XmppService", "Received start id " + startId + ": " + intent);
+        LimeLog.i("XmppService", "Received start id " + startId, intent.toString());
 
 		
 		br = new ConnBroadcastReceiver();

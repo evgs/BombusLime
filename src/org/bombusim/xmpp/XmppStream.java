@@ -34,6 +34,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import org.bombusim.lime.Lime;
+import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.lime.logger.LoggerData;
 import org.bombusim.lime.logger.LoggerEvent;
 import org.bombusim.networking.NetworkDataStream;
@@ -54,7 +55,6 @@ import org.xbill.DNS.Type;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 /**
  * The stream to a jabber server.
@@ -231,7 +231,11 @@ public class XmppStream extends XmppParser {
     			java.lang.System.setProperty("java.net.preferIPv4Stack", "true");
     			java.lang.System.setProperty("java.net.preferIPv6Addresses", "false");
         	
-    			Lookup l = new Lookup("_xmpp-client._tcp." + server, Type.SRV);
+    			String srvRecord = "_xmpp-client._tcp." + server;
+    			
+    			LimeLog.i("SRV", "Lookup for " + srvRecord, null);
+    			
+    			Lookup l = new Lookup(srvRecord, Type.SRV);
         	
     			//TODO: caching SRV requests
     			//l.setCache(null);
@@ -240,7 +244,7 @@ public class XmppStream extends XmppParser {
     			Record [] records = l.run();
         	
     			if (records == null) {
-    				Log.i("SRV", server + " has no SRV record");
+    				LimeLog.i("SRV", server + " has no SRV record", null);
     				host = server;
     				port = 5222;
     			} else {
@@ -251,7 +255,7 @@ public class XmppStream extends XmppParser {
     		}
     		
     		if (host==null) {
-				Log.i("SRV", "Assuming host = "+ server);
+				LimeLog.i("SRV", "Assuming host = "+ server, null);
 		
     			host = server;
     		}

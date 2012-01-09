@@ -33,6 +33,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
+import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.util.strconv;
 import org.bombusim.xmpp.stanza.Iq;
 
@@ -102,7 +103,7 @@ public class SASLAuth implements XmppObjectListener{
                 		// DIGEST-MD5 mechanism
 	                	if (mech.getChildBlockByText("DIGEST-MD5")!=null) {
 	                	
-	            		Log.i("SASL", "Authentication: DIGEST-MD5");
+	            		LimeLog.i("SASL", "Authentication: DIGEST-MD5", null);
 	                	
 	                    auth.setAttribute("mechanism", "DIGEST-MD5");
 	                    
@@ -140,7 +141,7 @@ public class SASLAuth implements XmppObjectListener{
                 	}
 
 
-            		Log.w("SASL", "PLAIN unsecure auth");
+            		LimeLog.w("SASL", "PLAIN unsecure auth", null);
                 	
                 	XmppJid jid = new XmppJid(stream.account.userJid);
             		String bareJid = jid.getBareJid();
@@ -167,7 +168,7 @@ public class SASLAuth implements XmppObjectListener{
             
             // second stream - step 1. binding resource
             else if (data.getChildBlock("bind")!=null) {
-        		Log.i("XMPP", "Binding resource");
+        		LimeLog.i("XMPP", "Binding resource", null);
             	
                 XmppObject bindIq=new Iq(null, Iq.TYPE_SET, "bind");
                 XmppObject bind=bindIq.addChildNs("bind", "urn:ietf:params:xml:ns:xmpp-bind");
@@ -262,7 +263,7 @@ public class SASLAuth implements XmppObjectListener{
 
                 	stream.jidSession = data.getChildBlock("bind").getChildBlockText("jid");
                     
-            		Log.i("XMPP", "Starting session");
+            		LimeLog.i("XMPP", "Starting session", null);
                     
                     XmppObject session=new Iq(null, Iq.TYPE_SET, "sess");
                     session.addChildNs("session", "urn:ietf:params:xml:ns:xmpp-session");
@@ -273,7 +274,7 @@ public class SASLAuth implements XmppObjectListener{
                 // second stream - step 3. session opened - reporting success login
                 } else if (data.getAttribute("id").equals("sess")) {
 
-                	Log.i("XMPP", "Signed in successfully");
+                	LimeLog.i("XMPP", "Signed in successfully", null);
                 	
                 	stream.loginSuccess();
                 	

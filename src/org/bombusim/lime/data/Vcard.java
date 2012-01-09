@@ -9,6 +9,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.bombusim.lime.Lime;
+import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.util.strconv;
 import org.bombusim.xmpp.XmppObject;
 
@@ -17,7 +18,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
 import android.util.Base64;
-import android.util.Log;
 
 public final class Vcard {
 	private String base64Photo;
@@ -66,7 +66,7 @@ public final class Vcard {
 		try {
 			MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
 			photoHash = strconv.byteArrayToHexString(sha1.digest(photobin));
-			Log.d("Img SHA-1", photoHash);
+			LimeLog.d("Img SHA-1", jid, photoHash);
 		} catch (NoSuchAlgorithmException e) {
 			photoHash = AVATAR_MISSING;
 		}
