@@ -1,5 +1,8 @@
 package org.bombusim.lime.data;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import org.bombusim.lime.Lime;
 
 import android.graphics.Bitmap;
@@ -9,10 +12,6 @@ public class Contact {
 	private String jid;
 	private String name;
 	
-	private int presence;
-	
-	private String statusMessage;
-	
 	private long _id;
 	
 	private int subscription;
@@ -21,6 +20,9 @@ public class Contact {
 	private String avatarId;
 
 	private int updateMark;
+
+	private Resource activeResource;
+	private ArrayList<Resource> resources;
 	
 	public final static int UPDATE_NONE = 0;
 	public final static int UPDATE_SAVE = 1;
@@ -30,6 +32,9 @@ public class Contact {
 		this.jid=jid;
 		this.name=name;
 		this._id = id;
+		
+		resources = new ArrayList<Resource>(1);
+		activeResource = new Resource();
 	}
 	
 	public Contact(String jid, String name) {
@@ -39,14 +44,33 @@ public class Contact {
 	public long getId() { return _id; }
 	public void setId(long id) { this._id = id; } 
 
-	public void setPresence(int presenceIndex, String resource, int priority) {
-		//TODO: manage resources and priority
-		this.presence = presenceIndex; 
+	public Resource setPresence(int presenceIndex, String resource, int priority) {
+		Resource c = getResource(resource);
+		if (c == null) {
+			c = new Resource();
+			resources.add(c);
+		}
+		c.presence = presenceIndex;
+		c.resource = resource;
+		c.priority = priority;
+		
+		Collections.sort(resources);
+		activeResource = resources.get(0);
+		
+		return c;
 	}
-	public int getPresence() { return presence; }
 	
-	public void setStatusMessage(String statusMessage) { this.statusMessage = statusMessage; }
-	public String getStatusMessage() { return statusMessage; }
+	public Resource getResource(String resource) {
+		for (int i=0; i<resources.size(); i++) {
+			Resource c = resources.get(i);
+			if (c.resource.equals(resource)) return c;
+		}
+		return null;
+	}
+	
+	public int getPresence() { return activeResource.presence; }
+	
+	public String getStatusMessage() { return activeResource.statusMessage; }
 	
 	public String getJid() { return jid; }
 	public String getName() { return name; }
