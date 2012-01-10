@@ -30,10 +30,10 @@ package org.bombusim.xmpp.handlers;
 
 import java.io.IOException;
 
-import org.bombusim.xmpp.XmppException;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppObjectListener;
 import org.bombusim.xmpp.XmppStream;
+import org.bombusim.xmpp.exception.XmppException;
 import org.bombusim.xmpp.stanza.Iq;
 
 import android.text.format.Time;

@@ -35,6 +35,8 @@ import java.util.Random;
 
 import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.util.strconv;
+import org.bombusim.xmpp.exception.XmppAuthException;
+import org.bombusim.xmpp.exception.XmppException;
 import org.bombusim.xmpp.stanza.Iq;
 
 
@@ -133,11 +135,13 @@ public class SASLAuth implements XmppObjectListener{
 
                 if (mech.getChildBlockByText("PLAIN")!=null) {
                 	
+                	//in normal case PLAIN auth may be secured only over SSL/TLS connection
+                	
                 	if (!stream.isSecured() && stream.account.enablePlainAuth != XmppAccount.PLAIN_AUTH_ALWAYS) {
-                		throw new XmppException("Plain authentication disabled over non-secured connection");
+                		throw new XmppAuthException("Plain authentication disabled over non-secured connection");
                 	}
                 	if (stream.account.enablePlainAuth == XmppAccount.PLAIN_AUTH_NEVER) {
-                		throw new XmppException("Plain authentication disabled");
+                		throw new XmppAuthException("Plain authentication disabled");
                 	}
 
 

@@ -11,9 +11,9 @@ import org.bombusim.lime.activity.RosterActivity;
 import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.xml.XMLException;
 import org.bombusim.xmpp.XmppAccount;
-import org.bombusim.xmpp.XmppException;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppStream;
+import org.bombusim.xmpp.exception.XmppException;
 
 import android.app.Notification;
 import android.app.NotificationManager;

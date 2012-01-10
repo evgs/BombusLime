@@ -25,15 +25,16 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.bombusim.xmpp;
+package org.bombusim.xmpp.exception;
 
 public class XmppException extends Exception {
 
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
+	private static final long serialVersionUID = -1811102743041131805L;
+
 	public XmppException(String exceptionMessage) {
 		super(exceptionMessage);
 	}

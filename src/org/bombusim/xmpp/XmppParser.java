@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import org.bombusim.xml.Attributes;
 import org.bombusim.xml.XMLEventListener;
 import org.bombusim.xml.XMLException;
+import org.bombusim.xmpp.exception.XmppException;
 import org.bombusim.xmpp.stanza.Iq;
 import org.bombusim.xmpp.stanza.Message;
 import org.bombusim.xmpp.stanza.Presence;

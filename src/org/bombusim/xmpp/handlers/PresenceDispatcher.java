@@ -6,11 +6,11 @@ import org.bombusim.lime.Lime;
 import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Resource;
 import org.bombusim.lime.data.Roster;
-import org.bombusim.xmpp.XmppException;
 import org.bombusim.xmpp.XmppJid;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppObjectListener;
 import org.bombusim.xmpp.XmppStream;
+import org.bombusim.xmpp.exception.XmppException;
 import org.bombusim.xmpp.stanza.Presence;
 
 public class PresenceDispatcher implements XmppObjectListener{

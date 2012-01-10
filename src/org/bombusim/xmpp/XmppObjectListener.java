@@ -30,6 +30,8 @@ package org.bombusim.xmpp;
 
 import java.io.IOException;
 
+import org.bombusim.xmpp.exception.XmppException;
+
 /**
  *
  * @author Evg_S
