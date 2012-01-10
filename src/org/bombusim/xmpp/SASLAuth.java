@@ -39,10 +39,6 @@ import org.bombusim.xmpp.exception.XmppAuthException;
 import org.bombusim.xmpp.exception.XmppException;
 import org.bombusim.xmpp.stanza.Iq;
 
-
-import android.util.Log;
-
-
 /**
  *
  * @author evgs
@@ -58,42 +54,6 @@ public class SASLAuth implements XmppObjectListener{
         //System.out.println(data.toString());
         if (data.getTagName().equals("stream:features")) {
 
-        	//SSL/TLS
-        	if (!stream.isSecured()) {
-        		
-            	int requiredSecurity=stream.account.secureConnection;
-
-            	if (requiredSecurity >= XmppAccount.SECURE_CONNECTION_IF_AVAILABLE) {
-	        		XmppObject starttls=data.getChildBlock("starttls");
-	        		if (starttls!=null) { 
-	        			if (starttls.compareNameSpace("urn:ietf:params:xml:ns:xmpp-tls")) {
-		                    // negotiating starttls
-	        				stream.send(starttls);
-	        				return XmppObjectListener.BLOCK_PROCESSED;
-	        			}
-	        		} else {
-	        			if (requiredSecurity == XmppAccount.SECURE_CONNECTION_ALWAYS) 
-	        				throw new XmppException("Server doesn't provide secure TLS connection (REQUIRED)");
-	        		}
-	        	}
-        	}
-
-        	if (stream.account.trafficCompression) {
-	        	XmppObject compr=data.getChildBlock("compression");
-	            if (compr!=null) { 
-	                if (compr.getChildBlockByText("zlib")!=null) {
-	                    // negotiating compression
-	                    XmppObject askCompr=new XmppObject("compress", null, null);
-	                    askCompr.setNameSpace("http://jabber.org/protocol/compress");
-	                    askCompr.addChild("method", "zlib");
-	                    stream.send(askCompr);
-	                    
-	                    //TODO: listener.loginMessage(SR.MS_ZLIB);
-	                    return XmppObjectListener.BLOCK_PROCESSED;
-	                }
-	            }
-        	}
-
         	XmppObject mech=data.getChildBlock("mechanisms");
             if (mech!=null) {
                 // first stream - step 1. selecting authentication mechanism
@@ -101,15 +61,15 @@ public class SASLAuth implements XmppObjectListener{
                 XmppObject auth=new XmppObject("auth", null,null);
                 auth.setNameSpace("urn:ietf:params:xml:ns:xmpp-sasl");
                 
-                if (stream.account.enablePlainAuth != XmppAccount.PLAIN_AUTH_NEVER) {
+                //trying DIGEST-MD5 if enabled
+                if (stream.account.enablePlainAuth != XmppAccount.PLAIN_AUTH_ALWAYS) 
+                {
                 		// DIGEST-MD5 mechanism
 	                	if (mech.getChildBlockByText("DIGEST-MD5")!=null) {
 	                	
 	            		LimeLog.i("SASL", "Authentication: DIGEST-MD5", null);
 	                	
 	                    auth.setAttribute("mechanism", "DIGEST-MD5");
-	                    
-	                    //System.out.println(auth.toString());
 	                    
 	                    stream.send(auth);
 	                    return XmppObjectListener.BLOCK_PROCESSED;
@@ -184,17 +144,7 @@ public class SASLAuth implements XmppObjectListener{
                 return XmppObjectListener.BLOCK_PROCESSED;
             }
             
-//#ifdef NON_SASL_AUTH
-            if (data.findNamespace("auth", "http://jabber.org/features/iq-auth")!=null) {
-            	NonSASLAuth nsa = new NonSASLAuth();
-                stream.addBlockListener(nsa);
-                nsa.jabberIqAuth(NonSASLAuth.AUTH_GET, stream);
-                return XmppObjectListener.NO_MORE_BLOCKS;
-            }
-//#endif            
-            
-            //fallback if no known authentication methods were found
-            throw new XmppException("No known authentication methods provided");
+            return BLOCK_REJECTED;
             
         } else if (data.getTagName().equals("challenge")) {
             // first stream - step 2,3. reaction to challenges
@@ -233,21 +183,7 @@ public class SASLAuth implements XmppObjectListener{
             stream.send(resp);
             return XmppObjectListener.BLOCK_PROCESSED;
         }
-        
-
-        else if ( data.getTagName().equals("proceed")) {
-            stream.setTLS();
-            stream.initiateStream();
-            return XmppObjectListener.BLOCK_PROCESSED;
-        }       
-        
-        else if ( data.getTagName().equals("compressed")) {
-            stream.setZlibCompression();
-            stream.initiateStream();
-            return XmppObjectListener.BLOCK_PROCESSED;
-        }
-        
-            
+  
         else if ( data.getTagName().equals("failure")) {
             // first stream - step 4a. not authorized
         	throw new XmppException(XmppError.decodeSaslError(data).toString());

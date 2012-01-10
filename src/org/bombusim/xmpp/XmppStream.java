@@ -42,6 +42,7 @@ import org.bombusim.networking.NetworkSocketDataStream;
 import org.bombusim.xml.Attributes;
 import org.bombusim.xml.XMLException;
 import org.bombusim.xml.XMLParser;
+import org.bombusim.xmpp.exception.XmppException;
 import org.bombusim.xmpp.handlers.IqRoster;
 import org.bombusim.xmpp.handlers.IqTimeReply;
 import org.bombusim.xmpp.handlers.IqVersionReply;
@@ -132,7 +133,9 @@ public class XmppStream extends XmppParser {
         
         StringBuilder header=new StringBuilder("<stream:stream to='" )
             .append( server )
-            .append( "' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' version='1.0'");
+            .append( "' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams'");
+        
+        if (xmppV1) header.append(" version='1.0'");
         
         if (lang!=null) {
             header.append(" xml:lang='").append(lang).append("'");
@@ -149,6 +152,14 @@ public class XmppStream extends XmppParser {
             xmppV1 = ("1.0".equals(version));
             
             //dispatcher.broadcastBeginConversation();
+            
+            //XEP-0078 (Obsolete) Non-SASL Authentication
+            if (!xmppV1) {
+            	NonSASLAuth nsa = new NonSASLAuth();
+                addBlockListener(nsa);
+                nsa.jabberIqAuth(NonSASLAuth.AUTH_GET, this);
+            }
+            
             return false;
         }
         
@@ -184,7 +195,7 @@ public class XmppStream extends XmppParser {
     }
 
     private void dispatchIncomingQueue() throws IOException, XmppException {
-    	for (int index = 0; index < incomingQueue.size(); index++) {
+    	incomingLoop: for (int index = 0; index < incomingQueue.size(); index++) {
     		
     		XmppObject currentBlock=incomingQueue.get(index);
     		
@@ -192,10 +203,10 @@ public class XmppStream extends XmppParser {
         		int result=dispatcherQueue.get(i).blockArrived(currentBlock, this);
         		switch (result) {
     			case XmppObjectListener.BLOCK_PROCESSED: 
-    				break;
+    				continue incomingLoop;
     			case XmppObjectListener.NO_MORE_BLOCKS:
     				dispatcherQueue.remove(i);
-    				break;
+    				continue incomingLoop;
     			}
         	}
     		
@@ -211,9 +222,18 @@ public class XmppStream extends XmppParser {
     }*/
     
     public void connect() throws UnknownHostException, IOException, XMLException, XmppException {
+    	xmppV1 = true;
+    	
         loggedIn = false;
 
-		addBlockListener(new SASLAuth());
+		addBlockListener( new StartTLS() );
+		addBlockListener( new StreamCompression() );
+		addBlockListener( new SASLAuth() );
+		
+		//TODO: uncomment if old non-xmppv1 compliant server will be found 
+		//addBlockListener( new NonSASLAuth() );
+		
+		addBlockListener( new AuthFallback() );
 		
 		incomingQueue = new ArrayList<XmppObject>();
         
@@ -466,6 +486,10 @@ public class XmppStream extends XmppParser {
     }
 
     void loginSuccess() {
+    	
+    	//remove all auth listeners
+    	dispatcherQueue.clear();
+    	
     	loggedIn=true;
     	
     	Lime.getInstance().online = true;

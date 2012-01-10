@@ -31,6 +31,7 @@ package org.bombusim.xmpp;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.util.strconv;
 import org.bombusim.xmpp.exception.XmppException;
 import org.bombusim.xmpp.stanza.Iq;
@@ -38,14 +39,14 @@ import org.bombusim.xmpp.stanza.Iq;
 
 
 /**
- *
+ * XEP-0078: Non-SASL Authentication
+ * Status: OBSOLETE
  * @author evgs
  */
 public class NonSASLAuth implements XmppObjectListener{
     
 	
-    public NonSASLAuth() {
-    }
+    public NonSASLAuth() { }
 
     
     final static int AUTH_GET=0;
@@ -91,6 +92,9 @@ public class NonSASLAuth implements XmppObjectListener{
                 type=Iq.TYPE_SET;
                 id="auth-s";
                 break;
+                
+            case AUTH_GET:
+            	LimeLog.w("Non-SASL", "Using OBSOLETE authentication mechanism", null);
         }
 
         
@@ -102,6 +106,15 @@ public class NonSASLAuth implements XmppObjectListener{
     
 	@Override
 	public int blockArrived(XmppObject data, XmppStream stream) {
+
+		//if xmppV1 service provides only NON-Sasl auth :(
+		if (data.findNamespace("auth", "http://jabber.org/features/iq-auth")!=null) {
+        	NonSASLAuth nsa = new NonSASLAuth();
+            stream.addBlockListener(nsa);
+            nsa.jabberIqAuth(NonSASLAuth.AUTH_GET, stream);
+            return XmppObjectListener.BLOCK_PROCESSED;
+        }
+
         try {
             if( data instanceof Iq ) {
                 String type = (String) data.getTypeAttribute();
