@@ -126,7 +126,7 @@ public class SASLAuth implements XmppObjectListener{
                     return XmppObjectListener.BLOCK_PROCESSED;
                 }
                 // no more method found
-                throw new XmppException("No known authentication methods provided by server");
+                return BLOCK_REJECTED;
                 
             } //SASL mechanisms
             
@@ -186,7 +186,7 @@ public class SASLAuth implements XmppObjectListener{
   
         else if ( data.getTagName().equals("failure")) {
             // first stream - step 4a. not authorized
-        	throw new XmppException(XmppError.decodeSaslError(data).toString());
+        	throw new XmppAuthException(XmppError.decodeSaslError(data).toString());
         	
         } else if ( data.getTagName().equals("success")) {
             // first stream - step 4b. success.

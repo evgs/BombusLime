@@ -43,6 +43,7 @@ import org.bombusim.xml.Attributes;
 import org.bombusim.xml.XMLException;
 import org.bombusim.xml.XMLParser;
 import org.bombusim.xmpp.exception.XmppException;
+import org.bombusim.xmpp.exception.XmppTerminatedException;
 import org.bombusim.xmpp.handlers.IqRoster;
 import org.bombusim.xmpp.handlers.IqTimeReply;
 import org.bombusim.xmpp.handlers.IqVersionReply;
@@ -157,6 +158,7 @@ public class XmppStream extends XmppParser {
             if (!xmppV1) {
             	NonSASLAuth nsa = new NonSASLAuth();
                 addBlockListener(nsa);
+                addBlockListener(new AuthFallback());
                 nsa.jabberIqAuth(NonSASLAuth.AUTH_GET, this);
             }
             
@@ -349,7 +351,7 @@ public class XmppStream extends XmppParser {
 			// TODO: handle exception
         	e.printStackTrace();
 		}
-        broadcastTerminatedConnection(new XmppException("Connection closed"));
+        broadcastTerminatedConnection(new XmppTerminatedException("Connection closed"));
     }
     
     private void broadcastTerminatedConnection(Exception exception) {

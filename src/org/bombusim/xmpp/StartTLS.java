@@ -31,6 +31,7 @@ package org.bombusim.xmpp;
 
 import java.io.IOException;
 
+import org.bombusim.xmpp.exception.XmppAuthException;
 import org.bombusim.xmpp.exception.XmppException;
 
 public class StartTLS implements XmppObjectListener{
@@ -55,7 +56,7 @@ public class StartTLS implements XmppObjectListener{
         			}
         		} else {
         			if (requiredSecurity == XmppAccount.SECURE_CONNECTION_ALWAYS) 
-        				throw new XmppException("Server doesn't provide secure TLS connection (REQUIRED)");
+        				throw new XmppAuthException("Server doesn't provide secure TLS connection (REQUIRED)");
         		}
         	}
 		}  

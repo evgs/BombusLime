@@ -33,7 +33,7 @@ import java.security.NoSuchAlgorithmException;
 
 import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.util.strconv;
-import org.bombusim.xmpp.exception.XmppException;
+import org.bombusim.xmpp.exception.XmppAuthException;
 import org.bombusim.xmpp.stanza.Iq;
 
 
@@ -122,7 +122,7 @@ public class NonSASLAuth implements XmppObjectListener{
                 if ( id.equals("auth-s") ) {
                     if (type.equals( "error" )) {
                         // Authorization error
-                    	throw new XmppException(XmppError.findInStanza(data).toString());
+                    	throw new XmppAuthException(XmppError.findInStanza(data).toString());
 
                     } else if (type.equals( "result")) {
                     
@@ -143,10 +143,10 @@ public class NonSASLAuth implements XmppObjectListener{
                         if (query.getChildBlock("password")!=null) {
                         	
                         	if (!stream.isSecured() && stream.account.enablePlainAuth != XmppAccount.PLAIN_AUTH_ALWAYS) {
-                        		throw new XmppException("Plain authentication disabled over non-secured connection");
+                        		throw new XmppAuthException("Plain authentication disabled over non-secured connection");
                         	}
                         	if (stream.account.enablePlainAuth == XmppAccount.PLAIN_AUTH_NEVER) {
-                        		throw new XmppException("Plain authentication disabled");
+                        		throw new XmppAuthException("Plain authentication disabled");
                         	}
                         	
                             jabberIqAuth(AUTH_PASSWORD, stream);
@@ -156,8 +156,6 @@ public class NonSASLAuth implements XmppObjectListener{
                     } catch (Exception e) { 
                     	e.printStackTrace();
                     }
-                    throw new XmppException("No known authentication methods provided by server");
-                    //return XmppObjectListener.NO_MORE_BLOCKS;
                 }
             }
             
