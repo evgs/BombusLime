@@ -44,21 +44,31 @@ public class StartTLS implements XmppObjectListener{
 		//step 1. searching feature starttls
 		if (data.getTagName().equals("stream:features")) {
 
-           	int requiredSecurity=stream.account.secureConnection;
+           	int clientReqiredSecurity=stream.account.secureConnection;
 
-        	if (requiredSecurity >= XmppAccount.SECURE_CONNECTION_IF_AVAILABLE) {
-        		XmppObject starttls=data.getChildBlock("starttls");
-        		if (starttls!=null) { 
-        			if (starttls.compareNameSpace(XMLNS_STARTTLS)) {
-	                    //step 2. negotiating starttls
-        				stream.send(starttls);
-        				return XmppObjectListener.BLOCK_PROCESSED;
-        			}
-        		} else {
-        			if (requiredSecurity == XmppAccount.SECURE_CONNECTION_ALWAYS) 
-        				throw new XmppAuthException("Server doesn't provide secure TLS connection (REQUIRED)");
-        		}
-        	}
+           	XmppObject starttls=data.getChildBlock("starttls");
+           	
+           	//check if server doesn't provide STARTTLS when required by client
+           	if (starttls == null) {
+           		if (clientReqiredSecurity == XmppAccount.SECURE_CONNECTION_ALWAYS)
+           			throw new XmppAuthException("Server doesn't provide secure TLS connection (REQUIRED)");
+           		else return BLOCK_REJECTED;
+           	}
+           	
+           	//check if server requires STARTTLS when disabled on client side
+       		if (clientReqiredSecurity == XmppAccount.SECURE_CONNECTION_DISABLED) {
+       			if (starttls.getChildBlock("required") !=null)
+           			throw new XmppAuthException("Server requires TLS connection. Please enable it!");
+       			else return BLOCK_REJECTED;
+           	}
+
+       		//server provides STARTTLS, and it is enabled (or required) on client side 
+			if (starttls.compareNameSpace(XMLNS_STARTTLS)) {
+                //step 2. negotiating starttls
+				stream.send(starttls);
+				return XmppObjectListener.BLOCK_PROCESSED;
+			}
+			
 		}  
 		
 		//step 3. server confirms starttls
