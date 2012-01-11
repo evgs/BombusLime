@@ -96,7 +96,7 @@ public class RosterAdapter extends BaseAdapter {
         // Bind the data efficiently with the holder.
         
         Contact c=getContacts().get(position);
-        Bitmap avatar = c.getLazyAvatar(true);
+        Bitmap avatar = c.getLazyAvatar(false);
         if (avatar == null) avatar = mIconRobot;
         holder.photo.setImageBitmap(avatar);
         holder.status.setImageBitmap(mIconStar[c.getPresence()]);

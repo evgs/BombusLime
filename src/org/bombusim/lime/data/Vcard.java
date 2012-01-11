@@ -76,6 +76,10 @@ public final class Vcard {
 	
 	
 	private void saveAvatar() {
+		//TODO: remove stub
+		if (photoHash.equals(AVATAR_MISSING)) return;
+		if (photoHash.equals(AVATAR_PENDING)) return;
+		
 		Context context = Lime.getInstance().getApplicationContext();
 		String fn = "avatar"+photoHash+".png";
 		OutputStream os = null;

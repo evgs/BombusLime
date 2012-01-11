@@ -47,7 +47,9 @@ public class Contact {
 	public void setId(long id) { this._id = id; } 
 
 	public Resource setPresence(int presenceIndex, String resource, int priority) {
-		Resource c = getResource(resource);
+		//TODO: check usecase "unavailable"
+		if (resource == null) return activeResource; //STUB
+		Resource c =  getResource(resource);
 		if (c == null) {
 			c = new Resource();
 			resources.add(c);

@@ -53,9 +53,10 @@ public class Roster {
 		//4. check all avatars
 		//TODO: lazy mechanism
 		
-		for (int index = 0; index < contacts.size(); index++) {
-			contacts.get(index).getLazyAvatar(false);
-		}
+		//massive avatar request
+		//for (int index = 0; index < contacts.size(); index++) {
+		//	contacts.get(index).getLazyAvatar(false);
+		//}
 	}
 	
 	private void loadDB(String rosterJid) {
