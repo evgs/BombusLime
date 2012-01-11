@@ -3,6 +3,7 @@ package org.bombusim.lime.data;
 import java.util.ArrayList;
 
 import org.bombusim.lime.Lime;
+import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.handlers.IqVcard;
 
@@ -21,6 +22,11 @@ public class VcardResolver {
 	
 	public void resetQueue() {
 		queue = new ArrayList<Contact>();
+		pending = null;
+	}
+	
+	public void restartQueue() {
+		pending = null;
 	}
 	
 	public void vcardNotify(Contact c) {
@@ -34,7 +40,8 @@ public class VcardResolver {
 		//move request to top
 		queue.remove(c);
 		queue.add(c);
-		
+		LimeLog.i("VcardResolver", "Queued "+c.getJid(), null);
+
 		queryTop();
 	}
 	
@@ -44,6 +51,7 @@ public class VcardResolver {
 		long current = System.currentTimeMillis();
 		if (pending != null) {
 			if (current < timeout) return; 
+			queue.remove(pending);
 		}
 
 		try {
@@ -57,6 +65,8 @@ public class VcardResolver {
 		if (index < 0) return;
 		
 		pending = queue.get(index);
+		
+		LimeLog.i("VcardResolver", "Query "+pending.getJid(), null);
 		
 		try {
 			new IqVcard().vcardRequest(

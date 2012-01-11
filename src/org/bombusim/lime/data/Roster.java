@@ -104,10 +104,10 @@ public class Roster {
 		
 		for (int index = 0; index < contacts.size(); index++) {
 			Contact c = contacts.get(index);
-			if (c.getJid().equals(vcard.getJid())) 
+			if (c.getJid().equals(vcard.getJid())) { 
 				c.setAvatar(vcard.getAvatar(), vcard.getAvatarId());
-			
-			Lime.getInstance().vcardResolver.vcardNotify(c);
+				Lime.getInstance().vcardResolver.vcardNotify(c);
+			}
 		}
 		
 		updateDB();

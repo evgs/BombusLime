@@ -51,6 +51,7 @@ public final class Vcard {
 		//TODO: parse fields
 		} catch (Exception e) {
 			// TODO: handle exception
+			photoHash = AVATAR_MISSING;
 			e.printStackTrace();
 		}
 		
