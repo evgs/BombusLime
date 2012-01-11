@@ -28,7 +28,9 @@ public class LoggerActivity extends Activity {
     ListView logListView;
 	
     CheckBox loggerEnabled;
-	
+
+	int logSize; //caching getLogRecords().size() to provide atomic updating
+    
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -66,13 +68,17 @@ public class LoggerActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Lime.getInstance().getLog().clear();
+				updateLogSize();
 			}
 		});
+        
+        updateLogSize();
     }
         
     
     
     private class LogListAdapter extends BaseAdapter {
+    	
         public LogListAdapter(Context context)
         {
             mContext = context;
@@ -88,7 +94,7 @@ public class LoggerActivity extends Activity {
          * @see android.widget.ListAdapter#getCount()
          */
         public int getCount() {
-            return getLogRecords().size();
+            return logSize;
         }
 
         /**
@@ -192,10 +198,17 @@ public class LoggerActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
-			((BaseAdapter)logListView.getAdapter()).notifyDataSetChanged();
-			logListView.invalidate();
+			updateLogSize();
 		}
 		
+	}
+	
+	private void updateLogSize() {
+		logListView.setVisibility(View.GONE);
+		logSize = Lime.getInstance().getLog().getLogRecords().size();
+		((BaseAdapter)logListView.getAdapter()).notifyDataSetChanged();
+		logListView.invalidate();
+		logListView.setVisibility(View.VISIBLE);
 	}
 	
 	LoggerBroadcastReceiver br;

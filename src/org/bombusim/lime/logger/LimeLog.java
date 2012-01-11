@@ -17,4 +17,8 @@ public class LimeLog {
 		Log.d(tag, message);
 		Lime.getInstance().getLog().addLogEvent(LoggerEvent.WARNING, tag+": "+message, details);
 	}
+	public static void e (String tag, String message, String details) {
+		Log.e(tag, message);
+		Lime.getInstance().getLog().addLogEvent(LoggerEvent.ERROR, tag+": "+message, details);
+	}
 }

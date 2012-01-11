@@ -26,6 +26,7 @@ public class LoggerData {
 	private void add(int eventType, String message, String details) {
 		synchronized (this) {
 			log.add(new LoggerEvent(eventType, message, details));
+			Lime.getInstance().getApplicationContext().sendBroadcast(new android.content.Intent(LoggerData.UPDATE_LOG));
 		}
 	}
 	
