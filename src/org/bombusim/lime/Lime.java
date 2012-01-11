@@ -73,15 +73,17 @@ public class Lime extends Application {
 		
 		vcardResolver = new VcardResolver();
 
-		roster=new Roster();
+		roster=new Roster(accounts.get(0).userJid);
 		
 		avatarSize = getResources().getDimensionPixelSize(R.dimen.avatarSize);
+		
 	}
 
 	@Override
 	public final void onTerminate() {
 		// TODO Auto-generated method stub
 		super.onTerminate();
+		doUnbindService();
 	}
 
 	@Override

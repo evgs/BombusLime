@@ -10,11 +10,12 @@ public class Roster {
 	
 	private ArrayList<Contact> contacts;
 
-	public Roster(){
+	public Roster(String rosterJid){
 		contacts = new ArrayList<Contact>();
 		
-		loadDB();
+		loadDB(rosterJid);
 	}
+	public Roster(){ this (null); }
 	
 	public void addContact(Contact c) {
 		contacts.add(c);
@@ -57,12 +58,12 @@ public class Roster {
 		}
 	}
 	
-	private void loadDB() {
+	private void loadDB(String rosterJid) {
 		RosterDbAdapter db = new RosterDbAdapter(Lime.getInstance().getApplicationContext());
 		
 		db.open();
 		
-		long[] indexes = db.getContactIndexes(null);
+		long[] indexes = db.getContactIndexes(rosterJid);
 		
 		//TODO: load using Cursor
 		if (indexes != null) 

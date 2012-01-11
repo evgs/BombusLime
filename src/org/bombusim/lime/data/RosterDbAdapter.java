@@ -63,7 +63,7 @@ public class RosterDbAdapter  {
 	}
 	
 	public long[] getContactIndexes(String rosterJid) {
-		String select = (rosterJid !=null )? KEY_RJID+"="+rosterJid : null;
+		String select = (rosterJid !=null )? KEY_RJID+"='"+rosterJid+"'" : null;
 		
 		Cursor ind = db.query(DATABASE_TABLE, new String[] {KEY_ID}, select, null, null, null, null);
 		int count = ind.getCount(); 
