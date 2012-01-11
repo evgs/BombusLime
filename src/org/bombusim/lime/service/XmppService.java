@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.IBinder;
 
@@ -70,7 +71,7 @@ public class XmppService extends Service implements Runnable {
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-        LimeLog.i("XmppService", "Received start id " + startId, intent.toString());
+        //LimeLog.i("XmppService", "Received start id " + startId, intent.toString());
 
 		
 		br = new ConnBroadcastReceiver();
@@ -78,7 +79,7 @@ public class XmppService extends Service implements Runnable {
 		
 	   	checkNetworkState();
 	   	
-	   	connect();
+	   	doConnect();
 	   	   	
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
@@ -88,7 +89,7 @@ public class XmppService extends Service implements Runnable {
 	
 	public boolean running = false;
 	
-	public void connect() {
+	public void doConnect() {
 		if (networkAvailable) {
 			if (!running) {
 				running = true;
@@ -125,25 +126,29 @@ public class XmppService extends Service implements Runnable {
 				//Toast.makeText(this, "Connecting...", Toast.LENGTH_SHORT).show();
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
+		    	LimeLog.e("XmppStream", "Unknown Host", e.toString());
 				running = false;
 				e.printStackTrace();
 				
 				//Toast.makeText(this, "Unknown host", Toast.LENGTH_SHORT).show();
 			} catch (SSLException e) {
 				running = false;
+		    	LimeLog.e("XmppStream", "SSL Error", e.toString());
 				e.printStackTrace();
 				
 		    } catch (IOException e) {
 		    	if (!networkAvailable) running = false;
+		    	LimeLog.e("XmppStream", "IO Error", e.toString());
 		    	//TODO: check network state before reconnecting
 		    	//TODO: check status (online/offline)
 				e.printStackTrace();
 			} catch (XMLException e) {
+		    	LimeLog.e("XmppStream", "XML broken", e.toString());
 				//Toast.makeText(this, "XML exception", Toast.LENGTH_SHORT).show();
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (XmppException e) {
-				
+		    	LimeLog.e("XmppStream", "Xmpp Error", e.getMessage());
 				//Toast.makeText(this, "Xmpp exception", Toast.LENGTH_SHORT).show();
 				running = false;
 				// TODO Auto-generated catch block
@@ -194,14 +199,27 @@ public class XmppService extends Service implements Runnable {
 
     
     private boolean networkAvailable;
+
+	private int networkType;
+	
+	private boolean networkTypeChanged;
     
     public void checkNetworkState() {
     	try {
     		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
     		networkAvailable = cm.getActiveNetworkInfo().isAvailable();
+    		int networkType = cm.getActiveNetworkInfo().getType();
+    		if (this.networkType != networkType) networkTypeChanged = true;
+    		this.networkType = networkType;
     	} catch (Exception e) {
     		networkAvailable = false;
     	}
+    	
+		LimeLog.i("XmppService", "Network state: "  
+				+ ((networkType==ConnectivityManager.TYPE_WIFI)?"WiFi":"GPRS")
+				+ ((networkTypeChanged)? "(changed)":"(same)")
+				+ ((networkAvailable)?" Up":" Down" ),
+				null);
     }
     
     
@@ -211,9 +229,11 @@ public class XmppService extends Service implements Runnable {
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			
+			LimeLog.i("XmppService", "Network state changed", null); 
+
 			checkNetworkState();
 			
-			connect();
+			doConnect();
 			
 		}
 		
