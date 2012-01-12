@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,7 +31,10 @@ public class LoggerActivity extends Activity {
     CheckBox loggerEnabled;
 
 	int logSize; //caching getLogRecords().size() to provide atomic updating
-    
+
+	// Time formatter
+	private Time tf=new Time(Time.getCurrentTimezone());
+	
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -132,7 +136,7 @@ public class LoggerActivity extends Activity {
                 sv = (LogEventView)convertView;
             }
                 sv.setColor(p.getEventColor());
-                sv.setText(p.title, p.message);
+                sv.setText(p.timestamp, p.title, p.message);
                 sv.setExpanded(p.expanded);
             
             return sv;
@@ -166,14 +170,26 @@ public class LoggerActivity extends Activity {
             
             mDetails = new TextView(context);
             mTitle = new TextView(context);
+            mTime = new TextView(context);
             
-            addView(mTitle, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+            mTime.setPadding(0, 0, 6, 0);
+            
+            LinearLayout s1 = new LinearLayout(context);
+            s1.setOrientation(HORIZONTAL);
+            s1.addView(mTime, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            s1.addView(mTitle, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+            
+            addView(s1);
             addView(mDetails, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
             setExpanded(false);
         }
         
         
-        public void setText(String title, String message) {
+        public void setText(long time, String title, String message) {
+        	tf.set(time);
+        	
+        	mTime.setText(tf.format("%H:%M"));
+        	
             mTitle.setText(title);
             mDetails.setText(message);
 		}
@@ -189,6 +205,7 @@ public class LoggerActivity extends Activity {
             mDetails.setVisibility(expanded ? VISIBLE : GONE);
         }
         
+        private TextView mTime;
         private TextView mDetails;
         private TextView mTitle;
     }
