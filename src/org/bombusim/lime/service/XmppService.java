@@ -96,6 +96,7 @@ public class XmppService extends Service implements Runnable {
 		        // TODO start multiple connections
 				
 				XmppAccount a=Lime.getInstance().accounts.get(0);
+				//TODO: reuse XmppStream object if possible
 				s=new XmppStream(a);
 			   	s.setContext(this);
 		   	

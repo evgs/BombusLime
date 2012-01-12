@@ -264,15 +264,31 @@ public class XmppStream extends XmppParser {
     			//l.setResolver(new SimpleResolver("8.8.8.8"));
         	
     			Record [] records = l.run();
-        	
-    			if (records == null) {
+    			
+    			switch (l.getResult()) {
+    			case Lookup.HOST_NOT_FOUND:
+    				throw new UnknownHostException("Host not found: "+server);
+    				
+    			case Lookup.TYPE_NOT_FOUND:
     				LimeLog.i("SRV", server + " has no SRV record", null);
     				host = server;
     				port = 5222;
-    			} else {
-    				host = ((SRVRecord)records[0]).getTarget().toString();
-    				port = ((SRVRecord)records[0]).getPort();
+    				break;
+    				
+    			case Lookup.TRY_AGAIN:
+    				throw new IOException("Network is down during SRV lookup");
+    				
+    			case Lookup.UNRECOVERABLE:
+    				throw new IOException("Network is down during SRV lookup (unrecoverable)");
+    				
+    			case Lookup.SUCCESSFUL:
+    			default:
+        			if (records != null) {
+        				host = ((SRVRecord)records[0]).getTarget().toString();
+        				port = ((SRVRecord)records[0]).getPort();
+        			}
     			}
+        	
         	
     		}
     		
@@ -511,7 +527,7 @@ public class XmppStream extends XmppParser {
     	iqroster.queryRoster(this);
 
     	
-    	Presence online = new Presence(Presence.PRESENCE_ONLINE, -1, "hello, jabber world!", "evgs");
+    	Presence online = new Presence(Presence.PRESENCE_INVISIBLE, -1, "hello, jabber world!", "evgs");
     	//offline messages will be delivered after this presence
     	send(online);
 
