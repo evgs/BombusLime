@@ -24,7 +24,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.IBinder;
 
@@ -210,24 +209,16 @@ public class XmppService extends Service implements Runnable {
 
 	private int networkType;
 	
-	private boolean networkTypeChanged;
-    
     public void checkNetworkState() {
     	try {
     		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
     		networkAvailable = cm.getActiveNetworkInfo().isAvailable();
     		int networkType = cm.getActiveNetworkInfo().getType();
-    		if (this.networkType != networkType) networkTypeChanged = true;
     		this.networkType = networkType;
     	} catch (Exception e) {
     		networkAvailable = false;
     	}
     	
-		LimeLog.i("XmppService", "Network state: "  
-				+ ((networkType==ConnectivityManager.TYPE_WIFI)?"WiFi":"GPRS")
-				+ ((networkTypeChanged)? "(changed)":"(same)")
-				+ ((networkAvailable)?" Up":" Down" ),
-				null);
     }
     
     
@@ -237,9 +228,12 @@ public class XmppService extends Service implements Runnable {
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			
-			LimeLog.i("XmppService", "Network state changed", null); 
-
 			checkNetworkState();
+
+			LimeLog.i("XmppService", "Network state: "  
+					+ ((networkType==ConnectivityManager.TYPE_WIFI)?"WiFi":"GPRS")
+					+ ((networkAvailable)?" Up":" Down" ),
+					null);
 			
 			doConnect();
 			
