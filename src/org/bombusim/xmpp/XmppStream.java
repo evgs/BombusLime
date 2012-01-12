@@ -249,12 +249,17 @@ public class XmppStream extends XmppParser {
     			port = account.xmppPort;
     		} else {
     		
-        		// workaround for org.xbill.DNS
-        		// see http://stackoverflow.com/questions/2879455/android-2-2-and-bad-address-family-on-socket-connect
-        		// TODO: try other API levels
+        		// workaround for android 2.2 and org.xbill.DNS
+        		// java.net.SocketException: Bad address family
+    			// see http://stackoverflow.com/questions/2879455/android-2-2-and-bad-address-family-on-socket-connect
+    			// see http://code.google.com/p/android/issues/detail?id=9431
+        		// android 2.3: ok
     			
-    			java.lang.System.setProperty("java.net.preferIPv4Stack", "true");
-    			java.lang.System.setProperty("java.net.preferIPv6Addresses", "false");
+    			if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.FROYO) {
+    				//TODO: check if IPv6 enabled kernel
+    				java.lang.System.setProperty("java.net.preferIPv4Stack", "true");
+    				java.lang.System.setProperty("java.net.preferIPv6Addresses", "false");
+    			}
         	
     			String srvRecord = "_xmpp-client._tcp." + server;
     			

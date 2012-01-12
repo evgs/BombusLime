@@ -47,17 +47,6 @@ public class Lime extends Application {
 	
 	public VcardResolver vcardResolver;
 	
-	public String getOsId() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(android.os.Build.MANUFACTURER).append(' ');
-		sb.append(android.os.Build.MODEL).append(" / Android");
-		sb.append(" sdk=").append(android.os.Build.VERSION.SDK);
-		sb.append(' ').append(android.os.Build.VERSION.INCREMENTAL);
-		
-		return sb.toString();
-	}
-
-	
 	
 	@Override
 	public final void onCreate() {
@@ -145,5 +134,15 @@ public class Lime extends Application {
 			
 		}
 		return version;
+	}
+
+	public String getOsId() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(android.os.Build.MANUFACTURER).append(' ');
+		sb.append(android.os.Build.MODEL).append(" / Android");
+		sb.append(" sdk=").append(android.os.Build.VERSION.SDK);
+		sb.append(' ').append(android.os.Build.VERSION.INCREMENTAL);
+		
+		return sb.toString();
 	}
 }
