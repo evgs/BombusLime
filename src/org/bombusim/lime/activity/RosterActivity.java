@@ -81,25 +81,28 @@ public class RosterActivity extends ListActivity {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
-			((BaseAdapter)getListAdapter()).notifyDataSetChanged();
-			getListView().invalidate();
+			refreshVisualContent();
 		}
 		
 	}
-		
+	
+	void refreshVisualContent(){
+		((BaseAdapter)getListAdapter()).notifyDataSetChanged();
+		getListView().invalidate();
+	}
+	
 	RosterBroadcastReceiver br;
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
+		//update view to actual state
+		refreshVisualContent();
 		br = new RosterBroadcastReceiver();
 		registerReceiver(br, new IntentFilter(Roster.UPDATE_ROSTER));
 	}
 	
 	@Override
 	protected void onPause() {
-		// TODO Auto-generated method stub
 		super.onPause();
 		unregisterReceiver(br);
 	}
