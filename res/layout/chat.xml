@@ -53,7 +53,7 @@
 	</RelativeLayout>    
     
     <ImageButton
-        android:id="@+id/imageButton1"
+        android:id="@+id/sendButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -61,23 +61,23 @@
         android:src="@android:drawable/sym_action_email" />
     
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/messageBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:inputType="textMultiLine"
-        android:layout_toLeftOf="@id/imageButton1"
+        android:layout_toLeftOf="@id/sendButton"
         android:singleLine="false" >
 
         <requestFocus />
+        <!-- android:inputType="textMultiLine"  -->
     </EditText>
 
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/editText1"
+        android:layout_above="@id/messageBox"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/contact_head" >
         
