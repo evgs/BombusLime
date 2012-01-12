@@ -99,6 +99,13 @@ public class XmppService extends Service implements Runnable {
 				//TODO: reuse XmppStream object if possible
 				s=new XmppStream(a);
 			   	s.setContext(this);
+			   	
+			   	//language code for xmpp stream
+			   	//TODO: check http://developer.android.com/reference/java/util/Locale.html
+			   	//  Note that Java uses several deprecated two-letter codes. 
+			   	//  The Hebrew ("he") language code is rewritten as "iw", Indonesian ("id") as "in", and Yiddish ("yi") as "ji"
+			   	String lang = getResources().getConfiguration().locale.getLanguage();
+			   	s.setLocaleLang(lang);
 		   	
 				Thread thread=new Thread( this );
 				thread.setName("XmppStream->"+s.jid);

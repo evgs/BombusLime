@@ -75,7 +75,6 @@ public class XmppStream extends XmppParser {
     private String host;  //evaluated from SRV record or specified manually in account
     private int port;	  //evaluated from SRV record or specified manually in account
 
-    //TODO: evaluate from system settings or simply from string resources :)
     private String lang;
     
     public boolean pingSent;
@@ -109,8 +108,12 @@ public class XmppStream extends XmppParser {
 		jidSession = jid + '/' + account.resource;
     	
     	dispatcherQueue = new ArrayList<XmppObjectListener>();
+    	
     }
 
+    public void setLocaleLang(String lang) {
+    	this.lang = lang;
+    }
     /*
     public void connect() {
     	
