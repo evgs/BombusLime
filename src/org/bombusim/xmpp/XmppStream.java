@@ -328,18 +328,19 @@ public class XmppStream extends XmppParser {
     }
     
     /**
-     * Method to close the connection to the server and tell the listener
-     * that the connection has been terminated.
+     * Method to close the connection to the server 
      */
     
     public void close() {
         //if (keepAlive!=null) keepAlive.destroyTask();
         
+    	//cancelling all XmppObjectListeners
         dispatcherQueue.clear();
         
         try {
-            try {  Thread.sleep(500); } catch (Exception e) {};
             send( "</stream:stream>" );
+            //a chance to gracefully close xmpp streams
+            try {  Thread.sleep(500); } catch (Exception e) {};
         } catch( IOException e ) {
             // Ignore an IO Exceptions because they mean that the stream is
             // unavailable, which is irrelevant.
@@ -350,6 +351,8 @@ public class XmppStream extends XmppParser {
         } catch (IOException e) {
 			// TODO: handle exception
         	e.printStackTrace();
+		} catch (NullPointerException e) { 
+			// ignoring - socket was not opened  
 		}
         broadcastTerminatedConnection(new XmppTerminatedException("Connection closed"));
     }
