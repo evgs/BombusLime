@@ -76,7 +76,6 @@ public class LoggerActivity extends Activity {
 			}
 		});
         
-        updateLogSize();
     }
         
     
@@ -232,6 +231,7 @@ public class LoggerActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		updateLogSize();
 		br = new LoggerBroadcastReceiver();
 		registerReceiver(br, new IntentFilter(LoggerData.UPDATE_LOG));
 	}
