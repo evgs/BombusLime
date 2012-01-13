@@ -14,6 +14,7 @@ import org.bombusim.xmpp.XmppAccount;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.exception.XmppException;
+import org.xbill.DNS.ResolverConfig;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -161,6 +162,9 @@ public class XmppService extends Service implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		   	
+		   	//update DNS info after networking problem
+		   	ResolverConfig.refresh();
 		   	
 		   	Lime.getInstance().online = false;
 		}

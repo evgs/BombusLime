@@ -268,8 +268,6 @@ public class XmppStream extends XmppParser {
     			Lookup l = new Lookup(srvRecord, Type.SRV);
         	
     			//TODO: caching SRV requests
-    			//l.setCache(null);
-    			//l.setResolver(new SimpleResolver("8.8.8.8"));
         	
     			Record [] records = l.run();
     			
