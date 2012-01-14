@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
    
-    <string name="xmppDefaultPort">5222</string>
-    
     <!-- localized presence representation -->
     <string name="presence_offline">unavailable</string>
     <string name="presence_error">error</string>
@@ -116,5 +114,8 @@
     <dimen name="avatarSize">48dp</dimen>
     
     <string name="xmppServiceDescription">Provides XMPP connectivity layer</string>
+    
+    <string name="resourcePriority">Priority</string>
+    <string name="accountAutoLogin">Connect on startup</string>
     
 </resources>

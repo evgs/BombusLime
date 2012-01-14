@@ -82,6 +82,9 @@ public class XmppStream extends XmppParser {
     //TODO: state machine:{offline, connecting, logged in} 
     public boolean loggedIn;
     
+    private int status = Presence.PRESENCE_INVISIBLE; //our status code
+    private String statusMessage = "hello, jabber world!";
+    
     private NetworkDataStream dataStream;
 
 	private boolean xmppV1;
@@ -531,7 +534,7 @@ public class XmppStream extends XmppParser {
     	iqroster.queryRoster(this);
 
     	
-    	Presence online = new Presence(Presence.PRESENCE_INVISIBLE, -1, "hello, jabber world!", "evgs");
+    	Presence online = new Presence(status, account.priority, statusMessage, "evgs");
     	//offline messages will be delivered after this presence
     	send(online);
 

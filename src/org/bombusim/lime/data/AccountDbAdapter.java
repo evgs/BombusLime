@@ -13,8 +13,9 @@ public class AccountDbAdapter  {
 
 	protected final static String DATABASE_TABLE = "accounts";
 	protected final static String DATABASE_NAME = "accounts.db";
-	protected final static int    DATABASE_VERSION = 1;
+	protected final static int    DATABASE_VERSION = 2;
 	
+	// v1
 	public final static String KEY_ID =       "_id";
 	public final static String KEY_JID =      "jid";
 	public final static String KEY_PASSWORD = "password";
@@ -26,6 +27,9 @@ public class AccountDbAdapter  {
 	public final static String KEY_SECURITY = "security";
 	public final static String KEY_PLAINPWD = "pwdplain";
 	public final static String KEY_ZLIB =     "zlib";
+	// v2
+	public final static String KEY_PRIORITY = "priority";
+	public final static String KEY_AUTOLOGIN = "autologin";
 
 	private AccountDbHelper dbHelper;
 	private SQLiteDatabase db;
@@ -50,12 +54,14 @@ public class AccountDbAdapter  {
 		v.put(KEY_PASSWORD, account.password);
 		v.put(KEY_PWDSAVED, 1);
 		v.put(KEY_RESOURCE, account.resource);
+		v.put(KEY_PRIORITY, account.priority);
 		v.put(KEY_HOSTPORT, account.specificHostPort? 1:0);
 		v.put(KEY_XMPPHOST, account.xmppHost);
 		v.put(KEY_XMPPPORT, account.xmppPort);
 		v.put(KEY_SECURITY, account.secureConnection);
 		v.put(KEY_PLAINPWD, account.enablePlainAuth);
 		v.put(KEY_ZLIB, account.trafficCompression);
+		v.put(KEY_AUTOLOGIN, account.autoLogin? 1:0);
 		
 		if (position<0) {
 			return db.insert(DATABASE_TABLE, null, v);
@@ -102,12 +108,14 @@ public class AccountDbAdapter  {
 		a.password           = cursor.getString(cursor.getColumnIndex(KEY_PASSWORD));
 		a.savedPassword      = cursor.getInt(cursor.getColumnIndex(KEY_JID)) !=0;
 		a.resource           = cursor.getString(cursor.getColumnIndex(KEY_RESOURCE));
+		a.priority           = cursor.getInt(cursor.getColumnIndex(KEY_PRIORITY));
 		a.specificHostPort   = cursor.getInt(cursor.getColumnIndex(KEY_HOSTPORT)) !=0;
 		a.xmppHost           = cursor.getString(cursor.getColumnIndex(KEY_XMPPHOST));
 		a.xmppPort           = cursor.getInt(cursor.getColumnIndex(KEY_XMPPPORT));
 		a.secureConnection   = cursor.getInt(cursor.getColumnIndex(KEY_SECURITY));
 		a.enablePlainAuth    = cursor.getInt(cursor.getColumnIndex(KEY_PLAINPWD));
 		a.trafficCompression = cursor.getInt(cursor.getColumnIndex(KEY_ZLIB)) !=0;
+		a.autoLogin          = cursor.getInt(cursor.getColumnIndex(KEY_AUTOLOGIN)) !=0;
 
 		return a;
 	}
@@ -119,13 +127,15 @@ public class AccountDbAdapter  {
 				        + KEY_JID +      " TEXT NOT NULL, " 
 				        + KEY_PASSWORD + " TEXT, " 
 				        + KEY_RESOURCE + " TEXT, " 
+				        + KEY_PRIORITY + " INTEGER, " 
 				        + KEY_HOSTPORT + " INTEGER, " 
 				        + KEY_XMPPHOST + " TEXT, " 
 				        + KEY_XMPPPORT + " INTEGER, " 
 				        + KEY_SECURITY + " INTEGER, " 
 				        + KEY_PLAINPWD + " INTEGER, " 
 				        + KEY_PWDSAVED + " INTEGER, " 
-	                    + KEY_ZLIB     + " INTEGER);";
+	                    + KEY_AUTOLOGIN + " INTEGER, "
+				        + KEY_ZLIB     + " INTEGER);";
 		
 		
 		public AccountDbHelper(Context context) {
@@ -140,6 +150,7 @@ public class AccountDbAdapter  {
 		
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			// until 0.5 we wouldn't do any specific upgrade, just table drop
 			// TODO Auto-generated method stub
 			db.execSQL("DROP TABLE IF EXISTS" + DATABASE_TABLE);
 			

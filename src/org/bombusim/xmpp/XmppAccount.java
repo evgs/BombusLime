@@ -37,6 +37,10 @@ public class XmppAccount {
 	public boolean savedPassword = true;
 	//////////////////// advanced settings //////////////////////
 	public String resource = "Lime";
+	
+	public int priority = DEFAULT_PRIORITY;
+	
+	public boolean autoLogin;
 
 	public boolean specificHostPort = false;
 	public String xmppHost = null;
@@ -55,6 +59,7 @@ public class XmppAccount {
 
 	public static final int DEFAULT_XMPP_PORT        = 5222;
 	public static final int DEFAULT_SECURE_XMPP_PORT = 5223;
+	public static final int DEFAULT_PRIORITY = 50;
 	
 	public int enablePlainAuth = PLAIN_AUTH_OVER_SSL;
 	

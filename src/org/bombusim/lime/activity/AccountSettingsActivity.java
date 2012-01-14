@@ -18,11 +18,13 @@ public class AccountSettingsActivity extends Activity {
 	EditText jid;
 	EditText pass;
 	EditText resource;
+	EditText priority;
 	EditText xmpphost;
 	EditText xmppport;
 	
 	CheckBox specifichostport;
 	CheckBox zlib;
+	CheckBox autologin;
 	
 	Spinner security;
 	Spinner plainpassword;
@@ -47,6 +49,12 @@ public class AccountSettingsActivity extends Activity {
 		resource = ((EditText)findViewById(R.id.resource));
 		resource.setText(account.resource);
 		
+		priority = ((EditText)findViewById(R.id.priority));
+		priority.setText(String.valueOf(account.priority));
+
+		autologin = ((CheckBox)findViewById(R.id.autoLogin));
+		autologin.setChecked(account.autoLogin);
+
 		xmpphost = ((EditText)findViewById(R.id.xmpphost));
 		xmpphost.setText(account.xmppHost);
 
@@ -125,6 +133,14 @@ public class AccountSettingsActivity extends Activity {
 		//pass.setHint("••••••••");
 
 		account.resource = resource.getText().toString();
+		
+		try {
+			account.priority = Integer.parseInt(priority.getText().toString());
+		} catch (NumberFormatException ex) {
+			account.priority = XmppAccount.DEFAULT_PRIORITY;
+		}
+
+		account.autoLogin = autologin.isChecked();
 		
 		account.xmppHost = xmpphost.getText().toString();
 		try {

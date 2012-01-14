@@ -59,7 +59,21 @@
 	            android:inputType="text|textAutoComplete"
 	            android:hint="@string/labelResource"
 	            />
+
+	        <EditText
+	            android:id="@+id/priority"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:hint="@string/resourcePriority"
+	            android:inputType="numberSigned"
+	            />
 	        
+	        <CheckBox
+	            android:id="@+id/autoLogin"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/accountAutoLogin" />
+	        	        
 	        <TextView
 	            style="?android:attr/listSeparatorTextViewStyle"
 	            android:text="@string/accountSecurity"
@@ -124,7 +138,7 @@
 	                android:layout_height="wrap_content"
 	                android:layout_weight="1"
 	                android:hint="@string/xmppPort"
-	                android:text="@string/xmppDefaultPort" />
+	             />
 	
 	        </LinearLayout>
 	                    
