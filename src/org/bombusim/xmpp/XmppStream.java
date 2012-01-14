@@ -519,8 +519,6 @@ public class XmppStream extends XmppParser {
     	
     	loggedIn=true;
     	
-    	Lime.getInstance().online = true;
-    	
     	IqRoster iqroster=new IqRoster();
     	addBlockListener(iqroster);
 

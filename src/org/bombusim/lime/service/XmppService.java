@@ -166,7 +166,6 @@ public class XmppService extends Service implements Runnable {
 		   	//update DNS info after networking problem
 		   	ResolverConfig.refresh();
 		   	
-		   	Lime.getInstance().online = false;
 		}
         mNM.cancel(NOTIFICATION);
 	}

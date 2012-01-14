@@ -34,9 +34,6 @@ public class Lime extends Application {
 
 	public Preferences prefs;
 	
-	//TODO: temporary
-	public boolean online;
-
 	public boolean localXmlEnabled = false;
 	
 	public ArrayList<XmppAccount> accounts;
@@ -114,8 +111,8 @@ public class Lime extends Application {
 	
 	public XmppStream getXmppStream(String rosterJid) {
 		// TODO Auto-generated method stub
-		if (!online) return null;
 		XmppStream s = xmppService.getXmppStream(rosterJid);
+		if (!s.loggedIn) return null;
 		
 		return s;
 	}

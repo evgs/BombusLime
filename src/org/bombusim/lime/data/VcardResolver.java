@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.xmpp.XmppObject;
+import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.handlers.IqVcard;
 
 public class VcardResolver {
@@ -46,7 +47,6 @@ public class VcardResolver {
 	}
 	
 	public void queryTop() {
-		if (!Lime.getInstance().online) return;
 		
 		long current = System.currentTimeMillis();
 		if (pending != null) {
@@ -66,13 +66,16 @@ public class VcardResolver {
 		
 		pending = queue.get(index);
 		
-		LimeLog.i("VcardResolver", "Query "+pending.getJid(), null);
 		
 		try {
-			new IqVcard().vcardRequest(
-					pending.getJid(),
-					Lime.getInstance().getXmppStream(pending.getRosterJid())
-				);
+			XmppStream s = Lime.getInstance().getXmppStream(pending.getRosterJid());
+			if (s==null) {
+				pending = null;
+				return;
+			}
+			
+			LimeLog.i("VcardResolver", "Query "+pending.getJid(), null);
+			new IqVcard().vcardRequest( pending.getJid(), s	);
 		} catch (Exception e) {}
 		
 		
