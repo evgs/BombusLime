@@ -152,7 +152,7 @@ public class AccountDbAdapter  {
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			// until 0.5 we wouldn't do any specific upgrade, just table drop
 			// TODO Auto-generated method stub
-			db.execSQL("DROP TABLE IF EXISTS" + DATABASE_TABLE);
+			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE);
 			
 			onCreate(db);
 		}
