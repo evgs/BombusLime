@@ -73,6 +73,11 @@ public class XmppService extends Service implements Runnable {
 	public int onStartCommand(Intent intent, int flags, int startId) {
         //LimeLog.i("XmppService", "Received start id " + startId, intent.toString());
 
+        // TODO start multiple connections
+		XmppAccount a=Lime.getInstance().accounts.get(0);
+		s=new XmppStream(a);
+	   	s.setContext(this);
+		
 		
 		br = new ConnBroadcastReceiver();
 		registerReceiver(br, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
@@ -93,20 +98,7 @@ public class XmppService extends Service implements Runnable {
 		if (networkAvailable) {
 			if (!running) {
 				running = true;
-		        // TODO start multiple connections
-				
-				XmppAccount a=Lime.getInstance().accounts.get(0);
-				//TODO: reuse XmppStream object if possible
-				s=new XmppStream(a);
-			   	s.setContext(this);
 			   	
-			   	//language code for xmpp stream
-			   	//TODO: check http://developer.android.com/reference/java/util/Locale.html
-			   	//  Note that Java uses several deprecated two-letter codes. 
-			   	//  The Hebrew ("he") language code is rewritten as "iw", Indonesian ("id") as "in", and Yiddish ("yi") as "ji"
-			   	String lang = getResources().getConfiguration().locale.getLanguage();
-			   	s.setLocaleLang(lang);
-		   	
 				Thread thread=new Thread( this );
 				thread.setName("XmppStream->"+s.jid);
 				thread.start();
@@ -120,11 +112,20 @@ public class XmppService extends Service implements Runnable {
 	public void run() {
 		while (running) {
 		   	try {
+		        showNotification(false);
 			   	//update DNS server info
 			   	ResolverConfig.refresh();
-		   		
-		        showNotification();
-		        s.connect();
+
+			   	//language code for xmpp stream
+			   	//TODO: check http://developer.android.com/reference/java/util/Locale.html
+			   	//  Note that Java uses several deprecated two-letter codes. 
+			   	//  The Hebrew ("he") language code is rewritten as "iw", Indonesian ("id") as "in", and Yiddish ("yi") as "ji"
+			   	String lang = getResources().getConfiguration().locale.getLanguage();
+			   	s.setLocaleLang(lang);
+
+		        showNotification(true);
+			   	s.connect();
+			   	
 				//Toast.makeText(this, "Connecting...", Toast.LENGTH_SHORT).show();
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
@@ -141,6 +142,7 @@ public class XmppService extends Service implements Runnable {
 		    } catch (IOException e) {
 		    	if (!networkAvailable) running = false;
 		    	LimeLog.e("XmppStream", "IO Error", e.toString());
+		        showNotification(false);
 		    	//TODO: check network state before reconnecting
 		    	//TODO: check status (online/offline)
 				e.printStackTrace();
@@ -148,6 +150,7 @@ public class XmppService extends Service implements Runnable {
 		    	LimeLog.e("XmppStream", "XML broken", e.toString());
 				//Toast.makeText(this, "XML exception", Toast.LENGTH_SHORT).show();
 				// TODO Auto-generated catch block
+		        showNotification(false);
 				e.printStackTrace();
 			} catch (XmppException e) {
 		    	LimeLog.e("XmppStream", "Xmpp Error", e.getMessage());
@@ -178,12 +181,13 @@ public class XmppService extends Service implements Runnable {
     /**
      * Show a notification while this service is running.
      */
-    private void showNotification() {
+    private void showNotification(boolean online) {
         // In this sample, we'll use the same text for the ticker and the expanded notification
         CharSequence text = getText(R.string.app_name);
 
         // Set the icon, scrolling text and timestamp
-        Notification notification = new Notification(R.drawable.ic_launcher, text,
+        Notification notification = new Notification(((online)? R.drawable.status_online : R.drawable.status_offline), 
+        		text,
                 System.currentTimeMillis());
 
         // The PendingIntent to launch our activity if the user selects this notification
