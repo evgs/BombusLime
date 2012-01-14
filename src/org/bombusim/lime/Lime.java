@@ -7,6 +7,7 @@ import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.data.VcardResolver;
 import org.bombusim.lime.logger.LoggerData;
 import org.bombusim.lime.service.XmppService;
+import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.xmpp.XmppAccount;
 import org.bombusim.xmpp.XmppStream;
 
@@ -42,9 +43,11 @@ public class Lime extends Application {
 	
 	public LoggerData getLog() { return log; }
 	
+	//temporary
 	public VcardResolver vcardResolver;
 	
-	
+	public XmppServiceBinding serviceBinding;
+	//  /temporary
 	@Override
 	public final void onCreate() {
 		super.onCreate();
@@ -57,6 +60,8 @@ public class Lime extends Application {
 		
 		log = new LoggerData();
 		
+		serviceBinding = new XmppServiceBinding();
+		
 		vcardResolver = new VcardResolver();
 
 		roster=new Roster(accounts.get(0).userJid);
@@ -68,8 +73,8 @@ public class Lime extends Application {
 	@Override
 	public final void onTerminate() {
 		// TODO Auto-generated method stub
+		serviceBinding.doUnbindService();
 		super.onTerminate();
-		doUnbindService();
 	}
 
 	@Override
@@ -83,38 +88,6 @@ public class Lime extends Application {
 	public final void onConfigurationChanged(Configuration newConfig) {
 		// TODO Auto-generated method stub
 		super.onConfigurationChanged(newConfig);
-	}
-
-	private XmppService xmppService;
-	private ServiceConnection xsc = new ServiceConnection() {
-		
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-			// TODO Auto-generated method stub
-			xmppService = null;
-		}
-		
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			// TODO Auto-generated method stub
-			xmppService = ((XmppService.LocalBinder)service).getService();
-		}
-	};
-	
-	public void doBindService() { 
-		bindService(new Intent(getBaseContext(), XmppService.class), xsc, Context.BIND_AUTO_CREATE); 
-	}
-
-	public void doUnbindService() {
-		unbindService(xsc);
-	}
-	
-	public XmppStream getXmppStream(String rosterJid) {
-		// TODO Auto-generated method stub
-		XmppStream s = xmppService.getXmppStream(rosterJid);
-		if (!s.loggedIn) return null;
-		
-		return s;
 	}
 
 	private String version;

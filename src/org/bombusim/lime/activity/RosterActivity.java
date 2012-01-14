@@ -56,12 +56,12 @@ public class RosterActivity extends ListActivity {
 		switch (item.getItemId()) {
 		case R.id.cmdLogin:    {
 			startService(new Intent(getBaseContext(), XmppService.class));
-			Lime.getInstance().doBindService();
+			Lime.getInstance().serviceBinding.doBindService();
 			break;
 		}
 		case R.id.cmdLogout:   {
 			stopService(new Intent(getBaseContext(), XmppService.class));
-			Lime.getInstance().doUnbindService();
+			Lime.getInstance().serviceBinding.doUnbindService();
 			Lime.getInstance().vcardResolver.restartQueue();
 			break;
 		}

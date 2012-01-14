@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.logger.LimeLog;
-import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.handlers.IqVcard;
 
@@ -55,7 +54,7 @@ public class VcardResolver {
 		}
 
 		try {
-			Lime.getInstance().getXmppStream(pending.getRosterJid()).cancelBlockListenerByClass(IqVcard.class);
+			Lime.getInstance().serviceBinding.getXmppStream(pending.getRosterJid()).cancelBlockListenerByClass(IqVcard.class);
 		} catch (Exception e) {}
 		
 		timeout = current + VCARD_TIMEOUT_S * 1000;
@@ -68,7 +67,7 @@ public class VcardResolver {
 		
 		
 		try {
-			XmppStream s = Lime.getInstance().getXmppStream(pending.getRosterJid());
+			XmppStream s = Lime.getInstance().serviceBinding.getXmppStream(pending.getRosterJid());
 			if (s==null) {
 				pending = null;
 				return;
