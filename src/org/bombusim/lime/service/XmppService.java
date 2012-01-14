@@ -119,15 +119,9 @@ public class XmppService extends Service implements Runnable {
 	@Override
 	public void run() {
 		while (running) {
-		// TODO Auto-generated method stub
 		   	try {
-		        // Display a notification about us starting.  We put an icon in the status bar.
-		   		/*checkNetworkState();
-		   		
-		   		if (!networkAvailable) { 
-		   			running = false;
-		   			break;
-		   		}*/
+			   	//update DNS server info
+			   	ResolverConfig.refresh();
 		   		
 		        showNotification();
 		        s.connect();
@@ -136,13 +130,13 @@ public class XmppService extends Service implements Runnable {
 				// TODO Auto-generated catch block
 		    	LimeLog.e("XmppStream", "Unknown Host", e.toString());
 				running = false;
-				e.printStackTrace();
+				break;
 				
 				//Toast.makeText(this, "Unknown host", Toast.LENGTH_SHORT).show();
 			} catch (SSLException e) {
 				running = false;
 		    	LimeLog.e("XmppStream", "SSL Error", e.toString());
-				e.printStackTrace();
+		    	break;
 				
 		    } catch (IOException e) {
 		    	if (!networkAvailable) running = false;
@@ -162,9 +156,6 @@ public class XmppService extends Service implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		   	
-		   	//update DNS info after networking problem
-		   	ResolverConfig.refresh();
 		   	
 		}
         mNM.cancel(NOTIFICATION);
