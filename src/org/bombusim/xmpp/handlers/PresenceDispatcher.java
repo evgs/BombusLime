@@ -28,6 +28,8 @@ public class PresenceDispatcher implements XmppObjectListener{
 		//0. get barejid and resource
 		XmppJid fromJid = new XmppJid( p.getFrom() );
 		
+		//TODO: handle "to" attribute
+		
 		//1. update contact in roster
 		Contact c = Lime.getInstance().getRoster().findContact(fromJid.getBareJid(), stream.jid);
 		

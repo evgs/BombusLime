@@ -12,7 +12,7 @@ import org.bombusim.xmpp.XmppError;
  * Description:  The class representing a Jabber message object
  */
 
-public final class Message extends XmppObject
+public final class XmppMessage extends XmppObject
 {
   /**
    * Constructor. Prepares the message destination and body
@@ -21,7 +21,7 @@ public final class Message extends XmppObject
    * @param message The message text
    */
 
-  public Message( String to, String message , String subject, boolean groupchat)
+  public XmppMessage( String to, String message , String subject, boolean groupchat)
   {
     super();
 
@@ -39,7 +39,7 @@ public final class Message extends XmppObject
    * @param to The destination of the message
    */
 
-  public Message( String to ) {
+  public XmppMessage( String to ) {
       super();
     setAttribute( "to", to );
   }
@@ -51,7 +51,7 @@ public final class Message extends XmppObject
    * @param _attributes The list of element attributes
    */
 
-  public Message( XmppObject parent, Attributes attributes ) {
+  public XmppMessage( XmppObject parent, Attributes attributes ) {
     super( parent, attributes );
   }
 

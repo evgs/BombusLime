@@ -3,6 +3,8 @@ package org.bombusim.lime.data;
 import java.util.ArrayList;
 
 public class Chat {
+	public static final String UPDATE_CHAT = "org.bombusim.lime.data.UPDATE_CHAT";
+	
 	Contact visavis;
 	
 	private ArrayList<Message> messages;
