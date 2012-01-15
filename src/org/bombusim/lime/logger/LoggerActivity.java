@@ -29,6 +29,10 @@ public class LoggerActivity extends Activity {
     ListView logListView;
 	
     CheckBox loggerEnabled;
+    
+    CheckBox noAutoscroll;
+    
+    boolean disableAutoScroll = false;
 
 	int logSize; //caching getLogRecords().size() to provide atomic updating
 
@@ -60,12 +64,23 @@ public class LoggerActivity extends Activity {
         
         loggerEnabled.setChecked(Lime.getInstance().localXmlEnabled);
         loggerEnabled.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				Lime.getInstance().localXmlEnabled = isChecked;
 			}
 		});
+        
+
+        noAutoscroll = (CheckBox) findViewById(R.id.loggerFreeze);
+        
+        noAutoscroll.setChecked(disableAutoScroll);
+        noAutoscroll.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				disableAutoScroll = isChecked;
+			}
+		});
+        
         
         ((Button) findViewById(R.id.loggerClear)).setOnClickListener(new View.OnClickListener() {
 			
@@ -224,6 +239,12 @@ public class LoggerActivity extends Activity {
 		logSize = Lime.getInstance().getLog().getLogRecords().size();
 		((BaseAdapter)logListView.getAdapter()).notifyDataSetChanged();
 		logListView.invalidate();
+
+		if (!disableAutoScroll) { 
+			//Move focus to last log record
+			logListView.setSelection(logSize-1);
+		}
+		
 		logListView.setVisibility(View.VISIBLE);
 	}
 	
