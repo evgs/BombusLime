@@ -265,7 +265,6 @@ public class ChatActivity extends Activity {
     
 	
 	protected void sendMessage() {
-		//TODO: send xmpp message
 		String text = messageBox.getText().toString();
 		messageBox.setText("");
 		Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
