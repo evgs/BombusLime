@@ -2,10 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-
+	 	    
+    
 	<RelativeLayout 
 	    android:layout_width="wrap_content"
 	    android:layout_height="?android:attr/listPreferredItemHeight" 
+
+    	android:focusable="true" android:focusableInTouchMode="true"
+
         android:id="@+id/contact_head" >
 	    	
 	    <ImageView
@@ -50,8 +54,8 @@
 	        android:src="@drawable/status_online" />
 	    
 	    
-	</RelativeLayout>    
-    
+	</RelativeLayout>
+
     <ImageButton
         android:id="@+id/sendButton"
         android:layout_width="wrap_content"
@@ -67,10 +71,12 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@id/sendButton"
+        
+		android:nextFocusUp="@id/messageBox" 
+		android:nextFocusLeft="@id/messageBox"
+		        
         android:singleLine="false" >
 
-        <requestFocus />
-        <!-- android:inputType="textMultiLine"  -->
     </EditText>
 
     <ListView
@@ -80,8 +86,7 @@
         android:layout_above="@id/messageBox"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/contact_head" >
-        
+
     </ListView>
-    
 
 </RelativeLayout>
