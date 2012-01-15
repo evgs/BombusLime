@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 public class Preferences {
 	public boolean autoServiceStartup;
 	public boolean adbXmlLog;
+	public String ringtoneMessage;
 	
 	public Preferences(Context applicationContext) {
 		loadPreferences(applicationContext);
@@ -16,6 +17,8 @@ public class Preferences {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		autoServiceStartup = prefs.getBoolean("AUTO_SERVICE_STARTUP", false);
 		adbXmlLog = prefs.getBoolean("ADB_XML_LOG", true);
+		
+		ringtoneMessage = prefs.getString("RINGTONE_MESSAGE", "");
 	}
 	
 }

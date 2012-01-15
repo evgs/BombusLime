@@ -30,12 +30,6 @@ import android.os.IBinder;
 
 public class XmppService extends Service implements Runnable {
 
-    // Unique Identification Number for the Notification.
-    // We use it on Notification start, and to cancel it.
-    private int NOTIFICATION = R.string.app_name;
-
-    private NotificationManager mNM;
-    
     private BroadcastReceiver br;
 
 	private XmppStream s;
@@ -72,8 +66,6 @@ public class XmppService extends Service implements Runnable {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
         //LimeLog.i("XmppService", "Received start id " + startId, intent.toString());
-
-        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
 		showNotification(false);
 
@@ -165,13 +157,13 @@ public class XmppService extends Service implements Runnable {
 		   	if (!networkAvailable) running = false;
 		   	
 		}
-        mNM.cancel(NOTIFICATION);
+        cancelNotification();
 	}
 
     @Override
     public void onDestroy() {
         // Cancel the persistent notification.
-        mNM.cancel(NOTIFICATION);
+        cancelNotification();
         
         unregisterReceiver(br);
         
@@ -186,26 +178,12 @@ public class XmppService extends Service implements Runnable {
      * Show a notification while this service is running.
      */
     private void showNotification(boolean online) {
-        // In this sample, we'll use the same text for the ticker and the expanded notification
-        CharSequence text = getText(R.string.app_name);
-
-        // Set the icon, scrolling text and timestamp
-        Notification notification = new Notification(((online)? R.drawable.status_online : R.drawable.status_offline), 
-        		text,
-                System.currentTimeMillis());
-
-        // The PendingIntent to launch our activity if the user selects this notification
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, RosterActivity.class), 0);
-
-        // Set the info for the views that show in the notification panel.
-        notification.setLatestEventInfo(this, getText(R.string.app_name),
-                       text, contentIntent);
-
-        // Send the notification.
-        mNM.notify(NOTIFICATION, notification);
+    	Lime.getInstance().notificationMgr().showOnlineNotification(online);    
     }
 
+    private void cancelNotification() {
+    	Lime.getInstance().notificationMgr().cancelOnlineNotification();
+    }
     
     private boolean networkAvailable;
 

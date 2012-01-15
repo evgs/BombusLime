@@ -28,7 +28,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 public class ChatActivity extends Activity {
-	public static final String FROM_JID = "fromJid";
+	public static final String MY_JID = "fromJid";
 	public static final String TO_JID = "toJid";
 
 	private String jid;
@@ -57,7 +57,7 @@ public class ChatActivity extends Activity {
         Bundle params = getIntent().getExtras();
         if (params == null) throw new InvalidParameterException("No parameters specified for ChatActivity");
         jid = params.getString(TO_JID);
-        rJid = params.getString(FROM_JID);
+        rJid = params.getString(MY_JID);
         
         serviceBinding = new XmppServiceBinding();
         

@@ -94,7 +94,7 @@ public class XmppJid {
     public String getBareJid(){ return bareJid; }
     
     /** get "username@server/resource" */
-    public String getJid(){
+    public String getJidResource(){
         if (resource.length()==0) return bareJid;
         return bareJid +'/' +resource;
     }

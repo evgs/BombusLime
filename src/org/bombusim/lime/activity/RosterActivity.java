@@ -38,7 +38,7 @@ public class RosterActivity extends ListActivity {
 		Contact c = (Contact) getListAdapter().getItem(position);
 	
 		Intent openChat =  new Intent(getBaseContext(), ChatActivity.class);
-		openChat.putExtra(ChatActivity.FROM_JID, c.getRosterJid());
+		openChat.putExtra(ChatActivity.MY_JID, c.getRosterJid());
 		openChat.putExtra(ChatActivity.TO_JID,   c.getJid());
 		startActivityForResult(openChat, 0);
 	}
