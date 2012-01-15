@@ -285,7 +285,11 @@ public class ChatActivity extends Activity {
 	protected void sendMessage() {
 		String text = messageBox.getText().toString();
 		messageBox.setText("");
-		Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+		
+		//avoid sending of empty messages
+		if (text.length() == 0) return;
+		
+		//Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 		
 		Message out = new Message(Message.TYPE_MESSAGE_OUT, "Me", text);
 		chat.addMessage(out);
