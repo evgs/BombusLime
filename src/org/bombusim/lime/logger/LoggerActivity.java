@@ -158,8 +158,10 @@ public class LoggerActivity extends Activity {
 
         public void toggle(int position) {
             LoggerEvent p=getLogRecords().get(position);
-            p.expanded = !p.expanded; 
-            notifyDataSetChanged();
+            if (p.message !=null) {
+            	p.expanded = !p.expanded; 
+            	notifyDataSetChanged();
+            }
         }
         
         /**
