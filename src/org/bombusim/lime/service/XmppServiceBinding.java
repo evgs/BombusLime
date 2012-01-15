@@ -33,6 +33,7 @@ public class XmppServiceBinding {
 	public void doUnbindService() {
 		if (xmppService != null)
 			Lime.getInstance().unbindService(xsc);
+		xmppService = null;
 	}
 	
 	public XmppStream getXmppStream(String rosterJid) {

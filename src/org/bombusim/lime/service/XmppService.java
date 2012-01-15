@@ -165,10 +165,17 @@ public class XmppService extends Service implements Runnable {
         // Cancel the persistent notification.
         cancelNotification();
         
-        unregisterReceiver(br);
+        //TODO: remove try/catch when service on/off behavior will be changed 
+        try {
+        	unregisterReceiver(br);
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
         
+        //TODO: remove when service on/off behavior will be changed 
         running = false;
-        s.close();
+        if (s!=null)
+        	s.close();
         
         // Tell the user we stopped.
         //Toast.makeText(this, R.string.local_service_stopped, Toast.LENGTH_SHORT).show();
