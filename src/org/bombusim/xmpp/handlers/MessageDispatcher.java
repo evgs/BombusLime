@@ -24,7 +24,11 @@ public class MessageDispatcher implements XmppObjectListener{
 		XmppMessage m = (XmppMessage) data;
 		XmppJid from = new XmppJid( m.getFrom() );
 
-		Message msg = new Message(Message.TYPE_MESSAGE_IN, from.getJidResource(), m.getBody());
+		String body = m.getBody();
+		//TODO: composing events
+		if (body.length() == 0) return BLOCK_REJECTED;
+		
+		Message msg = new Message(Message.TYPE_MESSAGE_IN, from.getJidResource(), body);
 		msg.subj = m.getSubject();
 		//TODO: timestamp
 		
@@ -32,7 +36,7 @@ public class MessageDispatcher implements XmppObjectListener{
 		try {
 			Chat c = Lime.getInstance().getChatFactory().getChat(from.getBareJid(), stream.jid); 
 			c.addMessage(msg);
-			Lime.getInstance().notificationMgr().showChatNotification(c.getVisavis(), m.getBody());
+			Lime.getInstance().notificationMgr().showChatNotification(c.getVisavis(), body);
 			
 			stream.sendBroadcast(Chat.UPDATE_CHAT);
 
