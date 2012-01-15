@@ -61,38 +61,56 @@ public class ChatActivity extends Activity {
 	Chat chat;
 	int chatSize; //caching chat.getChatSize() to provide atomic updating
 	
+	/*
+	 * called when android:launchMode="singleTop"
+	 * single-chat mode, replaces existing chat;
+	 * @see android.app.Activity#onNewIntent(android.content.Intent)
+	 */
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		setIntent(intent);
+
+		attachToChat();
+	}
+	
+	private void attachToChat(){
+        Bundle params = getIntent().getExtras();
+        if (params == null) throw new InvalidParameterException("No parameters specified for ChatActivity");
+        jid = params.getString(TO_JID);
+        rJid = params.getString(MY_JID);
+
+        //TODO: move into ChatFactory
+        visavis = Lime.getInstance().getRoster().findContact(jid, rJid);
+        chat = Lime.getInstance().getChatFactory().getChat(jid, rJid);
+
+        chatListView.setAdapter(new ChatListAdapter(this));
+
+        vAvatar.setImageBitmap(visavis.getLazyAvatar(true));
+        vNick.setText(visavis.getScreenName());
+        vStatusMessage.setText(visavis.getStatusMessage());
+
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.chat);
         
-  
-        Bundle params = getIntent().getExtras();
-        if (params == null) throw new InvalidParameterException("No parameters specified for ChatActivity");
-        jid = params.getString(TO_JID);
-        rJid = params.getString(MY_JID);
-        
         serviceBinding = new XmppServiceBinding();
-        
-        //TODO: move into ChatFactory
-        visavis = Lime.getInstance().getRoster().findContact(jid, rJid);
-        chat = Lime.getInstance().getChatFactory().getChat(jid, rJid);
-        
+  
         vAvatar = (ImageView) findViewById(R.id.rit_photo);        
         vStatus = (ImageView) findViewById(R.id.rit_statusIcon);
         vNick = (TextView) findViewById(R.id.rit_jid);
         vStatusMessage = (TextView) findViewById(R.id.rit_presence);
-        
+
         messageBox = (EditText) findViewById(R.id.messageBox);
         sendButton = (ImageButton) findViewById(R.id.sendButton);
-        		
-        vAvatar.setImageBitmap(visavis.getLazyAvatar(true));
-        vNick.setText(visavis.getScreenName());
-        vStatusMessage.setText(visavis.getStatusMessage());
 
         chatListView = (ListView) findViewById(R.id.chatListView);
-        chatListView.setAdapter(new ChatListAdapter(this));
 
+        attachToChat();
+        		
         sendButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) { 	sendMessage(); 	}
