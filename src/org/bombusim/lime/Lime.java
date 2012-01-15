@@ -3,6 +3,7 @@ package org.bombusim.lime;
 import java.util.ArrayList;
 
 import org.bombusim.lime.data.AccountsFactory;
+import org.bombusim.lime.data.ChatFactory;
 import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.data.VcardResolver;
 import org.bombusim.lime.logger.LoggerData;
@@ -33,6 +34,8 @@ public class Lime extends Application {
 	
 	private LoggerData log;
 
+	private ChatFactory chatFactory;
+	
 	public Preferences prefs;
 	
 	public boolean localXmlEnabled = false;
@@ -114,5 +117,15 @@ public class Lime extends Application {
 		sb.append(' ').append(android.os.Build.VERSION.INCREMENTAL);
 		
 		return sb.toString();
+	}
+
+	public ChatFactory getChatFactory() {
+		if (chatFactory == null) chatFactory = new ChatFactory();
+		return chatFactory;
+	}
+
+	public NotificationMgr notificationMgr() {
+		// TODO Auto-generated method stub
+		return new NotificationMgr(this);
 	}
 }

@@ -11,8 +11,11 @@ public class Chat {
 	
 	public Chat(Contact contact) {
 		visavis = contact;
+		//TODO: load recent messages
 		messages = new ArrayList<Message>();
 	}
+	
+	public Contact getVisavis() { return visavis; }
 	
 	public int getChatSize() { return messages.size(); }
 	public Message getMessage(int index) { return messages.get(index); }
