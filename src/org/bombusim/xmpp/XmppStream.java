@@ -47,6 +47,7 @@ import org.bombusim.xmpp.exception.XmppTerminatedException;
 import org.bombusim.xmpp.handlers.IqRoster;
 import org.bombusim.xmpp.handlers.IqTimeReply;
 import org.bombusim.xmpp.handlers.IqVersionReply;
+import org.bombusim.xmpp.handlers.MessageDispatcher;
 import org.bombusim.xmpp.handlers.PresenceDispatcher;
 import org.bombusim.xmpp.stanza.Iq;
 import org.bombusim.xmpp.stanza.Presence;
@@ -531,6 +532,8 @@ public class XmppStream extends XmppParser {
     	addBlockListener(new IqTimeReply());
     	
     	addBlockListener(new PresenceDispatcher());
+    	
+    	addBlockListener(new MessageDispatcher());
     	
     	iqroster.queryRoster(this);
 

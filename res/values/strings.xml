@@ -117,5 +117,6 @@
     
     <string name="resourcePriority">Priority</string>
     <string name="accountAutoLogin">Connect on startup</string>
+    <string name="chatNotify">New message</string>
     
 </resources>
