@@ -73,7 +73,12 @@ public class XmppService extends Service implements Runnable {
 	public int onStartCommand(Intent intent, int flags, int startId) {
         //LimeLog.i("XmppService", "Received start id " + startId, intent.toString());
 
-        // TODO start multiple connections
+        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
+		showNotification(false);
+
+		
+		// TODO start multiple connections
 		XmppAccount a=Lime.getInstance().accounts.get(0);
 		s=new XmppStream(a);
 	   	s.setContext(this);
@@ -85,9 +90,6 @@ public class XmppService extends Service implements Runnable {
 	   	checkNetworkState();
 	   	
 	   	doConnect();
-	   	   	
-        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-
 		
 	   	return START_STICKY;
 	}
@@ -159,6 +161,8 @@ public class XmppService extends Service implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		   	
+		   	if (!networkAvailable) running = false;
 		   	
 		}
         mNM.cancel(NOTIFICATION);
