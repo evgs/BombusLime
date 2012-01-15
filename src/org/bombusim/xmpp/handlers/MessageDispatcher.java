@@ -6,6 +6,7 @@ import org.bombusim.lime.Lime;
 import org.bombusim.lime.data.Chat;
 import org.bombusim.lime.data.ChatFactory;
 import org.bombusim.lime.data.Message;
+import org.bombusim.lime.data.Roster;
 import org.bombusim.xmpp.XmppJid;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppObjectListener;
@@ -32,6 +33,9 @@ public class MessageDispatcher implements XmppObjectListener{
 			Chat c = Lime.getInstance().getChatFactory().getChat(from.getBareJid(), stream.jid); 
 			c.addMessage(msg);
 			Lime.getInstance().notificationMgr().showChatNotification(c.getVisavis(), m.getBody());
+			
+			stream.sendBroadcast(Chat.UPDATE_CHAT);
+
 		} catch (Exception e) {
 			e.printStackTrace(); //Will handle only NPE
 		}
