@@ -9,6 +9,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 
 public class NotificationMgr {
@@ -16,7 +17,10 @@ public class NotificationMgr {
 	private int NOTIFICATION_ONLINE = R.string.app_name;
     private int NOTIFICATION_CHAT = R.string.chatNotify;
 	
-	
+    //TODO: read from configuration
+	private boolean serviceIcon = true;
+    
+    
 	private NotificationManager mNM;
 	private Context context;
 
@@ -63,8 +67,13 @@ public class NotificationMgr {
         }
         
         notification.defaults |= Notification.DEFAULT_VIBRATE;
+        //notification.defaults |= Notification.DEFAULT_LIGHTS;
         
-        notification.defaults |= Notification.DEFAULT_LIGHTS;
+        notification.flags |= Notification.FLAG_SHOW_LIGHTS;
+        notification.ledARGB = Color.GREEN;
+        notification.ledOnMS  = 300;
+        notification.ledOffMS = 1000;
+        
         
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
@@ -75,6 +84,7 @@ public class NotificationMgr {
 	
 
 	public void showOnlineNotification(boolean online) {
+		if (!serviceIcon) return;
 	
 		int icon = ((online)? R.drawable.status_online : R.drawable.status_offline);
 		CharSequence title = context.getText(R.string.app_name);
