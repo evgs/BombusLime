@@ -204,4 +204,6 @@ public class Contact {
 
 	public boolean hasActiveChats() { return activeChats; }
 
+	public void setActiveChats(boolean has) { activeChats = has; } 
+
 }

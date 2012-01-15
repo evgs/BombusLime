@@ -38,6 +38,10 @@ public class ChatFactory {
 			chats.add(c);
 		}
 		
+		//5. raising "has active chat" flag for cintact
+		visavis.setActiveChats(true);
+		//TODO: raise unread counter
+		
 		//PROFIT!
 		return c;
 	}
