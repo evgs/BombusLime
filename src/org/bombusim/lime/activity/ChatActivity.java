@@ -289,14 +289,13 @@ public class ChatActivity extends Activity {
 		//avoid sending of empty messages
 		if (text.length() == 0) return;
 		
-		//Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-		
-		Message out = new Message(Message.TYPE_MESSAGE_OUT, "Me", text);
+		String to = visavis.getJid(); 
+
+		Message out = new Message(Message.TYPE_MESSAGE_OUT, to, text);
 		chat.addMessage(out);
 		refreshVisualContent();
 		
-		String to = visavis.getJid(); //TODO: resource
-		
+		//TODO: resource magic
 		XmppMessage msg = new XmppMessage(to, text, null, false);
 		//TODO: message queue
 		serviceBinding.getXmppStream(visavis.getRosterJid()).send(msg);

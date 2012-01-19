@@ -28,7 +28,7 @@ public class MessageDispatcher implements XmppObjectListener{
 		//TODO: composing events
 		if (body.length() == 0) return BLOCK_REJECTED;
 		
-		Message msg = new Message(Message.TYPE_MESSAGE_IN, from.getJidResource(), body);
+		Message msg = new Message(Message.TYPE_MESSAGE_IN, from.getBareJid(), body);
 		msg.subj = m.getSubject();
 		//TODO: timestamp
 		
