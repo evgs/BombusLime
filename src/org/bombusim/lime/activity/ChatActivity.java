@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -53,6 +54,8 @@ public class ChatActivity extends Activity {
 	private ImageButton sendButton;
 	
 	private ListView chatListView;
+	
+	private View contactHead;
 	
 	private XmppServiceBinding serviceBinding;
 	
@@ -90,6 +93,7 @@ public class ChatActivity extends Activity {
         vNick.setText(visavis.getScreenName());
         vStatusMessage.setText(visavis.getStatusMessage());
 
+        contactHead.requestFocus(); //stealing focus from messageBox
 	}
 	
 	@Override
@@ -99,6 +103,7 @@ public class ChatActivity extends Activity {
         
         serviceBinding = new XmppServiceBinding();
   
+        contactHead = findViewById(R.id.contact_head);
         vAvatar = (ImageView) findViewById(R.id.rit_photo);        
         vStatus = (ImageView) findViewById(R.id.rit_statusIcon);
         vNick = (TextView) findViewById(R.id.rit_jid);
