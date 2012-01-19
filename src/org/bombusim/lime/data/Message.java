@@ -3,6 +3,8 @@ package org.bombusim.lime.data;
 import android.graphics.Color;
 
 public class Message {
+	private long _id;
+	
 	public final static int TYPE_MESSAGE_IN = 0;
 	public final static int TYPE_MESSAGE_OUT = 1;
 	public final static int TYPE_MESSAGE_PRESENCE = 2;
@@ -12,8 +14,13 @@ public class Message {
 	public String messageBody;
 	public String subj;
 	public long timestamp;
+	public boolean unread;
 	
 	public Message (int type, String from, String messageBody) {
+		this(type, from, messageBody, -1);
+	}
+	
+	public Message (int type, String from, String messageBody, long id) {
 		this.type = type;
 		this.fromJid = from;
 		this.messageBody = messageBody;
@@ -21,6 +28,8 @@ public class Message {
 		timestamp = System.currentTimeMillis();
 		
 		this.expanded = true;
+		
+		this._id = id;
 	}
 	//view
 	public boolean expanded;
@@ -36,5 +45,9 @@ public class Message {
 		default: 
 		}
 		return PRESENCE_COLOR;
+	}
+
+	public void setId(long id) { 
+		this._id = id; 
 	}
 }
