@@ -138,6 +138,7 @@ public class ChatActivity extends Activity {
         //messageBox.setImeActionLabel("Send", EditorInfo.IME_ACTION_SEND); //Keeps IME opened
         messageBox.setImeActionLabel("Send", EditorInfo.IME_ACTION_DONE); //Closes IME
         
+        
         messageBox.setOnEditorActionListener(new OnEditorActionListener() {
 			
 			@Override
