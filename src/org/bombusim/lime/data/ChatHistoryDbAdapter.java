@@ -13,9 +13,11 @@ public class ChatHistoryDbAdapter  {
 
 	protected final static String DATABASE_TABLE = "messages";
 	protected final static String DATABASE_NAME = "messages.db";
-	protected final static int    DATABASE_VERSION = 1;
+	protected final static int    DATABASE_VERSION = 2;
 	
 	public final static String KEY_ID =       "_id";
+
+	public final static String KEY_RJID =      "rjid";
 	
 	public final static String KEY_TYPE =     "type";
 	public final static String KEY_JID =      "jid";
@@ -26,9 +28,12 @@ public class ChatHistoryDbAdapter  {
 
 	private HistoryDbHelper dbHelper;
 	private SQLiteDatabase db;
+	private String rJid;
 	
-	public ChatHistoryDbAdapter(Context context) {
+	public ChatHistoryDbAdapter(Context context, String rJid) {
 		dbHelper = new HistoryDbHelper(context);
+		
+		this.rJid = rJid;
 	}
 	
 	public void open() {
@@ -43,6 +48,7 @@ public class ChatHistoryDbAdapter  {
 	
 	public long putMessage(Message msg, long position) {
 		ContentValues v = new ContentValues();
+		v.put(KEY_RJID, rJid);
 		v.put(KEY_TIME,     msg.timestamp);
 		v.put(KEY_TYPE,     msg.type);
 		v.put(KEY_JID,      msg.fromJid);
@@ -66,13 +72,8 @@ public class ChatHistoryDbAdapter  {
 	
 	//TODO: offset for paging
 	public long[] getMessageIndexes(String jid, int limit) {
-		String select = (jid !=null )? KEY_JID+"='"+jid+"'" : null;
-		
-		String orderBy = KEY_TIME + " DESC";
-		
-		String sLimit = (limit>0)? String.valueOf(limit) : null;
-		
-		Cursor ind = db.query(DATABASE_TABLE, new String[] {KEY_ID, KEY_TIME}, select, null, null, null, orderBy, sLimit);
+		//String select = (jid !=null )? KEY_JID+"='"+jid+"'" : null;
+		Cursor ind = getMessageCursor(jid, limit);
 		
 		int count = ind.getCount(); 
 		if (count == 0 || !ind.moveToFirst()) { ind.close(); return null; }
@@ -87,6 +88,18 @@ public class ChatHistoryDbAdapter  {
 		
 		ind.close();
 		return result;
+	}
+
+	public Cursor getMessageCursor(String jid, int limit) {
+		String select =  KEY_RJID + "='" + rJid + "'" 
+		      +" AND " + KEY_JID  + "='"+jid+"'" ;
+		
+		String orderBy = KEY_TIME + " ASC";
+		
+		String sLimit = (limit>0)? String.valueOf(limit) : null;
+		
+		Cursor ind = db.query(DATABASE_TABLE, null /*new String[] {KEY_ID, KEY_TIME}*/, select, null, null, null, orderBy, sLimit);
+		return ind;
 	}
 	
 	public Message getMessage(long position) {
@@ -119,6 +132,7 @@ public class ChatHistoryDbAdapter  {
 		private static final String DATABASE_CREATE = 
 				"CREATE TABLE " + DATABASE_TABLE + " ("  
 				        + KEY_ID  +      " INTEGER PRIMARY KEY AUTOINCREMENT, " 
+				        + KEY_RJID +      " TEXT NOT NULL, " 
 				        + KEY_TYPE +     " INTEGER, " 
 				        + KEY_TIME +     " INTEGER, " 
 				        + KEY_JID +      " TEXT NOT NULL, " 
