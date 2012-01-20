@@ -125,6 +125,12 @@ public class Roster {
 		
 		return null;
 	}
+	
+	public void dropCachedAvatars() {
+		for (int i=0; i<contacts.size(); i++) {
+			contacts.get(i).dropAvatar();
+		}
+	}
 
 
 }

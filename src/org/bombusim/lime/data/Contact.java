@@ -204,6 +204,11 @@ public class Contact {
 
 	public boolean hasActiveChats() { return activeChats; }
 
-	public void setActiveChats(boolean has) { activeChats = has; } 
+	public void setActiveChats(boolean has) { activeChats = has; }
+
+	public void dropAvatar() {
+		//will be loaded on demand
+		avatar = null; 
+	}
 
 }

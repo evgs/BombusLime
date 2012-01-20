@@ -83,9 +83,18 @@ public class Lime extends Application {
 		super.onTerminate();
 	}
 
+	//TODO: clean memory if inactive
+	
 	@Override
 	public final void onLowMemory() {
-		// TODO Auto-generated method stub
+		smilify = null;
+		//TODO: cleanup log
+		
+		//drop chats (not critical since they are stored in db)
+		chatFactory = null;
+		
+		//drop cached avatars
+		roster.dropCachedAvatars();
 		super.onLowMemory();
 	}
 	
