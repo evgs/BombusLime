@@ -72,11 +72,12 @@
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@id/sendButton"
         
-		android:nextFocusUp="@id/messageBox" 
-		android:nextFocusLeft="@id/messageBox"
-		        
         android:singleLine="false" >
-
+	    
+	    <!-- 
+		android:nextFocusUp="@id/messageBox" 
+		android:nextFocusLeft="@id/messageBox" -->
+        
     </EditText>
 
     <ListView
