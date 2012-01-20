@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.format.Time;
 import android.text.util.Linkify;
@@ -269,8 +270,11 @@ public class ChatActivity extends Activity {
         	
             mFrom.setText(title);
             
+            //TODO: clickable links
+            
             SpannableString ss = new SpannableString(message); 
             Linkify.addLinks(ss, Linkify.EMAIL_ADDRESSES | Linkify.WEB_URLS);
+            Lime.getInstance().getSmilify().addSmiles(ss);
             
             mMessageBody.setText(ss);
             

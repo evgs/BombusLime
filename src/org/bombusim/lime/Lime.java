@@ -2,6 +2,7 @@ package org.bombusim.lime;
 
 import java.util.ArrayList;
 
+import org.bombusim.lime.activity.Smilify;
 import org.bombusim.lime.data.AccountsFactory;
 import org.bombusim.lime.data.ChatFactory;
 import org.bombusim.lime.data.Roster;
@@ -35,6 +36,8 @@ public class Lime extends Application {
 	private LoggerData log;
 
 	private ChatFactory chatFactory;
+	
+	private Smilify smilify;
 	
 	public Preferences prefs;
 	
@@ -127,5 +130,12 @@ public class Lime extends Application {
 	public NotificationMgr notificationMgr() {
 		// TODO Auto-generated method stub
 		return new NotificationMgr(this);
+	}
+
+	public Smilify getSmilify() {
+		if (smilify == null) {
+			smilify = new Smilify();
+		}
+		return smilify;
 	}
 }

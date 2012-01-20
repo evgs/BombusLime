@@ -12,6 +12,7 @@ public class Message {
 	public String fromJid;	//full jid
 	public String nick;
 	public String messageBody;
+	//TODO: empty subj should be null
 	public String subj;
 	public long timestamp;
 	public boolean unread;
