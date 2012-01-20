@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer-array name="smileIds">
+        <item >@drawable/sm_smile</item>
+        <item >@drawable/sm_wink</item>
+        <item >@drawable/sm_tongue</item>
+        <item >@drawable/sm_biggrin</item>
+        <item >@drawable/sm_unhappy</item>
+        <item >@drawable/sm_cry</item>
+        <item >@drawable/sm_oh</item>
+        <item >@drawable/sm_angry</item>
+        <item >@drawable/sm_blush</item>
+        <item >@drawable/sm_stare</item>
+        <item >@drawable/sm_frowning</item>
+        <item >@drawable/sm_coolglasses</item>
+        <item >@drawable/sm_yes</item>
+        <item >@drawable/sm_no</item>
+        <item >@drawable/sm_devil</item>
+        <item >@drawable/sm_beer</item>
+        <item >@drawable/sm_cuffs</item>
+        <item >@drawable/sm_drink</item>
+        <item >@drawable/sm_devil</item>	<!-- TODO devil2 -->
+        <item >@drawable/sm_no</item>	<!-- TODO botan -->
+        <item >@drawable/sm_no</item> <!-- TODO thinking -->
+        <item >@drawable/sm_no</item> <!-- TODO idea -->
+        <item >@drawable/sm_no</item> <!-- TODO skull -->
+        <item >@drawable/sm_no</item> <!-- TODO clown -->
+        <item >@drawable/sm_no</item> <!-- TODO sick -->
+        <item >@drawable/sm_no</item> <!-- TODO zzz-->
+        <item >@drawable/sm_coffee</item>
+        <item >@drawable/sm_no</item> <!-- TODO whistling -->
+        <item >@drawable/sm_kiss</item>   <!-- TODO kiss2 -->
+        <item >@drawable/sm_flower</item> <!-- TODO rose -->
+        <item >@drawable/sm_no</item>                  <!-- TODO :-/ -->
+        
+        </integer-array>
+    <string-array name="smileTags">
+        <item >:-) :)</item>
+        <item >;-) ;)</item>
+		<item >:-P :-p :P :p</item>
+		<item >:-D :-d :D :d :-> :> :lol: :LOL: *LOL* *lol* :))</item>
+		<item >:-( :( ;-( ;( :((</item>
+		<item >:\&apos;( :\&apos;-( 8(</item>
+		<item >:-O :-o :O :o =-O :-0 8-O</item>
+		<item >:-@ :@ &gt;:o</item>
+		<item >:-$ :$ *KISSED* :\&quot;) :-[ *SORRY* *sorry*</item>
+		<item >:-| :|</item>
+		<item >:-S :-s :S :s</item>
+		<item >B-) (H) (h) 8-)</item>
+		<item >(Y) (y) *THUMBS_UP*</item>
+		<item >(N) (n) *THUMBS_DOWN* *STOP*</item>
+		<item >(6) ]:-&gt;</item>
+		<item >(B) (b) *DRINK* :drink: *BEER*</item>
+		<item >(%)</item>
+		<item >(D) (d)</item>
+		<item >&gt;:) &gt;:-) &gt;:D &gt;:-D</item>
+		<item >:-B</item>
+		<item >:-? :? *dntknw* *DONT_KNOW*</item>
+		<item >*-:)</item>
+		<item >8-X 8-x @= *horror*</item>
+		<item >:O) :o) *JOKINGLY* :0) :-]</item>
+		<item >:-&amp; :-X :-x :-! :! *SUP*</item>
+		<item >|-) |) *TIRED*</item>
+		<item >(C) ~o) ~O)</item>
+		<item >:-\&quot;</item>
+		<item >:-* :* =* *KISSING*</item>
+		<!-- TODO: escaping first @ -->
+		<item >\@;}-&gt;-- @};- @}-&gt;- (f) (F) *BOUQUET*</item>
+		<item >:-\\ :-/ :/ :\\</item>
+        
+    </string-array>
+    
+</resources>
