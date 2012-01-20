@@ -19,7 +19,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.SpannableString;
 import android.text.format.Time;
+import android.text.util.Linkify;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -266,8 +268,13 @@ public class ChatActivity extends Activity {
         	mTime.setText(tf.format("%H:%M"));
         	
             mFrom.setText(title);
-            mMessageBody.setText(message);
-		}
+            
+            SpannableString ss = new SpannableString(message); 
+            Linkify.addLinks(ss, Linkify.EMAIL_ADDRESSES | Linkify.WEB_URLS);
+            
+            mMessageBody.setText(ss);
+            
+        }
 
         
         public void setMessageType(int type) {
