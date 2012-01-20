@@ -28,9 +28,9 @@ public class Chat {
 		
 		Cursor hist = db.getMessageCursor( visavis.getJid(), HISTORY_DEFAULT_CONTEXT_SIZE );
 		
-		if (hist.moveToFirst()) do {
+		if (hist.moveToLast()) do {
 			messages.add(db.getMessageFromCursor(hist));
-		} while (hist.moveToNext());
+		} while (hist.moveToPrevious());
 		
 		hist.close();
 		db.close();

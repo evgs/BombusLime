@@ -94,7 +94,7 @@ public class ChatHistoryDbAdapter  {
 		String select =  KEY_RJID + "='" + rJid + "'" 
 		      +" AND " + KEY_JID  + "='"+jid+"'" ;
 		
-		String orderBy = KEY_TIME + " ASC";
+		String orderBy = KEY_TIME + " DESC";
 		
 		String sLimit = (limit>0)? String.valueOf(limit) : null;
 		
