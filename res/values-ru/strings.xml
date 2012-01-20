@@ -35,7 +35,7 @@
    
     <string name="sslPrompt">Шифрование соединения TLS/SSL</string>
     <string-array name="sslOptions">
-        <item>Не использовать шифорвание</item>
+        <item>Не использовать шифрование</item>
         <item>Шифровать при поддержке сервером</item>
         <item>Всегда шифровать соединение</item>
         <item>Использовать устаревший порт SSL (5223)</item>
