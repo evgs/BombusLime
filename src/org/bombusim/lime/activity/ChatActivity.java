@@ -1,14 +1,12 @@
 package org.bombusim.lime.activity;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 import org.bombusim.lime.data.Chat;
 import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Message;
-import org.bombusim.lime.logger.LoggerEvent;
 import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.xmpp.stanza.XmppMessage;
 
@@ -17,9 +15,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.format.Time;
 import android.text.util.Linkify;
@@ -29,7 +25,6 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -37,9 +32,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView.OnEditorActionListener;
-import android.widget.Toast;
 
 public class ChatActivity extends Activity {
 	public static final String MY_JID = "fromJid";
