@@ -1,6 +1,8 @@
 package org.bombusim.lime.data;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.logger.LimeLog;
@@ -10,6 +12,7 @@ import org.bombusim.xmpp.handlers.IqVcard;
 public class VcardResolver {
 
 	private final static int VCARD_TIMEOUT_S = 30; 
+	private final static int VCARD_TIMER_S = 3; 
 	
 	private ArrayList<Contact> queue;
 	
@@ -45,11 +48,16 @@ public class VcardResolver {
 		queryTop();
 	}
 	
-	public void queryTop() {
+	//TODO: parallel vcard fetching for different domains
+	
+	public synchronized void queryTop() {
 		
 		long current = System.currentTimeMillis();
 		if (pending != null) {
-			if (current < timeout) return; 
+			if (current < timeout) {
+				setQueryTimer(); //next polling event
+				return; 
+			}
 			queue.remove(pending);
 		}
 
@@ -75,8 +83,27 @@ public class VcardResolver {
 			
 			LimeLog.i("VcardResolver", "Query "+pending.getJid(), null);
 			new IqVcard().vcardRequest( pending.getJid(), s	);
+			
+			setQueryTimer();
+			
 		} catch (Exception e) {}
 		
 		
 	}
+
+	Timer timer;
+	
+	private void setQueryTimer() {
+		if (timer != null) timer.cancel();
+		
+		timer = new Timer();
+		
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				queryTop();
+			}
+		}, VCARD_TIMER_S * 1000);
+	}
+	
 }
