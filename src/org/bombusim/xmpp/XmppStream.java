@@ -32,6 +32,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.logger.LimeLog;
@@ -65,7 +67,17 @@ import android.content.Intent;
 
 public class XmppStream extends XmppParser {
     
-    String sessionId;
+    private static final long KEEPALIVE_PERIOD = 15*60*1000; //15 minutes
+
+	public static final int KEEP_ALIVE_TYPE_PING = 3;
+
+	public static final int KEEP_ALIVE_TYPE_IQ = 2;
+
+	public static final int KEEP_ALIVE_TYPE_CHAR = 1;
+
+	public static final int KEEP_ALIVE_TYPE_NONE = 1;
+
+	String sessionId;
     
     final XmppAccount account;
     
@@ -82,6 +94,8 @@ public class XmppStream extends XmppParser {
     
     //TODO: state machine:{offline, connecting, logged in} 
     public boolean loggedIn;
+
+	protected int keepAliveType = KEEP_ALIVE_TYPE_CHAR;
     
     //private int status = Presence.PRESENCE_INVISIBLE; //our status code
     private int status = Presence.PRESENCE_ONLINE; //our status code
@@ -96,6 +110,8 @@ public class XmppStream extends XmppParser {
 
 	private ArrayList<XmppObject> incomingQueue;
 
+	
+	private Timer keepAliveTimer;
 	
     /**
      * Constructor. Connects to the server and sends the jabber welcome message.
@@ -359,6 +375,8 @@ public class XmppStream extends XmppParser {
      */
     
     public void close() {
+    	
+    	cancelKeepAliveTimer();
         //if (keepAlive!=null) keepAlive.destroyTask();
         
     	//cancelling all XmppObjectListeners
@@ -383,25 +401,44 @@ public class XmppStream extends XmppParser {
 		}
         broadcastTerminatedConnection(new XmppTerminatedException("Connection closed"));
     }
+
+	private void cancelKeepAliveTimer() {
+		if (keepAliveTimer != null) {
+    		keepAliveTimer.cancel();
+    		keepAliveTimer = null;
+    	}
+	}
     
+	private void startKeepAliveTimer() {
+		//cancel old timer
+		cancelKeepAliveTimer();
+		//start new timer
+		keepAliveTimer = new Timer();
+		
+		keepAliveTimer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				try {
+					sendKeepAlive(keepAliveType);
+					LimeLog.i("KeepAlive", "sent", null);
+					
+				} catch (IOException e) {
+					cancel();
+					LimeLog.e("KeepAlive", "IOException", e.toString());
+				}
+				
+			}
+		}, KEEPALIVE_PERIOD, KEEPALIVE_PERIOD);
+	}
+	
     private void broadcastTerminatedConnection(Exception exception) {
 		// TODO Auto-generated method stub
     	System.out.println("Broadcasted exception <Close>");
 		exception.printStackTrace();
 	}
 
-	/**
-     * Method of sending data to the server.
-     *
-     * @param data The data to send.
-     */
+
     
- /* public void send( byte[] data ) throws IOException
-  {
-    outStream.write( data );
-    outStream.flush();
-  }
-  */
     
     /**
      * Method of sending data to the server.
@@ -410,18 +447,13 @@ public class XmppStream extends XmppParser {
      */
     public void sendKeepAlive(int type) throws IOException {
         switch (type){
-            case 3:
-                if (pingSent) {
-                    broadcastTerminatedConnection(new Exception("Ping Timeout"));
-                } else {
-                    //System.out.println("Ping myself");
-                    ping();
-                }
+            case KEEP_ALIVE_TYPE_PING:
+                ping();
                 break;
-            case 2:
+            case KEEP_ALIVE_TYPE_IQ:
                 send("<iq/>");
                 break;
-            case 1:
+            case KEEP_ALIVE_TYPE_CHAR:
                 send(" ");
         }
     }
@@ -435,7 +467,7 @@ public class XmppStream extends XmppParser {
     }
 
   
-    public void send(byte[] data, int length) throws IOException {
+    public synchronized void send(byte[] data, int length) throws IOException {
     	Lime.getInstance().getLog().addLogStreamingEvent(LoggerEvent.XMLOUT, jid, data, length);
     	if (Lime.getInstance().localXmlEnabled)   sendBroadcast(LoggerData.UPDATE_LOG);
     	
@@ -541,6 +573,8 @@ public class XmppStream extends XmppParser {
     	Presence online = new Presence(status, account.priority, statusMessage, "evgs");
     	//offline messages will be delivered after this presence
     	send(online);
+    	
+    	startKeepAliveTimer();
 
     }
     

@@ -35,6 +35,10 @@ public class NetworkSocketDataStream extends NetworkDataStream{
 		LimeLog.i("Socket", "Connecting to "+host+":"+port, null);
 		socket = new Socket(server, port);
 		
+		//keep-alive packets every 2 hours (by default)
+		//TODO: shorter keep-alive period
+		socket.setKeepAlive(true);
+		
 		istream = socket.getInputStream();
 		ostream = socket.getOutputStream();
 		
