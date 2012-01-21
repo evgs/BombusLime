@@ -112,8 +112,8 @@ public class Smilify {
         	String smileTag=smileTags[strnumber];
         	String synonims[] = smileTag.split(" ");
         	
-        	for (int s=0; s<synonims.length; s++) {
-        		addSmile(synonims[s], strnumber);
+        	for (String s: synonims) {
+        		addSmile(s, strnumber);
         	}
         }
     }
@@ -162,9 +162,9 @@ public class Smilify {
             
             //check spans collisions
             if (smileIndex!=NOSMILE) {
-            	for (int e=0; e<existingSpans.length; e++) {
-            		if (s.getSpanStart(existingSpans[e])>smileEndPos) continue;
-            		if (s.getSpanEnd  (existingSpans[e])<smileStartPos) continue;
+            	for (ClickableSpan existing : existingSpans) {
+            		if (s.getSpanStart(existing)>smileEndPos) continue;
+            		if (s.getSpanEnd  (existing)<smileStartPos) continue;
             		smileIndex = NOSMILE;
             	}
             }

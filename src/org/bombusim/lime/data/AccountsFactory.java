@@ -16,9 +16,9 @@ public class AccountsFactory {
 		dba.open();
 		long[] indexes = dba.getAccountIndexes();
 		
-		if (indexes != null)   for (int i=0; i<indexes.length; i++) {
-			XmppAccount a=dba.getAccount(indexes[i]);
-			a._id = indexes[i];
+		if (indexes != null)   for (long index : indexes) {
+			XmppAccount a=dba.getAccount(index);
+			a._id = index;
 			list.add(a);
 		}
 		

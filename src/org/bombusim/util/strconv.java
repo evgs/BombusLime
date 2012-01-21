@@ -264,8 +264,7 @@ public final class strconv {
     public static String byteArrayToHexString(byte[] buf) {
         StringBuilder out=new StringBuilder();
         
-        for (int index = 0; index < buf.length; index++) {
-        	byte b = buf[index];
+        for (byte b : buf ) {
         	
 	        char c = (char) ((b >> 4) & 0xf);
 	        if (c > 9)  c = (char)((c-10) + 'a');

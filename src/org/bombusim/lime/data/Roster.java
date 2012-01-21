@@ -68,8 +68,8 @@ public class Roster {
 		
 		//TODO: load using Cursor
 		if (indexes != null) 
-		for (int i=0; i<indexes.length; i++) {
-			contacts.add(db.getContact(indexes[i]));
+		for (long index : indexes) {
+			contacts.add(db.getContact(index));
 		}
 		
 		db.close();
