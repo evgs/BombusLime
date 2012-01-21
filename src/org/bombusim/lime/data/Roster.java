@@ -101,6 +101,14 @@ public class Roster {
 		}
 	}
 
+	public void forceRosterOffline(String rosterJid) {
+		for (Contact c: contacts) {
+			if (c.getRosterJid().equals(rosterJid)) {
+				c.setResourcesOffline();
+			}
+		}
+	}
+	
 	public void notifyVcard(Vcard vcard) {
 		
 		for (int index = 0; index < contacts.size(); index++) {

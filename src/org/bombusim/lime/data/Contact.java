@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.bombusim.lime.Lime;
+import org.bombusim.xmpp.stanza.Presence;
 
 import android.graphics.Bitmap;
 
@@ -209,6 +210,12 @@ public class Contact {
 	public void dropAvatar() {
 		//will be loaded on demand
 		avatar = null; 
+	}
+
+	public void setResourcesOffline() {
+		for (Resource r : resources) {
+			r.presence = Presence.PRESENCE_OFFLINE; 
+		}
 	}
 
 }

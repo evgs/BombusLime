@@ -8,6 +8,7 @@ import javax.net.ssl.SSLException;
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 import org.bombusim.lime.activity.RosterActivity;
+import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.xml.XMLException;
 import org.bombusim.xmpp.XmppAccount;
@@ -155,6 +156,10 @@ public class XmppService extends Service implements Runnable {
 			}
 		   	
 		   	if (!networkAvailable) running = false;
+		   	
+		   	Lime.getInstance().getRoster().forceRosterOffline(s.jid);
+			s.sendBroadcast(Roster.UPDATE_ROSTER);
+
 		   	
 		}
         cancelNotification();
