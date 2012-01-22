@@ -569,6 +569,8 @@ public class XmppStream extends XmppParser {
     	
     	addBlockListener(new MessageDispatcher());
     	
+    	addBlockListener(new IqPing);
+    	
     	iqroster.queryRoster(this);
 
     	
