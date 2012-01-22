@@ -59,7 +59,20 @@ public class IqRoster implements XmppObjectListener{
 				XmppObject query=iq.findNamespace("query", "jabber:iq:roster");
 				
 				String from = data.getAttribute("from");
-				//TODO: verify from equals my jid
+				
+				// http://tools.ietf.org/html/rfc6121#section-2.1.6
+				//    2.  A receiving client MUST ignore the stanza unless it has no 'from'
+			    //   attribute (i.e., implicitly from the bare JID of the user's
+			    //   account) or it has a 'from' attribute whose value matches the
+			    //   user's bare JID <user@domainpart>.
+				
+				if (from != null) { 
+					if (!from.equals(stream.jid)) return BLOCK_REJECTED;
+				} else {
+					from = stream.jid;
+				}
+				
+				
 				
 				ArrayList<XmppObject> items=query.getChildBlocks();
 				
