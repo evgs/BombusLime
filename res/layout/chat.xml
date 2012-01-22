@@ -3,14 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 	 	    
-    
 	<RelativeLayout
+	    android:id="@+id/contact_head"
 	    android:layout_width="wrap_content"
-	    android:layout_height="?android:attr/listPreferredItemHeight" 
-
-    	android:focusable="true" android:focusableInTouchMode="true"
-
-        android:id="@+id/contact_head" >
+	    android:layout_height="@dimen/avatarSize"
+	    android:background="@android:drawable/dark_header"
+	    android:focusable="true"
+	    android:focusableInTouchMode="true" >
 	    	
 	    <ImageView
 	        android:id="@+id/rit_photo"
