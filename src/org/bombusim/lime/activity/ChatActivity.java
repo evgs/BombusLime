@@ -25,7 +25,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -96,6 +99,9 @@ public class ChatActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
         setContentView(R.layout.chat);
         
         
@@ -112,6 +118,8 @@ public class ChatActivity extends Activity {
 
         chatListView = (ListView) findViewById(R.id.chatListView);
 
+        enableTrackballTraversing();
+        
         attachToChat();
         
         sendButton.setOnClickListener(new OnClickListener() {
@@ -155,7 +163,11 @@ public class ChatActivity extends Activity {
         
 	}
 
-    private class ChatListAdapter extends BaseAdapter {
+    private void enableTrackballTraversing() {
+    	//TODO: http://stackoverflow.com/questions/2679948/focusable-edittext-inside-listview
+	}
+
+	private class ChatListAdapter extends BaseAdapter {
     	
         public ChatListAdapter(Context context)
         {
