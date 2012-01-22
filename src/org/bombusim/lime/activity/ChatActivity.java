@@ -1,5 +1,6 @@
 package org.bombusim.lime.activity;
 
+import java.lang.annotation.Target;
 import java.security.InvalidParameterException;
 
 import org.bombusim.lime.Lime;
@@ -16,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.ClipboardManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -23,14 +25,19 @@ import android.text.format.Time;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.text.util.Linkify;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
@@ -124,6 +131,8 @@ public class ChatActivity extends Activity {
 
         chatListView = (ListView) findViewById(R.id.chatListView);
 
+        registerForContextMenu(chatListView);
+        
         enableTrackballTraversing();
         
         attachToChat();
@@ -169,6 +178,44 @@ public class ChatActivity extends Activity {
         
 	}
 
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		
+		super.onCreateContextMenu(menu, v, menuInfo);
+		
+		menu.setHeaderTitle(R.string.messageMenuTitle);
+		
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.message_menu, menu);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		switch (item.getItemId()) {
+		case R.id.cmdCopy:
+			try {
+				String s = ((MessageView)(info.targetView)).toString();
+
+				// Gets a handle to the clipboard service.
+				ClipboardManager clipboard = (ClipboardManager)
+				        getSystemService(Context.CLIPBOARD_SERVICE);
+				
+			
+				// Set the clipboard's primary clip.
+				clipboard.setText(s);
+				
+			} catch (Exception e) {}
+			return true;
+		//case R.id.delete:
+		//	deleteNote(info.id);
+	    //return true;
+		default:
+			return super.onContextItemSelected(item);
+	  }
+	}	
+	
     private void enableTrackballTraversing() {
     	//TODO: http://stackoverflow.com/questions/2679948/focusable-edittext-inside-listview
     	chatListView.setItemsCanFocus(true);
@@ -264,7 +311,6 @@ public class ChatActivity extends Activity {
             //mMessageBody.setTextIsSelectable(true);
             
             addView(mMessageBody, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-            setExpanded(true);
         }
         
         
@@ -304,17 +350,13 @@ public class ChatActivity extends Activity {
             mMessageBody.setMovementMethod(LinkMovementMethod.getInstance());
             
         }
-
-        /**
-         * Convenience method to expand or hide the item
-         */
-        public void setExpanded(boolean expanded) {
-            mMessageBody.setVisibility(expanded ? VISIBLE : GONE);
+        
+        @Override
+        public String toString() {
+        	return mMessageBody.getText().toString();
         }
         
-        private TextView mTime;
         private TextView mMessageBody;
-        private TextView mFrom;
     }
     
 	
