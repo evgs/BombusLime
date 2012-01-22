@@ -16,9 +16,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.format.Time;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ForegroundColorSpan;
 import android.text.util.Linkify;
 import android.view.KeyEvent;
 import android.view.View;
@@ -64,6 +67,9 @@ public class ChatActivity extends Activity {
 	Chat chat;
 	int chatSize; //caching chat.getChatSize() to provide atomic updating
 	
+	protected String visavisNick;
+	protected String myNick;
+	
 	/*
 	 * called when android:launchMode="singleTop"
 	 * single-chat mode, replaces existing chat;
@@ -92,7 +98,7 @@ public class ChatActivity extends Activity {
         vAvatar.setImageBitmap(visavis.getLazyAvatar(true));
         vNick.setText(visavis.getScreenName());
         vStatusMessage.setText(visavis.getStatusMessage());
-
+        
         contactHead.requestFocus(); //stealing focus from messageBox
 	}
 	
@@ -219,9 +225,10 @@ public class ChatActivity extends Activity {
             } else {
                 sv = (MessageView)convertView;
             }
-                sv.setMessageType(m.type);
-                sv.setText(m.timestamp, m.nick, m.messageBody);
-                //sv.setExpanded(p.expanded);
+            
+            String sender = (m.type == Message.TYPE_MESSAGE_OUT)? myNick : visavisNick ;  
+            sv.setText(m.timestamp, sender, m.messageBody, m.type);
+            //sv.setExpanded(p.expanded);
             
             return sv;
         }
@@ -250,50 +257,53 @@ public class ChatActivity extends Activity {
             
             this.setOrientation(VERTICAL);
             
-            // Here we build the child views in code. They could also have
-            // been specified in an XML file.
-            
             mMessageBody = new TextView(context);
-            mFrom = new TextView(context);
-            mTime = new TextView(context);
             
-            mTime.setPadding(0, 0, 6, 0);
+            //TODO: available in API 11
+            //mMessageBody.setTextIsSelectable(true);
             
-            LinearLayout s1 = new LinearLayout(context);
-            s1.setOrientation(HORIZONTAL);
-            s1.addView(mTime, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            s1.addView(mFrom, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-            
-            addView(s1);
             addView(mMessageBody, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
             setExpanded(true);
         }
         
         
-        public void setText(long time, String title, String message) {
+        public void setText(long time, String sender, String message, int messageType) {
+
+        	//TODO: smart time formatting
+        	// 1 minute ago,
+        	// hh:mm (after 1 hour)
+        	// etc...
+        	
         	tf.set(time);
+        	String tm=tf.format("%H:%M ");
+
+        	SpannableStringBuilder ss = new SpannableStringBuilder(tm);
+
+        	int addrEnd=0;
         	
-        	mTime.setText(tf.format("%H:%M"));
+        	if (message.startsWith("/me ")) {
+        		message = "*" + sender + message.substring(3);
+        	} else {
+        		ss.append('<').append(sender).append("> ");
+        	}
         	
-            mFrom.setText(title);
-            
-            //TODO: clickable links
-            
-            SpannableString ss = new SpannableString(message); 
-            Linkify.addLinks(ss, Linkify.EMAIL_ADDRESSES | Linkify.WEB_URLS);
-            Lime.getInstance().getSmilify().addSmiles(ss);
+    		addrEnd = ss.length()-1;
+
+    		int color= Message.getColor(messageType);
+       		ss.setSpan(new ForegroundColorSpan(color), 0, addrEnd, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+
+       		SpannableString msg = new SpannableString(message);
+        	
+            Linkify.addLinks(msg, Linkify.EMAIL_ADDRESSES | Linkify.WEB_URLS);
+            Lime.getInstance().getSmilify().addSmiles(msg);
+
+            ss.append(msg);
             
             mMessageBody.setText(ss);
             mMessageBody.setMovementMethod(LinkMovementMethod.getInstance());
             
         }
 
-        
-        public void setMessageType(int type) {
-        	int color= Message.getColor(type);
-        	mFrom.setTextColor(color);
-        	mMessageBody.setTextColor(color);
-        }
         /**
          * Convenience method to expand or hide the item
          */
@@ -342,6 +352,10 @@ public class ChatActivity extends Activity {
 	protected void onResume() {
 		//TODO: refresh message list, focus to last unread
 		serviceBinding.doBindService();
+
+        visavisNick = visavis.getScreenName();
+        //TODO: get my nick
+        myNick = "Me"; //serviceBinding.getXmppStream(visavis.getRosterJid()).jid; 
 
 		refreshVisualContent();
 		br = new ChatBroadcastReceiver();
