@@ -171,6 +171,7 @@ public class ChatActivity extends Activity {
 
     private void enableTrackballTraversing() {
     	//TODO: http://stackoverflow.com/questions/2679948/focusable-edittext-inside-listview
+    	chatListView.setItemsCanFocus(true);
 	}
 
 	private class ChatListAdapter extends BaseAdapter {
