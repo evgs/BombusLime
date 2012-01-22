@@ -46,6 +46,7 @@ import org.bombusim.xml.XMLException;
 import org.bombusim.xml.XMLParser;
 import org.bombusim.xmpp.exception.XmppException;
 import org.bombusim.xmpp.exception.XmppTerminatedException;
+import org.bombusim.xmpp.handlers.IqPing;
 import org.bombusim.xmpp.handlers.IqRoster;
 import org.bombusim.xmpp.handlers.IqTimeReply;
 import org.bombusim.xmpp.handlers.IqVersionReply;
@@ -357,6 +358,9 @@ public class XmppStream extends XmppParser {
                 continue;
             }
 
+            if (length == -1) 
+            	throw new IOException("(-1) End of stream reached");
+            
         	Lime.getInstance().getLog().addLogStreamingEvent(LoggerEvent.XMLIN, jid, cbuf, length);
         	if (Lime.getInstance().localXmlEnabled)   sendBroadcast(LoggerData.UPDATE_LOG);
             
