@@ -70,12 +70,10 @@ public class XmppStream extends XmppParser {
     private static final long KEEPALIVE_PERIOD = 15*60*1000; //15 minutes
 
 	public static final int KEEP_ALIVE_TYPE_PING = 3;
-
-	public static final int KEEP_ALIVE_TYPE_IQ = 2;
-
+	public static final int KEEP_ALIVE_TYPE_IQ   = 2;
 	public static final int KEEP_ALIVE_TYPE_CHAR = 1;
 
-	public static final int KEEP_ALIVE_TYPE_NONE = 1;
+	public static final int KEEP_ALIVE_TYPE_NONE = 0;
 
 	String sessionId;
     
