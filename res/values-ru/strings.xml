@@ -71,4 +71,10 @@
      
     <string name="streamCompression">Сжатие траффика</string>
     
+    <string name="resourcePriority">Приоритет</string>
+    <string name="accountAutoLogin">Подключаться при старте</string>
+    <string name="chatNotify">Новое сообщение</string>
+    <string name="messageMenuTitle">Сообщение</string>
+    <string name="copyToClipboard">Скопировать текст</string>
+    
 </resources>
