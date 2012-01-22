@@ -225,13 +225,13 @@ public class XmppStream extends XmppParser {
     		
     		XmppObject currentBlock=incomingQueue.get(index);
     		
-    		for (int i=0; i<dispatcherQueue.size(); i++) {
-        		int result=dispatcherQueue.get(i).blockArrived(currentBlock, this);
+    		for (XmppObjectListener dispatcher : dispatcherQueue) {
+        		int result=dispatcher.blockArrived(currentBlock, this);
         		switch (result) {
     			case XmppObjectListener.BLOCK_PROCESSED: 
     				continue incomingLoop;
     			case XmppObjectListener.NO_MORE_BLOCKS:
-    				dispatcherQueue.remove(i);
+    				dispatcherQueue.remove(dispatcher);
     				continue incomingLoop;
     			}
         	}
