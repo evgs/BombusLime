@@ -18,6 +18,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.format.Time;
+import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.KeyEvent;
 import android.view.View;
@@ -97,6 +98,7 @@ public class ChatActivity extends Activity {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.chat);
         
+        
         serviceBinding = new XmppServiceBinding();
   
         contactHead = findViewById(R.id.contact_head);
@@ -111,7 +113,7 @@ public class ChatActivity extends Activity {
         chatListView = (ListView) findViewById(R.id.chatListView);
 
         attachToChat();
-        		
+        
         sendButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) { 	sendMessage(); 	}
@@ -270,6 +272,7 @@ public class ChatActivity extends Activity {
             Lime.getInstance().getSmilify().addSmiles(ss);
             
             mMessageBody.setText(ss);
+            mMessageBody.setMovementMethod(LinkMovementMethod.getInstance());
             
         }
 

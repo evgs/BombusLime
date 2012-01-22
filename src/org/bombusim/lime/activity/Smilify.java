@@ -89,8 +89,8 @@ public class Smilify {
 		    char c=smile.charAt(i);
 		    p1=p.findChild(c);
 		    if (p1==null) {
-			p1=new SmileNode();
-			p.addChild((char)c,p1);
+		    	p1=new SmileNode();
+		    	p.addChild((char)c,p1);
 		    }
 		    p=p1;
 		}
