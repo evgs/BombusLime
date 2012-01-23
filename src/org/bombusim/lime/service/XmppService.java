@@ -217,7 +217,6 @@ public class XmppService extends Service implements Runnable {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
 			
 			checkNetworkState();
 

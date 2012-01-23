@@ -68,7 +68,7 @@ import android.content.Intent;
 
 public class XmppStream extends XmppParser {
     
-    private static final long KEEPALIVE_PERIOD = 15*60*1000; //15 minutes
+    private static final long KEEPALIVE_PERIOD = 10*60*1000; //15 minutes
 
 	public static final int KEEP_ALIVE_TYPE_PING = 3;
 	public static final int KEEP_ALIVE_TYPE_IQ   = 2;
@@ -94,7 +94,7 @@ public class XmppStream extends XmppParser {
     //TODO: state machine:{offline, connecting, logged in} 
     public boolean loggedIn;
 
-	protected int keepAliveType = KEEP_ALIVE_TYPE_CHAR;
+	protected int keepAliveType = KEEP_ALIVE_TYPE_PING;
     
     //private int status = Presence.PRESENCE_INVISIBLE; //our status code
     private int status = Presence.PRESENCE_ONLINE; //our status code
