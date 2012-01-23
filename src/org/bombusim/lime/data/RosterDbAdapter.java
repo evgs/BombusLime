@@ -11,7 +11,8 @@ public class RosterDbAdapter  {
 
 	protected final static String DATABASE_TABLE = "contacts";
 	protected final static String DATABASE_NAME = "contacts.db";
-	protected final static int    DATABASE_VERSION = 1;
+	protected final static int    DATABASE_VERSION = 2;
+	//v2: just drop potentially buggy roster after v1
 	
 	public final static String KEY_ID =       "_id";
 	public final static String KEY_RJID =     "rosterjid";

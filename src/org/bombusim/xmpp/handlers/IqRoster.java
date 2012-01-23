@@ -54,39 +54,47 @@ public class IqRoster implements XmppObjectListener{
 			throws IOException {
 		try {
 			XmppObject iq=(Iq)data;
-			//TODO: roster push
-			if (iq.getTypeAttribute().equals("result")) {
-				XmppObject query=iq.findNamespace("query", "jabber:iq:roster");
-				
-				String from = data.getAttribute("from");
-				
-				// http://tools.ietf.org/html/rfc6121#section-2.1.6
-				//    2.  A receiving client MUST ignore the stanza unless it has no 'from'
-			    //   attribute (i.e., implicitly from the bare JID of the user's
-			    //   account) or it has a 'from' attribute whose value matches the
-			    //   user's bare JID <user@domainpart>.
-				
-				if (from != null) { 
-					if (!from.equals(stream.jid)) return BLOCK_REJECTED;
-				} else {
-					from = stream.jid;
-				}
-				
-				
+			
+			XmppObject query=iq.findNamespace("query", "jabber:iq:roster");
+			if (query == null) return BLOCK_REJECTED;
+
+			String from = data.getAttribute("from");
+			
+			// http://tools.ietf.org/html/rfc6121#section-2.1.6
+			//    2.  A receiving client MUST ignore the stanza unless it has no 'from'
+		    //   attribute (i.e., implicitly from the bare JID of the user's
+		    //   account) or it has a 'from' attribute whose value matches the
+		    //   user's bare JID <user@domainpart>.
+			
+			if (from != null) { 
+				if (!from.equals(stream.jid)) return BLOCK_REJECTED;
+			} else {
+				from = stream.jid;
+			}
+
+			String type = iq.getTypeAttribute();
+			
+			String id = iq.getAttribute("id");
+
+			//roster result or roster push
+			if (type.equals("result") || type.equals("set")) {
+				ArrayList<Contact> r=new ArrayList<Contact>();
 				
 				ArrayList<XmppObject> items=query.getChildBlocks();
 				
-				ArrayList<Contact> r=new ArrayList<Contact>();
-				
-				for (int i=0; i<items.size(); i++) {
-					XmppObject item=items.get(i);
+				for (XmppObject item : items) {
 					Contact c=new Contact( item.getAttribute("jid"), item.getAttribute("name") );
 					c.setSubscription( item.getAttribute("subscription") );
 					c.setRJid(from);
 					r.add(c);
 				}
+
+				boolean set = type.equals("set");
+				Lime.getInstance().getRoster().replaceRoster(r, from, !set);
 				
-				Lime.getInstance().getRoster().replaceRoster(r, from);
+				if (set) 				
+					stream.send(new Iq(null,Iq.TYPE_RESULT, id));
+
 				
 				stream.sendBroadcast(Roster.UPDATE_ROSTER);
 				

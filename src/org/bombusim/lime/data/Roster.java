@@ -23,27 +23,28 @@ public class Roster {
 	
 	public ArrayList<Contact> getContacts() { return contacts; }
 
-	public void replaceRoster(ArrayList<Contact> r, String rosterJid) {
+	public void replaceRoster(ArrayList<Contact> updates, String rosterJid, boolean replaced) {
 		//finalize all pending updates
 		updateDB();  
+
 		//1. mark all for drop
-		for (int index = 0; index < contacts.size(); index++) {
-			Contact c = contacts.get(index);
+		
+		if (replaced)
+		for (Contact c : contacts) {
 			if (c.getRosterJid().equals(rosterJid))
 			c.setUpdate(Contact.UPDATE_DROP);
 		}
 		
 		//2. import or update r
-		for (int index = 0; index < r.size(); index++) {
-			Contact n = r.get(index); 	
-			int i = contacts.indexOf(n);
+		for (Contact upd : updates) {
+			int i = contacts.indexOf(upd);
 			if (i<0) {
-				contacts.add(n);
-				n.setUpdate(Contact.UPDATE_SAVE);
+				contacts.add(upd);
+				upd.setUpdate(Contact.UPDATE_SAVE);
 			} else {
-				Contact o = contacts.get(index);
+				Contact o = contacts.get(i);
 				o.setUpdate(Contact.UPDATE_NONE);
-				o.update(n);
+				o.update(upd);
 			}
 		}
 		

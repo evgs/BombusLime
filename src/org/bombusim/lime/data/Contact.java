@@ -30,6 +30,12 @@ public class Contact {
 	public final static int UPDATE_NONE = 0;
 	public final static int UPDATE_SAVE = 1;
 	public final static int UPDATE_DROP = 2;
+
+	public final static int SUBSCR_NONE = 0;
+	public final static int SUBSCR_FROM = 1;
+	public final static int SUBSCR_TO =   2;
+	public final static int SUBSCR_BOTH = 3;
+	public final static int SUBSCR_REMOVE = -1;
 	
 	public Contact(String jid, String name, long id) {
 		this.jid=jid;
@@ -102,9 +108,15 @@ public class Contact {
 
 	public void setSubscription(int subscr) { this.subscription = subscr; }
 	
-	public void setSubscription(String attribute) {
-		// TODO subscription
-		
+	public void setSubscription(String subscr) {
+		if (subscr.equals("none")) { subscription = SUBSCR_NONE; }
+		if (subscr.equals("from")) { subscription = SUBSCR_FROM; }
+		if (subscr.equals("to"))   { subscription = SUBSCR_TO;   }
+		if (subscr.equals("both")) { subscription = SUBSCR_BOTH; }
+		if (subscr.equals("remove")) {
+			subscription = SUBSCR_REMOVE;
+			updateMark = UPDATE_DROP;
+		}
 	}
 
 	public String getRosterJid() { return rosterJid; }
@@ -145,10 +157,11 @@ public class Contact {
 	}
 	
 	public void update(Contact n) {
-		//if (!compareNStrings(avatarId, n.avatarId)) {
-		//	avatarId = n.avatarId;
-		//	updateMark = UPDATE_SAVE;
-		//}
+		if (n.updateMark == UPDATE_DROP) {
+			updateMark = UPDATE_DROP;
+			return;
+		}
+
 		if (!compareNStrings(name, n.name)) {
 			name = n.name;
 			updateMark = UPDATE_SAVE;
@@ -159,6 +172,7 @@ public class Contact {
 			subscription = n.subscription;
 			updateMark = UPDATE_SAVE;
 		}
+		
 	}
 
 	private final static boolean compareNStrings(String s1, String s2) {
