@@ -123,32 +123,28 @@ public class XmppService extends Service implements Runnable {
 		        showNotification(true);
 			   	s.connect();
 			   	
-				//Toast.makeText(this, "Connecting...", Toast.LENGTH_SHORT).show();
 			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
 		    	LimeLog.e("XmppStream", "Unknown Host", e.toString());
 				running = false;
-				break;
 				
-				//Toast.makeText(this, "Unknown host", Toast.LENGTH_SHORT).show();
 			} catch (SSLException e) {
-				running = false;
-		    	LimeLog.e("XmppStream", "SSL Error", e.toString());
-		    	break;
+				//TODO: Raise error notification if Certificate exception
+		        showNotification(false);
+				if (s.isSecured()) {
+					LimeLog.e("XmppStream", "SSL Error (IO)", e.toString());
+				} else {
+					LimeLog.e("XmppStream", "SSL Error (Handshake)", e.toString());
+					running = false;
+				}
 				
 		    } catch (IOException e) {
 		    	if (!networkAvailable) running = false;
 		    	LimeLog.e("XmppStream", "IO Error", e.toString());
 		        showNotification(false);
-		    	//TODO: check network state before reconnecting
-		    	//TODO: check status (online/offline)
-				e.printStackTrace();
 			} catch (XMLException e) {
 		    	LimeLog.e("XmppStream", "XML broken", e.toString());
-				//Toast.makeText(this, "XML exception", Toast.LENGTH_SHORT).show();
 				// TODO Auto-generated catch block
 		        showNotification(false);
-				e.printStackTrace();
 			} catch (XmppException e) {
 		    	LimeLog.e("XmppStream", "Xmpp Error", e.getMessage());
 				//Toast.makeText(this, "Xmpp exception", Toast.LENGTH_SHORT).show();
@@ -157,6 +153,7 @@ public class XmppService extends Service implements Runnable {
 				e.printStackTrace();
 			}
 		   	
+	    	//TODO: check status (online/offline)
 		   	if (!networkAvailable) running = false;
 		   	
 		   	Lime.getInstance().getRoster().forceRosterOffline(s.jid);

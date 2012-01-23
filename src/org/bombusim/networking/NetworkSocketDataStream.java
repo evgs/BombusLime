@@ -4,6 +4,9 @@ import java.io.IOException;
 
 import java.net.Socket;
 import java.net.UnknownHostException;
+
+import javax.net.ssl.HandshakeCompletedEvent;
+import javax.net.ssl.HandshakeCompletedListener;
 import javax.net.ssl.SSLSocket;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -81,6 +84,14 @@ public class NetworkSocketDataStream extends NetworkDataStream{
 
 			
 		SSLSocket ssls=(SSLSocket) sf.createSocket(socket, host, port, true);
+		
+		ssls.addHandshakeCompletedListener(new HandshakeCompletedListener() {
+			@Override
+			public void handshakeCompleted(HandshakeCompletedEvent event) {
+				ssl=true;
+			}
+		});
+		
 		ssls.startHandshake();
 	    socket = ssls;
 		    
@@ -88,7 +99,6 @@ public class NetworkSocketDataStream extends NetworkDataStream{
 		istream = socket.getInputStream();
 		ostream = socket.getOutputStream();
 
-		ssl=true;
 	}
 	
 	@Override
