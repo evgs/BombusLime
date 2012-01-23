@@ -15,6 +15,7 @@ import org.bombusim.xmpp.XmppAccount;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.exception.XmppException;
+import org.xbill.DNS.Lookup;
 import org.xbill.DNS.ResolverConfig;
 
 import android.app.Notification;
@@ -110,6 +111,7 @@ public class XmppService extends Service implements Runnable {
 		        showNotification(false);
 			   	//update DNS server info
 			   	ResolverConfig.refresh();
+			   	Lookup.refreshDefault();
 
 			   	//language code for xmpp stream
 			   	//TODO: check http://developer.android.com/reference/java/util/Locale.html
