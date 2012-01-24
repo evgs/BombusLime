@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/cmdCopy" android:title="@string/copyToClipboard" android:orderInCategory="1" ></item>
+    <item android:id="@+id/cmdDelete" android:title="@string/removeMessage" android:orderInCategory="2" ></item>
 </menu>

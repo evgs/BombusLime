@@ -120,5 +120,13 @@
     <string name="chatNotify">New message</string>
     <string name="messageMenuTitle">Message</string>
     <string name="copyToClipboard">Copy to clipboard</string>
+    <string name="removeMessage">Remove from history</string>
+    <string name="contactVCard">Show VCard</string>
+    <string name="openChat">Open Chat</string>
+    <string name="subscription">Subscription</string>
+    <string name="subscrRequestFrom">Ask subscription</string>
+    <string name="subscrSendTo">Grant subscription</string>
+    <string name="subscrRemove">Revoke subscription</string>
+    <string name="deleteContact">Delete contact</string>
     
 </resources>

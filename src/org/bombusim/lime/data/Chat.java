@@ -57,4 +57,20 @@ public class Chat {
 	public void markRead(int index){
 		//TODO: mark unread
 	}
+
+	public void removeFromHistory(long id) {
+		ChatHistoryDbAdapter db = new ChatHistoryDbAdapter(Lime.getInstance().getApplicationContext(), visavis.getRosterJid());
+		db.open();
+		db.removeMessage(id);
+		db.close();
+		
+		for (int index = 0; index<messages.size(); index++) {
+			if (messages.get(index).getId() == id) {
+
+				messages.remove(index);
+				break;
+			}
+		}
+		
+	}
 }

@@ -1,6 +1,5 @@
 package org.bombusim.lime.activity;
 
-import java.lang.annotation.Target;
 import java.security.InvalidParameterException;
 
 import org.bombusim.lime.Lime;
@@ -201,16 +200,21 @@ public class ChatActivity extends Activity {
 				// Gets a handle to the clipboard service.
 				ClipboardManager clipboard = (ClipboardManager)
 				        getSystemService(Context.CLIPBOARD_SERVICE);
-				
 			
 				// Set the clipboard's primary clip.
 				clipboard.setText(s);
 				
 			} catch (Exception e) {}
 			return true;
-		//case R.id.delete:
-		//	deleteNote(info.id);
-	    //return true;
+			
+		case R.id.cmdDelete:
+
+			chatListView.setVisibility(View.GONE);
+			chat.removeFromHistory(info.id);
+			refreshVisualContent();
+			
+			return true;
+
 		default:
 			return super.onContextItemSelected(item);
 	  }
@@ -253,11 +257,11 @@ public class ChatActivity extends Activity {
         }
 
         /**
-         * Use the array index as a unique id.
+         * Use message id as a unique id.
          * @see android.widget.ListAdapter#getItemId(int)
          */
         public long getItemId(int position) {
-            return position;
+            return chat.getMessage(position).getId();
         }
 
         /**

@@ -51,4 +51,6 @@ public class Message {
 	public void setId(long id) { 
 		this._id = id; 
 	}
+	
+	public long getId() { return _id; }
 }
