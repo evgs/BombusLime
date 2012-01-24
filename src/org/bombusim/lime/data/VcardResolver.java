@@ -59,6 +59,7 @@ public class VcardResolver {
 				return; 
 			}
 			queue.remove(pending);
+			//pending.setAvatar(null, null);
 		}
 
 		try {
@@ -67,11 +68,10 @@ public class VcardResolver {
 		
 		timeout = current + VCARD_TIMEOUT_S * 1000;
 		
-		int index = queue.size()-1;
 		
-		if (index < 0) return;
+		if (queue.isEmpty()) return;
 		
-		pending = queue.get(index);
+		pending = queue.get(queue.size()-1);
 		
 		
 		try {
@@ -86,7 +86,9 @@ public class VcardResolver {
 			
 			setQueryTimer();
 			
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			pending = null;
+		}
 		
 		
 	}
