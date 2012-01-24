@@ -1,6 +1,7 @@
 package org.bombusim.lime.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.bombusim.lime.Lime;
 
@@ -58,6 +59,9 @@ public class Roster {
 		//for (int index = 0; index < contacts.size(); index++) {
 		//	contacts.get(index).getLazyAvatar(false);
 		//}
+		
+		Collections.sort(contacts);
+		
 	}
 	
 	private void loadDB(String rosterJid) {

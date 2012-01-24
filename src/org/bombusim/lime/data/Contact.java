@@ -8,7 +8,7 @@ import org.bombusim.xmpp.stanza.Presence;
 
 import android.graphics.Bitmap;
 
-public class Contact {
+public class Contact implements Comparable<Contact>{
 	private String rosterJid;
 	private String jid;
 	private String name;
@@ -133,12 +133,6 @@ public class Contact {
 		// TODO Auto-generated method stub
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof Contact) {
-			return jid.equals(((Contact)o).getJid());
-		} else return false;
-	}
 
 	public int getUpdate() { return updateMark; }
 	
@@ -230,6 +224,21 @@ public class Contact {
 		for (Resource r : resources) {
 			r.presence = Presence.PRESENCE_OFFLINE; 
 		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Contact) {
+			return jid.equals(((Contact)o).getJid());
+		} else return false;
+	}
+
+	@Override
+	public int compareTo(Contact another) {
+		int diff = activeResource.presence - another.activeResource.presence;
+		if (diff !=0) return diff;
+		//TODO: compare fast indexes
+		return getScreenName().compareTo(another.getScreenName());
 	}
 
 }
