@@ -118,7 +118,7 @@ public class ChatActivity extends Activity {
         setContentView(R.layout.chat);
         
         
-        serviceBinding = new XmppServiceBinding();
+        serviceBinding = new XmppServiceBinding(this);
   
         contactHead = findViewById(R.id.contact_head);
         vAvatar = (ImageView) findViewById(R.id.rit_photo);        

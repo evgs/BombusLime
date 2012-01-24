@@ -10,6 +10,14 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 
 public class XmppServiceBinding {
+	private Context context;
+	
+	private XmppServiceBinding(){};
+	public XmppServiceBinding(Context context) {
+		this();
+		this.context = context;
+	}
+	
 	private XmppService xmppService;
 	private ServiceConnection xsc = new ServiceConnection() {
 		
@@ -27,7 +35,7 @@ public class XmppServiceBinding {
 	};
 	
 	public void doBindService() { 
-		Lime.getInstance().bindService(new Intent(Lime.getInstance().getApplicationContext(), XmppService.class), xsc, Context.BIND_AUTO_CREATE); 
+		Lime.getInstance().bindService(new Intent(context, XmppService.class), xsc, Context.BIND_AUTO_CREATE); 
 	}
 
 	public void doUnbindService() {

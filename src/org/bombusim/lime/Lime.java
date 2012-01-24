@@ -66,7 +66,8 @@ public class Lime extends Application {
 		
 		log = new LoggerData();
 		
-		serviceBinding = new XmppServiceBinding();
+		//TODO: move serviceBinding into activities, and replace context
+		serviceBinding = new XmppServiceBinding(getApplicationContext());
 		
 		vcardResolver = new VcardResolver();
 

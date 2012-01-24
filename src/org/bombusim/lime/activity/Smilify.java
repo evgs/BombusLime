@@ -38,12 +38,8 @@ import java.util.ArrayList;
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 
-import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.sax.RootElement;
 import android.text.Spannable;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
