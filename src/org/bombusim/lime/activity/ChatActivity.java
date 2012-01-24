@@ -302,6 +302,7 @@ public class ChatActivity extends Activity {
 
 	// Time formatter
 	private Time tf=new Time(Time.getCurrentTimezone());
+	private final static long MS_PER_DAY = 1000*60*60*24;
     
     private class MessageView extends LinearLayout {
         public MessageView(Context context) {
@@ -325,8 +326,14 @@ public class ChatActivity extends Activity {
         	// hh:mm (after 1 hour)
         	// etc...
         	
+        	long now = System.currentTimeMillis();
+        	
+        	String fmt = "%H:%M ";
+        	if (now-time > MS_PER_DAY); 
+        		fmt = "%d.%m.%Y %H:%M ";
+
         	tf.set(time);
-        	String tm=tf.format("%H:%M ");
+        	String tm=tf.format(fmt);
 
         	SpannableStringBuilder ss = new SpannableStringBuilder(tm);
 
