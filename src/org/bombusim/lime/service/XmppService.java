@@ -156,6 +156,8 @@ public class XmppService extends Service implements Runnable {
 	    	//TODO: check status (online/offline)
 		   	if (!networkAvailable) running = false;
 		   	
+		   	s.close();
+		   	
 		   	Lime.getInstance().getRoster().forceRosterOffline(s.jid);
 			s.sendBroadcast(Roster.UPDATE_ROSTER);
 

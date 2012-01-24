@@ -384,6 +384,10 @@ public class XmppStream extends XmppParser {
     	//cancelling all XmppObjectListeners
         dispatcherQueue.clear();
         
+        loggedIn = false;
+        
+        cancelKeepAliveTimer();
+        
         try {
             send( "</stream:stream>" );
             //a chance to gracefully close xmpp streams
