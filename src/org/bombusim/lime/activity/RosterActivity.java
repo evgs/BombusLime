@@ -12,12 +12,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.Toast;
 
 public class RosterActivity extends ListActivity {
 	@Override
@@ -28,6 +36,8 @@ public class RosterActivity extends ListActivity {
 		ListAdapter adapter=new RosterAdapter(this);
 		
 		setListAdapter(adapter);
+		
+		registerForContextMenu(getListView());
 	
 	}
 
@@ -37,7 +47,11 @@ public class RosterActivity extends ListActivity {
 		//Toast.makeText(this, item + " selected", Toast.LENGTH_LONG).show();
 		Contact c = (Contact) getListAdapter().getItem(position);
 	
-		Intent openChat =  new Intent(getBaseContext(), ChatActivity.class);
+		openChatActivity(c);
+	}
+
+	public void openChatActivity(Contact c) {
+		Intent openChat =  new Intent(this, ChatActivity.class);
 		openChat.putExtra(ChatActivity.MY_JID, c.getRosterJid());
 		openChat.putExtra(ChatActivity.TO_JID,   c.getJid());
 		startActivityForResult(openChat, 0);
@@ -75,6 +89,52 @@ public class RosterActivity extends ListActivity {
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+
+		super.onCreateContextMenu(menu, v, menuInfo);
+		
+		AdapterContextMenuInfo cmi = (AdapterContextMenuInfo) menuInfo;
+		
+		//TODO: select menu to be created
+		Contact c = (Contact) getListAdapter().getItem(cmi.position);
+
+		menu.setHeaderTitle(c.getScreenName());
+		
+		Drawable icon = new BitmapDrawable(c.getAvatar());
+		menu.setHeaderIcon(icon);
+		
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.contact_menu, menu);
+		
+	}
+	
+	private int contextMenuItemPosition;
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		
+		// workaround for issue http://code.google.com/p/android/issues/detail?id=7139
+		// item.getMenuInfo() returns null for submenu items
+		int pos= (info!=null)? info.position : contextMenuItemPosition;
+		contextMenuItemPosition = pos;
+
+		Contact c = (Contact) getListAdapter().getItem(pos);
+
+		switch (item.getItemId()) {
+		case R.id.cmdChat: 
+			openChatActivity(c);
+			return true;
+			
+		default:
+			Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show();
+		}
+
+		return super.onContextItemSelected(item);
 	}
 	
 	private class RosterBroadcastReceiver extends BroadcastReceiver {

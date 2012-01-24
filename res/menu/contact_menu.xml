@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/cmdVcard" android:title="@string/contactVCard" android:orderInCategory="2"></item>
+    <item android:id="@+id/cmdEdit" android:orderInCategory="3" android:title="@string/editContact"></item>
+    <item android:id="@+id/cmdChat" android:title="@string/openChat" android:orderInCategory="1"> </item>
+    <item android:id="@+id/cmdSubscr" android:title="@string/subscription" android:orderInCategory="4">
+        <menu>
+            <item android:id="@+id/cmdSubscrRequestFrom" android:title="@string/subscrRequestFrom" android:orderInCategory="1"/>
+            <item android:id="@+id/cmdSubscrSendTo" android:orderInCategory="2" android:title="@string/subscrSendTo"/>
+            <item android:id="@+id/cmdSubscrRemove" android:orderInCategory="3" android:title="@string/subscrRemove"/>
+        </menu>
+    </item>
+    <item android:id="@+id/cmdDelete" android:title="@string/deleteContact" android:orderInCategory="5"></item>
+    
+
+</menu>

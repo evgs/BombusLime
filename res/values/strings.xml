@@ -128,5 +128,6 @@
     <string name="subscrSendTo">Grant subscription</string>
     <string name="subscrRemove">Revoke subscription</string>
     <string name="deleteContact">Delete contact</string>
+    <string name="editContact">Edit contact</string>
     
 </resources>
