@@ -47,7 +47,8 @@ import android.text.style.ImageSpan;
 
 public class Smilify {
 	private TypedArray smileTA;
-	private Drawable[] smileBitmaps;
+	//We should not store Drawable objects in this way because of memory leaks
+	//private Drawable[] smileBitmaps;
 	private int smileIndexes[];
 	private String smileTags[];
 	
@@ -98,7 +99,7 @@ public class Smilify {
     	smileIndexes = Lime.getInstance().getResources().getIntArray(R.array.smileIds);
     	
     	
-    	smileBitmaps = new Drawable[smileIndexes.length];
+    	//smileBitmaps = new Drawable[smileIndexes.length];
     	
         rootSmile=new SmileNode();
 
@@ -113,22 +114,20 @@ public class Smilify {
         	}
         }
     }
-    
-    private Drawable getLazySmileBitmap(int index) {
+
+    private Drawable getSmileDrawable(int index) {
     	if(smileTA == null) {
     		smileTA = Lime.getInstance().getResources().obtainTypedArray(R.array.smileIds);
     	}
     	
-    	if (smileBitmaps[index] == null) {
-    		Drawable d = smileTA.getDrawable(index);
-            d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+		Drawable d = smileTA.getDrawable(index);
+        d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
 
-    		smileBitmaps[index] = d; 
-    	}
-    	
-    	return smileBitmaps[index];
+        return d;
     }
     
+    
+    //TODO: cache smiles in activity context
 	public void addSmiles(Spannable s) {
 
 		ClickableSpan existingSpans[] = s.getSpans(0, s.length(), ClickableSpan.class);
@@ -170,7 +169,7 @@ public class Smilify {
             	
             	
         		s.setSpan(
-        				new ImageSpan(getLazySmileBitmap(smileIndex), ImageSpan.ALIGN_BOTTOM),
+        				new ImageSpan(getSmileDrawable(smileIndex), ImageSpan.ALIGN_BOTTOM),
 						smileStartPos, smileEndPos+1, 
 						Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             } else {
