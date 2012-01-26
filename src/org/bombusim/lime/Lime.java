@@ -52,8 +52,6 @@ public class Lime extends Application {
 	//temporary
 	public VcardResolver vcardResolver;
 	
-	public XmppServiceBinding serviceBinding;
-	//  /temporary
 	@Override
 	public final void onCreate() {
 		super.onCreate();
@@ -66,10 +64,7 @@ public class Lime extends Application {
 		
 		log = new LoggerData();
 		
-		//TODO: move serviceBinding into activities, and replace context
-		serviceBinding = new XmppServiceBinding(getApplicationContext());
-		
-		vcardResolver = new VcardResolver();
+		vcardResolver = new VcardResolver(this);
 
 		roster=new Roster(accounts.get(0).userJid);
 		
@@ -80,7 +75,6 @@ public class Lime extends Application {
 	@Override
 	public final void onTerminate() {
 		// TODO Auto-generated method stub
-		serviceBinding.doUnbindService();
 		super.onTerminate();
 	}
 

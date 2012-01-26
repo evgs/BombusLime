@@ -68,14 +68,13 @@ public class XmppService extends Service implements Runnable {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
         //LimeLog.i("XmppService", "Received start id " + startId, intent.toString());
-
-		showNotification(false);
-
 		
 		// TODO start multiple connections
-		XmppAccount a=Lime.getInstance().accounts.get(0);
-		s=new XmppStream(a);
-	   	s.setContext(this);
+		if (s==null) {
+			XmppAccount a=Lime.getInstance().accounts.get(0);
+			s=new XmppStream(a);
+			s.setContext(this);
+		}
 		
 		
 		br = new ConnBroadcastReceiver();
@@ -170,21 +169,6 @@ public class XmppService extends Service implements Runnable {
     public void onDestroy() {
         // Cancel the persistent notification.
         cancelNotification();
-        
-        //TODO: remove try/catch when service on/off behavior will be changed 
-        try {
-        	unregisterReceiver(br);
-        } catch (Exception e) {
-        	e.printStackTrace();
-        }
-        
-        //TODO: remove when service on/off behavior will be changed 
-        running = false;
-        if (s!=null)
-        	s.close();
-        
-        // Tell the user we stopped.
-        //Toast.makeText(this, R.string.local_service_stopped, Toast.LENGTH_SHORT).show();
     }
 	
     /**
@@ -231,6 +215,23 @@ public class XmppService extends Service implements Runnable {
 			
 		}
 		
+	}
+
+
+	public void disconnectAll() {
+        //TODO: remove try/catch when service on/off behavior will be changed 
+        try {
+        	unregisterReceiver(br);
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
+        
+        //TODO: remove when service on/off behavior will be changed 
+        running = false;
+        if (s!=null)
+        	s.close();
+        
+        stopSelf();
 	}
 
 }

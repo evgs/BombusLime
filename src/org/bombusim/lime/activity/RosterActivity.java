@@ -6,6 +6,8 @@ import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.logger.LoggerActivity;
 import org.bombusim.lime.service.XmppService;
+import org.bombusim.lime.service.XmppServiceBinding;
+import org.bombusim.xmpp.XmppStream;
 
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
@@ -28,6 +30,9 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Toast;
 
 public class RosterActivity extends ListActivity {
+	XmppServiceBinding sb;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -39,8 +44,10 @@ public class RosterActivity extends ListActivity {
 		
 		registerForContextMenu(getListView());
 	
+		sb = new XmppServiceBinding(this);
 	}
 
+	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		//String item = (String) getListAdapter().getItem(position);
@@ -70,12 +77,10 @@ public class RosterActivity extends ListActivity {
 		switch (item.getItemId()) {
 		case R.id.cmdLogin:    {
 			startService(new Intent(getBaseContext(), XmppService.class));
-			Lime.getInstance().serviceBinding.doBindService();
 			break;
 		}
 		case R.id.cmdLogout:   {
-			stopService(new Intent(getBaseContext(), XmppService.class));
-			Lime.getInstance().serviceBinding.doUnbindService();
+			sb.doDisconnect();
 			Lime.getInstance().vcardResolver.restartQueue();
 			break;
 		}
@@ -155,6 +160,7 @@ public class RosterActivity extends ListActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		sb.doBindService();
 		//update view to actual state
 		refreshVisualContent();
 		br = new RosterBroadcastReceiver();
@@ -163,8 +169,9 @@ public class RosterActivity extends ListActivity {
 	
 	@Override
 	protected void onPause() {
-		super.onPause();
+		sb.doUnbindService();
 		unregisterReceiver(br);
+		super.onPause();
 	}
 	
 	

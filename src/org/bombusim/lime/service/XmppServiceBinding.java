@@ -45,10 +45,18 @@ public class XmppServiceBinding {
 	}
 	
 	public XmppStream getXmppStream(String rosterJid) {
-		// TODO Auto-generated method stub
 		XmppStream s = xmppService.getXmppStream(rosterJid);
+		if (s == null) return null;
 		if (!s.loggedIn) return null;
 		
 		return s;
+	}
+	
+	public boolean isLoggedIn(String rosterJid) {
+		return getXmppStream(rosterJid)!=null;
+	}
+	
+	public void doDisconnect() {
+		xmppService.disconnectAll();
 	}
 }
