@@ -57,13 +57,6 @@ public class RosterActivity extends ListActivity {
 		openChatActivity(c);
 	}
 
-	public void openChatActivity(Contact c) {
-		Intent openChat =  new Intent(this, ChatActivity.class);
-		openChat.putExtra(ChatActivity.MY_JID, c.getRosterJid());
-		openChat.putExtra(ChatActivity.TO_JID,   c.getJid());
-		startActivityForResult(openChat, 0);
-	}
-	
 	@Override
 	public boolean onCreateOptionsMenu(android.view.Menu menu) {
 		getMenuInflater().inflate(R.menu.roster_menu, menu);
@@ -138,14 +131,16 @@ public class RosterActivity extends ListActivity {
 		case R.id.cmdChat: 
 			openChatActivity(c);
 			return true;
-			
+		case R.id.cmdVcard:
+			openVCardActivity(c);
+			return true;
 		default:
 			Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show();
 		}
 
 		return super.onContextItemSelected(item);
 	}
-	
+
 	private class RosterBroadcastReceiver extends BroadcastReceiver {
 
 		@Override
@@ -178,5 +173,18 @@ public class RosterActivity extends ListActivity {
 		super.onPause();
 	}
 	
+	public void openChatActivity(Contact c) {
+		Intent openChat =  new Intent(this, ChatActivity.class);
+		openChat.putExtra(ChatActivity.MY_JID, c.getRosterJid());
+		openChat.putExtra(ChatActivity.TO_JID,   c.getJid());
+		startActivityForResult(openChat, 0);
+	}
+
+	public void openVCardActivity(Contact c) {
+		Intent openVcard =  new Intent(this, VCardActivity.class);
+		openVcard.putExtra(VCardActivity.MY_JID, c.getRosterJid());
+		openVcard.putExtra(VCardActivity.JID,   c.getJid());
+		startActivity(openVcard);
+	}
 	
 }
