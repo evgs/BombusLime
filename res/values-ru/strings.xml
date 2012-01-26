@@ -76,5 +76,20 @@
     <string name="chatNotify">Новое сообщение</string>
     <string name="messageMenuTitle">Сообщение</string>
     <string name="copyToClipboard">Скопировать текст</string>
+    <string name="removeMessage">Удалить из истории</string>
+    <string name="contactVCard">Личная информация</string>
+    <string name="openChat">Открыть чат</string>
+    <string name="subscription">Подписка</string>
+    <string name="subscrRequestFrom">Запросить подписку</string>
+    <string name="subscrSendTo">Дать подписку</string>
+    <string name="subscrRemove">Удалить подписку</string>
+    <string name="deleteContact">Удалить из ростера</string>
+    <string name="editContact">Редактировать</string>
+    <string name="prefsMobileNetworkUsage">Использование сотовой сети</string>
+    <string name="gprsAvatars">Загружать аватары</string>
+    <string name="cbEnabled">Разрешено</string>
+    <string name="cbDisabled">Запрещено</string>
+    <string name="loadingVcardProgress">Получение личной карточки...</string>
+    <string name="sendMessage">Отправить</string>
     
 </resources>
