@@ -115,6 +115,10 @@ public class RosterActivity extends ListActivity {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.contact_menu, menu);
 		
+		//enable items available only if logged in
+		
+		menu.setGroupEnabled(R.id.groupLoggedIn, sb.isLoggedIn(c.getRosterJid()) );
+		
 	}
 	
 	private int contextMenuItemPosition;
