@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-    <CheckBoxPreference android:key="AUTO_SERVICE_STARTUP" android:defaultValue="false" android:summary="Login when phone is turned on" android:summaryOff="Disabled" android:summaryOn="Enabled" android:title="Login Automatically" android:order="1"/>
-    <PreferenceCategory 
+    <CheckBoxPreference 
+        android:key="AUTO_SERVICE_STARTUP" 
+        android:defaultValue="false" 
+        android:summary="Login when phone is turned on" 
+        android:summaryOff="@string/cbDisabled" 
+        android:summaryOn="@string/cbEnabled" 
+        android:title="Login Automatically" 
+        android:order="1"
+        />
+    <PreferenceCategory android:key="PREFS_NOTIFY" android:title="@string/chatNotify" android:order="20">
+	    <RingtonePreference android:title="Incoming message sound" android:order="10" android:key="RINGTONE_MESSAGE" android:ringtoneType="notification" />
+        
+    </PreferenceCategory><PreferenceCategory 
         android:key="PREFS_DEBUG" 
         android:title="Debug" 
         android:order="100">
@@ -16,12 +27,16 @@
 	        />
         
     </PreferenceCategory>
-    <RingtonePreference 
-        android:title="Incoming message sound" 
-        android:order="10" 
-        android:key="RINGTONE_MESSAGE" 
-        android:ringtoneType="notification"
-        />
+    
+    <PreferenceCategory android:key="PREFS_NETWORK" android:title="@string/prefsMobileNetworkUsage">
+        <CheckBoxPreference 
+            android:key="VCARD_OVER_GPRS" 
+            android:title="@string/gprsAvatars" 
+            android:defaultValue="true" 
+            android:summaryOff="@string/cbDisabled" 
+            android:summaryOn="@string/cbEnabled"
+            />
+    </PreferenceCategory>
     
 
 </PreferenceScreen>
