@@ -36,7 +36,7 @@ public class XmppAccount {
 	
 	public boolean savedPassword = true;
 	//////////////////// advanced settings //////////////////////
-	public String resource = "Lime";
+	public String resource = "mobile";
 	
 	public int priority = DEFAULT_PRIORITY;
 	
