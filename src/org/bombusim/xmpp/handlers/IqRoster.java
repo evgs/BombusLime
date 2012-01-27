@@ -41,11 +41,14 @@ import org.bombusim.xmpp.stanza.Iq;
 
 public class IqRoster implements XmppObjectListener{
 
+	private static final String XMLNS_JABBER_IQ_ROSTER = "jabber:iq:roster";
+	private static final String REMOVE = "remove";
+	private static final String SUBSCRIPTION = "subscription";
 	private String id="LimeR" ;
 	
 	public void queryRoster(XmppStream stream) {
 		XmppObject q=new Iq(null, Iq.TYPE_GET, id);
-		q.addChildNs("query", "jabber:iq:roster");
+		q.addChildNs("query", XMLNS_JABBER_IQ_ROSTER);
 		stream.send(q);
 	}
 	
@@ -55,7 +58,7 @@ public class IqRoster implements XmppObjectListener{
 		try {
 			XmppObject iq=(Iq)data;
 			
-			XmppObject query=iq.findNamespace("query", "jabber:iq:roster");
+			XmppObject query=iq.findNamespace("query", XMLNS_JABBER_IQ_ROSTER);
 			if (query == null) return BLOCK_REJECTED;
 
 			String from = data.getAttribute("from");
@@ -84,7 +87,7 @@ public class IqRoster implements XmppObjectListener{
 				
 				for (XmppObject item : items) {
 					Contact c=new Contact( item.getAttribute("jid"), item.getAttribute("name") );
-					c.setSubscription( item.getAttribute("subscription") );
+					c.setSubscription( item.getAttribute(SUBSCRIPTION) );
 					c.setRJid(from);
 					r.add(c);
 				}
@@ -106,5 +109,17 @@ public class IqRoster implements XmppObjectListener{
 	
 	@Override
 	public String capsXmlns() {	return null; }
+
+	public static void deleteContact(String jid, XmppStream stream) {
+		XmppObject q = new Iq(null, Iq.TYPE_SET, "rm"+jid);
+		
+		XmppObject item = q.addChildNs("query", XMLNS_JABBER_IQ_ROSTER)
+			.addChild("item", null);
+		
+		item.setAttribute("jid", jid);
+		item.setAttribute(SUBSCRIPTION, REMOVE);
+		
+		stream.send(q);
+	}
 	
 }

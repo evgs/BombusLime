@@ -8,10 +8,13 @@ import org.bombusim.lime.logger.LoggerActivity;
 import org.bombusim.lime.service.XmppService;
 import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.xmpp.XmppStream;
+import org.bombusim.xmpp.handlers.IqRoster;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.BitmapDrawable;
@@ -128,14 +131,31 @@ public class RosterActivity extends ListActivity {
 		int pos= (info!=null)? info.position : contextMenuItemPosition;
 		contextMenuItemPosition = pos;
 
-		Contact c = (Contact) getListAdapter().getItem(pos);
+		final Contact ctc = (Contact) getListAdapter().getItem(pos);
 
 		switch (item.getItemId()) {
 		case R.id.cmdChat: 
-			openChatActivity(c);
+			openChatActivity(ctc);
 			return true;
 		case R.id.cmdVcard:
-			openVCardActivity(c);
+			openVCardActivity(ctc);
+			return true;
+		case R.id.cmdDelete:
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(ctc.getFullName())
+				   .setIcon(new BitmapDrawable(ctc.getAvatar()) )
+				   .setMessage(R.string.confirmDelete)
+			       .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                deleteContact(ctc);
+			           }
+			       })
+			       .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) { dialog.cancel(); }
+			       });
+			AlertDialog alert = builder.create();
+			alert.setOwnerActivity(this);
+			alert.show();
 			return true;
 		default:
 			Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show();
@@ -188,6 +208,13 @@ public class RosterActivity extends ListActivity {
 		openVcard.putExtra(VCardActivity.MY_JID, c.getRosterJid());
 		openVcard.putExtra(VCardActivity.JID,   c.getJid());
 		startActivity(openVcard);
+	}
+	
+	protected void deleteContact(Contact c) {
+		IqRoster.deleteContact(
+			c.getJid(), 
+			sb.getXmppStream(c.getRosterJid())
+		);
 	}
 	
 }

@@ -241,4 +241,9 @@ public class Contact implements Comparable<Contact>{
 		return getScreenName().compareTo(another.getScreenName());
 	}
 
+	public CharSequence getFullName() {
+ 		return (name==null)?
+ 				jid : name+ " <"+jid+">";
+	}
+
 }
