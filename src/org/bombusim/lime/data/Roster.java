@@ -53,7 +53,6 @@ public class Roster {
 		updateDB();
 		
 		//4. check all avatars
-		//TODO: lazy mechanism
 		
 		//massive avatar request
 		//for (int index = 0; index < contacts.size(); index++) {
@@ -128,7 +127,6 @@ public class Roster {
 	}
 
 	public Contact findContact(String from, String rosterJid) {
-		// TODO Auto-generated method stub
 		for (int i=0; i<contacts.size(); i++) {
 			Contact c = contacts.get(i);
 			if (c.getJid().equals(from))

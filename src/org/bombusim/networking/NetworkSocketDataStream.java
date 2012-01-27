@@ -39,7 +39,6 @@ public class NetworkSocketDataStream extends NetworkDataStream{
 		socket = new Socket(server, port);
 		
 		//keep-alive packets every 2 hours (by default)
-		//TODO: shorter keep-alive period
 		socket.setKeepAlive(true);
 		
 		istream = socket.getInputStream();

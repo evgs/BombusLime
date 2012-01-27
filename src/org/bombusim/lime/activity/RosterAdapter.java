@@ -47,20 +47,17 @@ public class RosterAdapter extends BaseAdapter {
     
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
 		int c=getContacts().size();
 		return c;
 	}
 
 	@Override
 	public Object getItem(int position) {
-		// TODO Auto-generated method stub
 		return getContacts().get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
-		// TODO Auto-generated method stub
 		return getContacts().get(position).hashCode();
 	}
 

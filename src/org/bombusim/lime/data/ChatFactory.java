@@ -12,10 +12,6 @@ public class ChatFactory {
 		chats = new ArrayList<Chat>();
 	}
 	
-	private static ChatFactory getChatFactory() {
-		return Lime.getInstance().getChatFactory();
-	}
-	
 	public Chat getChat(String visavisJid, String myJid) {
 		Contact visavis = null;
 		//1. search already opened chat

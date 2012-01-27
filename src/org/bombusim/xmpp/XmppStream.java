@@ -134,22 +134,6 @@ public class XmppStream extends XmppParser {
     public void setLocaleLang(String lang) {
     	this.lang = lang;
     }
-    /*
-    public void connect() {
-    	
-    } catch( Exception e ) {
-    	//TODO: handle exceptions
-    	
-        System.out.println("Exception in parser:");
-        e.printStackTrace();
-        broadcastTerminatedConnection(e);
-    };
-    
-    loggedIn = false;
-    	
-    }
-    */
-
     
     public void initiateStream() throws IOException {
         
@@ -589,7 +573,6 @@ public class XmppStream extends XmppParser {
     private Context serviceContext;
     
 	public void setContext(Context context) {
-		// TODO Auto-generated method stub
 		serviceContext = context;
 	}
 

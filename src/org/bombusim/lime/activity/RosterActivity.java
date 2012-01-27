@@ -36,7 +36,6 @@ public class RosterActivity extends ListActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
 		ListAdapter adapter=new RosterAdapter(this);

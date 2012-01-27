@@ -35,10 +35,7 @@ public class IqVcard implements XmppObjectListener {
 	}
 
 	@Override
-	public String capsXmlns() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public String capsXmlns() { return null; }
 	
 	
 	public void vcardRequest(String jid, XmppStream stream) {

@@ -230,7 +230,6 @@ public class LoggerActivity extends Activity {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
 			updateLogSize();
 		}
 		

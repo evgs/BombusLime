@@ -23,13 +23,11 @@ public class XmppServiceBinding {
 		
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
-			// TODO Auto-generated method stub
 			xmppService = null;
 		}
 		
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			// TODO Auto-generated method stub
 			xmppService = ((XmppService.LocalBinder)service).getService();
 		}
 	};

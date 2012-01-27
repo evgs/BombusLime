@@ -50,7 +50,6 @@ public class XmppService extends Service implements Runnable {
 	
 	@Override
 	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
 		return binder;
 	}
 
@@ -123,6 +122,7 @@ public class XmppService extends Service implements Runnable {
 			   	s.connect();
 			   	
 			} catch (UnknownHostException e) {
+				//TODO: sometimes Unknown host may be thrown if interface switching is in progress
 		    	LimeLog.e("XmppStream", "Unknown Host", e.toString());
 				running = false;
 				
@@ -142,13 +142,10 @@ public class XmppService extends Service implements Runnable {
 		        showNotification(false);
 			} catch (XMLException e) {
 		    	LimeLog.e("XmppStream", "XML broken", e.toString());
-				// TODO Auto-generated catch block
 		        showNotification(false);
 			} catch (XmppException e) {
 		    	LimeLog.e("XmppStream", "Xmpp Error", e.getMessage());
-				//Toast.makeText(this, "Xmpp exception", Toast.LENGTH_SHORT).show();
 				running = false;
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		   	

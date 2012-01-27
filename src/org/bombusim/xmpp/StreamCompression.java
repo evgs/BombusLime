@@ -60,7 +60,6 @@ public class StreamCompression implements XmppObjectListener {
 	                    askCompr.addChild("method", "zlib");
 	                    stream.send(askCompr);
 	                    
-	                    //TODO: listener.loginMessage(SR.MS_ZLIB);
 	                    return XmppObjectListener.BLOCK_PROCESSED;
 	                }
 	            }
