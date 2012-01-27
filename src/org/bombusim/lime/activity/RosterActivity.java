@@ -7,7 +7,6 @@ import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.logger.LoggerActivity;
 import org.bombusim.lime.service.XmppService;
 import org.bombusim.lime.service.XmppServiceBinding;
-import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.handlers.IqRoster;
 
 import android.app.AlertDialog;
@@ -25,7 +24,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
