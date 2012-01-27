@@ -85,8 +85,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/messageBox"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/contact_head" 
-        >
+        android:layout_below="@+id/contact_head"
+        android:transcriptMode="normal" >
 
     </ListView>
 

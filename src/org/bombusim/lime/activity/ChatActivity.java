@@ -412,6 +412,9 @@ public class ChatActivity extends Activity {
         myNick = "Me"; //serviceBinding.getXmppStream(visavis.getRosterJid()).jid; 
 
 		refreshVisualContent();
+		
+        chatListView.setSelection(chatSize-1);
+
 		br = new ChatBroadcastReceiver();
 		//TODO: presence receiver
 		registerReceiver(br, new IntentFilter(Chat.UPDATE_CHAT));
@@ -426,10 +429,11 @@ public class ChatActivity extends Activity {
 		((BaseAdapter)chatListView.getAdapter()).notifyDataSetChanged();
 		chatListView.invalidate();
 
-		//Move focus to last message
-		chatListView.setSelection(chatSize-1);
-		
 		chatListView.setVisibility(View.VISIBLE);
+
+		//Move focus to last message is now provided with transcript mode
+		//chatListView.setSelection(chatSize-1);
+		
 	}
 	
 	
