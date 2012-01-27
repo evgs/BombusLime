@@ -326,11 +326,12 @@ public class ChatActivity extends Activity {
         	// hh:mm (after 1 hour)
         	// etc...
         	
-        	long now = System.currentTimeMillis();
+        	long delay = System.currentTimeMillis() - time;
         	
         	String fmt = "%H:%M ";
-        	if (now-time > MS_PER_DAY); 
+        	if (delay > MS_PER_DAY)  {
         		fmt = "%d.%m.%Y %H:%M ";
+        	}
 
         	tf.set(time);
         	String tm=tf.format(fmt);
