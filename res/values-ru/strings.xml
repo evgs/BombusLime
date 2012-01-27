@@ -84,12 +84,15 @@
     <string name="subscrSendTo">Дать подписку</string>
     <string name="subscrRemove">Удалить подписку</string>
     <string name="deleteContact">Удалить из ростера</string>
+    <string name="confirmDelete">Вы действительно хотите удалить этот контакт из ростера?</string>
     <string name="editContact">Редактировать</string>
     <string name="prefsMobileNetworkUsage">Использование сотовой сети</string>
     <string name="gprsAvatars">Загружать аватары</string>
     <string name="cbEnabled">Разрешено</string>
     <string name="cbDisabled">Запрещено</string>
-    <string name="loadingVcardProgress">Получение личной карточки...</string>
+    <string name="loadingVcardProgress">Получение личной карточки&#8230;</string>
     <string name="sendMessage">Отправить</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
     
 </resources>
