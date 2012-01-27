@@ -69,9 +69,11 @@ public class VcardResolver {
 			//pending.setAvatar(null, null);
 		}
 
-		XmppServiceBinding sb = new XmppServiceBinding(context);
+		//TODO: move resolver into RosterActivity's context
+		//XmppServiceBinding sb = new XmppServiceBinding(context);
+		XmppServiceBinding sb = Lime.getInstance().sb;
 		
-		sb.doBindService();
+		//sb.doBindService();
 		
 		try {
 			sb.getXmppStream(pending.getRosterJid()).cancelBlockListenerByClass(IqVcard.class);
@@ -102,7 +104,7 @@ public class VcardResolver {
 			}
 		}
 		
-		sb.doUnbindService();
+		//sb.doUnbindService();
 		
 	}
 

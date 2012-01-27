@@ -45,6 +45,9 @@ public class RosterActivity extends ListActivity {
 		registerForContextMenu(getListView());
 	
 		sb = new XmppServiceBinding(this);
+		
+		//temporary
+		Lime.getInstance().sb=sb;
 	}
 
 	

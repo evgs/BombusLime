@@ -52,6 +52,9 @@ public class Lime extends Application {
 	//temporary
 	public VcardResolver vcardResolver;
 	
+	//temporary
+	public XmppServiceBinding sb;
+	
 	@Override
 	public final void onCreate() {
 		super.onCreate();
