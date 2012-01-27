@@ -9,7 +9,7 @@ import android.database.Cursor;
 public class Chat {
 	public static final String UPDATE_CHAT = "org.bombusim.lime.data.UPDATE_CHAT";
 
-	private static final int HISTORY_DEFAULT_CONTEXT_SIZE = 10;
+	private static final int HISTORY_DEFAULT_CONTEXT_SIZE = 20;
 	
 	Contact visavis;
 	
