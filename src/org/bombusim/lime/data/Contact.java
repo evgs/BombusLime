@@ -24,6 +24,9 @@ public class Contact implements Comparable<Contact>{
 
 	private int updateMark;
 
+	//Tab-separated group names
+	private String groups;
+	
 	private Resource activeResource;
 	private ArrayList<Resource> resources;
 	
@@ -124,15 +127,19 @@ public class Contact implements Comparable<Contact>{
 	public void setRJid(String rosterJid) { this.rosterJid = rosterJid; }
 
 
-	public String getAllGroups() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getAllGroups() { return groups; }
+
+	public void setAllGroups(String groups) {
+		this.groups = groups;
 	}
 
-	public void setAllGroups(String string) {
-		// TODO Auto-generated method stub
+	public void addGroup(String groupName) {
+		if (groups==null) {
+			groups = groupName;
+		} else {
+			groups = groups + '\t' + groupName;
+		}
 	}
-
 
 	public int getUpdate() { return updateMark; }
 	
@@ -160,7 +167,11 @@ public class Contact implements Comparable<Contact>{
 			name = n.name;
 			updateMark = UPDATE_SAVE;
 		}
-		//TODO: groups
+		
+		if (!compareNStrings(groups, n.groups)) {
+			groups = n.groups;
+			updateMark = UPDATE_SAVE;
+		}
 		
 		if (subscription != n.subscription) {
 			subscription = n.subscription;

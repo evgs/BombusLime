@@ -89,6 +89,15 @@ public class IqRoster implements XmppObjectListener{
 					Contact c=new Contact( item.getAttribute("jid"), item.getAttribute("name") );
 					c.setSubscription( item.getAttribute(SUBSCRIPTION) );
 					c.setRJid(from);
+					
+					// adding group names
+					ArrayList<XmppObject> groups = item.getChildBlocks();
+					if (groups !=null) {
+						for (XmppObject group : groups) {
+							if (group.getTagName().equals("group")) c.addGroup(group.getText());
+						}
+					}
+					
 					r.add(c);
 				}
 
