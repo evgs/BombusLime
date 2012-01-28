@@ -10,7 +10,7 @@ import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.xmpp.handlers.IqRoster;
 
 import android.app.AlertDialog;
-import android.app.ListActivity;
+import android.app.ExpandableListActivity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,13 +24,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 import android.widget.Toast;
 
-public class RosterActivity extends ListActivity {
+public class RosterActivity extends ExpandableListActivity {
 	XmppServiceBinding sb;
 	
 	
@@ -38,11 +38,11 @@ public class RosterActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		ListAdapter adapter=new RosterAdapter(this);
+		ExpandableListAdapter adapter=new RosterAdapter(this);
 		
 		setListAdapter(adapter);
 		
-		registerForContextMenu(getListView());
+		registerForContextMenu(getExpandableListView());
 	
 		sb = new XmppServiceBinding(this);
 		
@@ -50,14 +50,15 @@ public class RosterActivity extends ListActivity {
 		Lime.getInstance().sb=sb;
 	}
 
-	
 	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-		//String item = (String) getListAdapter().getItem(position);
-		//Toast.makeText(this, item + " selected", Toast.LENGTH_LONG).show();
-		Contact c = (Contact) getListAdapter().getItem(position);
+	public boolean onChildClick(ExpandableListView parent, View v,
+			int groupPosition, int childPosition, long id) {
+
+		Contact c = (Contact) getExpandableListAdapter().getChild(groupPosition, childPosition);
 	
 		openChatActivity(c);
+		
+		return true;
 	}
 
 	@Override
@@ -92,17 +93,31 @@ public class RosterActivity extends ListActivity {
 		return false;
 	}
 	
+	public Contact getContextContact(long pos) {
+		int type=ExpandableListView.getPackedPositionType(pos);
+
+		if (type!=ExpandableListView.PACKED_POSITION_TYPE_CHILD) return null; 
+
+		int childPosition = ExpandableListView.getPackedPositionChild(pos);
+		int groupPosition = ExpandableListView.getPackedPositionGroup(pos);
+		
+		Contact c = (Contact) getExpandableListAdapter().getChild(groupPosition, childPosition);
+		return c;
+	}
+	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 
 		super.onCreateContextMenu(menu, v, menuInfo);
 		
-		AdapterContextMenuInfo cmi = (AdapterContextMenuInfo) menuInfo;
+		ExpandableListContextMenuInfo cmi = (ExpandableListContextMenuInfo) menuInfo;
 		
-		//TODO: select menu to be created
-		Contact c = (Contact) getListAdapter().getItem(cmi.position);
-
+		long pos = cmi.packedPosition;
+		
+		Contact c = getContextContact(pos);
+		if (c==null) return; //TODO: context menu for group
+		
 		menu.setHeaderTitle(c.getScreenName());
 		
 		Drawable icon = new BitmapDrawable(c.getAvatar());
@@ -116,19 +131,19 @@ public class RosterActivity extends ListActivity {
 		menu.setGroupEnabled(R.id.groupLoggedIn, sb.isLoggedIn(c.getRosterJid()) );
 		
 	}
-	
-	private int contextMenuItemPosition;
+
+	private long contextMenuItemPosition;
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		
+		ExpandableListContextMenuInfo cmi = (ExpandableListContextMenuInfo) item.getMenuInfo();
+
 		// workaround for issue http://code.google.com/p/android/issues/detail?id=7139
 		// item.getMenuInfo() returns null for submenu items
-		int pos= (info!=null)? info.position : contextMenuItemPosition;
+		long pos= (cmi!=null)? cmi.packedPosition : contextMenuItemPosition;
 		contextMenuItemPosition = pos;
 
-		final Contact ctc = (Contact) getListAdapter().getItem(pos);
+		final Contact ctc = getContextContact(pos);
 
 		switch (item.getItemId()) {
 		case R.id.cmdChat: 
@@ -171,8 +186,8 @@ public class RosterActivity extends ListActivity {
 	}
 	
 	void refreshVisualContent(){
-		((BaseAdapter)getListAdapter()).notifyDataSetChanged();
-		getListView().invalidate();
+		((BaseExpandableListAdapter)getExpandableListAdapter()).notifyDataSetChanged();
+		getExpandableListView().invalidate();
 	}
 	
 	RosterBroadcastReceiver br;

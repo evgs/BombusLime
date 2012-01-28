@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="32dip"
+    android:background="@android:drawable/title_bar" 
+    >
+
+    <TextView
+        android:id="@+id/grouplabel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Medium Text"
+        android:paddingLeft="32dip"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</LinearLayout>
