@@ -185,9 +185,16 @@ public class RosterActivity extends ExpandableListActivity {
 		
 	}
 	
+	//TODO: update only group if presence update 
 	void refreshVisualContent(){
-		((BaseExpandableListAdapter)getExpandableListAdapter()).notifyDataSetChanged();
-		getExpandableListView().invalidate();
+		ExpandableListView lv = getExpandableListView(); 
+		lv.setVisibility(View.GONE);
+		RosterAdapter ra = (RosterAdapter)getExpandableListAdapter();
+		lv.invalidate();
+		ra.notifyDataSetChanged();
+		ra.updateGroupExpandedState(lv);
+	
+		lv.setVisibility(View.VISIBLE);
 	}
 	
 	RosterBroadcastReceiver br;

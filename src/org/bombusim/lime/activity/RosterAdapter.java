@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -64,11 +65,14 @@ public class RosterAdapter extends BaseExpandableListAdapter {
     }
     
 	public void getContacts() {
-		//TODO: reuse groups
+		//TODO: keep groups when RosterActivity is destroyed
 		
 		ArrayList<Contact> contacts = Lime.getInstance().getRoster().getContacts();
-		groups = new ArrayList<RosterAdapter.RosterGroup>();
 		
+		//1. geset groups
+		for (RosterGroup group: groups) { 	group.contacts.clear(); }
+		
+		//2. populate groups with contacts
 		//TODO: collate by roster jid
 		for (Contact contact: contacts) {
 			String allGroups = contact.getAllGroups();
@@ -83,6 +87,15 @@ public class RosterAdapter extends BaseExpandableListAdapter {
 				addContactToGroup(contact, cg);
 			}
 		}
+		
+		//3. remove empty groups
+		int i=0;
+		while (i<groups.size()) {
+			if (groups.get(i).contacts.isEmpty()) { 
+				groups.remove(i);
+			} else i++;
+		}
+		
 	}
 
     private void addContactToGroup(Contact contact, String groupName) {
@@ -124,7 +137,12 @@ public class RosterAdapter extends BaseExpandableListAdapter {
 	@Override
 	public int getGroupCount() {  return groups.size(); }
 
+	@Override
+	public void onGroupCollapsed(int groupPosition) { groups.get(groupPosition).collapsed = true; }
 	
+	@Override
+	public void onGroupExpanded(int groupPosition) { groups.get(groupPosition).collapsed = false; }
+
 	@Override
 	public View getChildView(int groupPosition, int childPosition,
 			boolean isLastChild, View convertView, ViewGroup parent) {
@@ -220,5 +238,13 @@ public class RosterAdapter extends BaseExpandableListAdapter {
 	public boolean hasStableIds() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public void updateGroupExpandedState(ExpandableListView lv) {
+		int count = groups.size();
+		for (int i=0; i<count; i++) {
+			if (groups.get(i).collapsed) lv.collapseGroup(i);
+			else lv.expandGroup(i);
+		}
 	}
 }
