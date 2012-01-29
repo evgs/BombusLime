@@ -108,12 +108,13 @@ public class EditContactActivity extends Activity {
         	editJid.setEnabled(false);
         	editNick.setText(contact.getName());
         	//editNick.requestFocus();
-        	buttonSave.setText(R.string.add);
         	
         	Bitmap avatar = contact.getAvatar();
         	if (avatar !=null) photo.setImageBitmap(avatar);
         	
         	askSubscription.setVisibility(View.GONE);
+        } else {
+        	buttonSave.setText(R.string.add);
         }
         
         groups = new TreeMap<String, CheckBox>();
