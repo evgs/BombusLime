@@ -9,6 +9,7 @@ import org.bombusim.xmpp.stanza.Presence;
 import android.graphics.Bitmap;
 
 public class Contact implements Comparable<Contact>{
+	public static final String GROUP_SEPARATOR = "\t";
 	private String rosterJid;
 	private String jid;
 	private String name;
@@ -128,6 +129,12 @@ public class Contact implements Comparable<Contact>{
 
 
 	public String getAllGroups() { return groups; }
+	
+	public String[] getAllGroupsArray() {
+		if (groups == null) return new String[0];
+		
+		return groups.split(GROUP_SEPARATOR);
+	}
 
 	public void setAllGroups(String groups) {
 		this.groups = groups;
@@ -137,7 +144,7 @@ public class Contact implements Comparable<Contact>{
 		if (groups==null) {
 			groups = groupName;
 		} else {
-			groups = groups + '\t' + groupName;
+			groups = groups + GROUP_SEPARATOR + groupName;
 		}
 	}
 

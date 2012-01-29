@@ -5,8 +5,11 @@ import org.bombusim.xml.Attributes;
 import org.bombusim.xmpp.XmppError;
 import org.bombusim.xmpp.XmppObject;
 
-public final class Presence extends XmppObject
-{
+public final class Presence extends XmppObject {
+	public final static String PRESENCE_SUBSCRIBE    = "subscribe";
+	public final static String PRESENCE_SUBSCRIBED   = "subscribed";
+	public final static String PRESENCE_UNSUBSCRIBE  = "unsubscribe";
+	public final static String PRESENCE_UNSUBSCRIBED = "unsubscribed";
   /**
    * Constructor.
    *

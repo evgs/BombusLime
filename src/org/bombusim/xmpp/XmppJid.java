@@ -98,5 +98,11 @@ public class XmppJid {
         if (resource.length()==0) return bareJid;
         return bareJid +'/' +resource;
     }
+
+	public boolean isValid() {
+		//Very simple verification here:
+		//TODO: verify jid is valid
+		return bareJid.indexOf('@')>0;
+	}
     
 }

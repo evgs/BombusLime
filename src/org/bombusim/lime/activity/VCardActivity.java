@@ -32,7 +32,7 @@ public class VCardActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		
         Bundle params = getIntent().getExtras();
-        if (params == null) throw new InvalidParameterException("No parameters specified for ChatActivity");
+        if (params == null) throw new InvalidParameterException("No parameters specified for VCardActivity");
         jid = params.getString(JID);
         rJid = params.getString(MY_JID);
 

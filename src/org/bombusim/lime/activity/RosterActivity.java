@@ -64,6 +64,13 @@ public class RosterActivity extends ExpandableListActivity {
 	@Override
 	public boolean onCreateOptionsMenu(android.view.Menu menu) {
 		getMenuInflater().inflate(R.menu.roster_menu, menu);
+
+		//enable items available only if logged in
+		//TODO: modify behavior if multiple account
+		/*
+		String rJid = Lime.getInstance().accounts.get(0).userJid;
+		menu.setGroupEnabled(R.id.groupLoggedIn, sb.isLoggedIn(rJid) );
+		*/
 		
 		return true;
 	};
@@ -81,6 +88,8 @@ public class RosterActivity extends ExpandableListActivity {
 			Lime.getInstance().vcardResolver.restartQueue();
 			break;
 		}
+		
+		case R.id.cmdAddContact: openEditContactActivity(null); break;
 		
 		case R.id.cmdAccount:  startActivityForResult(new Intent(getBaseContext(), AccountSettingsActivity.class), 0); break;
 		//case R.id.cmdChat:     startActivityForResult(new Intent(getBaseContext(), ChatActivity.class),            0); break;
@@ -152,23 +161,14 @@ public class RosterActivity extends ExpandableListActivity {
 		case R.id.cmdVcard:
 			openVCardActivity(ctc);
 			return true;
-		case R.id.cmdDelete:
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle(ctc.getFullName())
-				   .setIcon(new BitmapDrawable(ctc.getAvatar()) )
-				   .setMessage(R.string.confirmDelete)
-			       .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			                deleteContact(ctc);
-			           }
-			       })
-			       .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) { dialog.cancel(); }
-			       });
-			AlertDialog alert = builder.create();
-			alert.setOwnerActivity(this);
-			alert.show();
+		case R.id.cmdEdit:
+			openEditContactActivity(ctc);
 			return true;
+		case R.id.cmdDelete:
+			confirmDeleteContact(ctc);
+			return true;
+			
+			
 		default:
 			Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show();
 		}
@@ -215,20 +215,51 @@ public class RosterActivity extends ExpandableListActivity {
 		super.onPause();
 	}
 	
-	public void openChatActivity(Contact c) {
+	private void openChatActivity(Contact c) {
 		Intent openChat =  new Intent(this, ChatActivity.class);
 		openChat.putExtra(ChatActivity.MY_JID, c.getRosterJid());
 		openChat.putExtra(ChatActivity.TO_JID,   c.getJid());
-		startActivityForResult(openChat, 0);
+		startActivity(openChat);
 	}
 
-	public void openVCardActivity(Contact c) {
+	private void openVCardActivity(Contact c) {
 		Intent openVcard =  new Intent(this, VCardActivity.class);
 		openVcard.putExtra(VCardActivity.MY_JID, c.getRosterJid());
 		openVcard.putExtra(VCardActivity.JID,   c.getJid());
 		startActivity(openVcard);
 	}
 	
+	private void openEditContactActivity(Contact c) {
+		Intent openEditContact =  new Intent(this, EditContactActivity.class);
+		if (c!=null) {
+			openEditContact.putExtra(EditContactActivity.MY_JID, c.getRosterJid());
+			openEditContact.putExtra(EditContactActivity.JID,   c.getJid());
+		} else {
+			String rJid = Lime.getInstance().accounts.get(0).userJid;
+			openEditContact.putExtra(EditContactActivity.MY_JID, rJid);
+			//openEditContact.putExtra(EditContactActivity.JID,   c.getJid());
+		}
+		startActivity(openEditContact);
+	}
+
+	private void confirmDeleteContact(final Contact ctc) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(ctc.getFullName())
+			   .setIcon(new BitmapDrawable(ctc.getAvatar()) )
+			   .setMessage(R.string.confirmDelete)
+		       .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                deleteContact(ctc);
+		           }
+		       })
+		       .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) { dialog.cancel(); }
+		       });
+		AlertDialog alert = builder.create();
+		alert.setOwnerActivity(this);
+		alert.show();
+	}
+
 	protected void deleteContact(Contact c) {
 		IqRoster.deleteContact(
 			c.getJid(), 

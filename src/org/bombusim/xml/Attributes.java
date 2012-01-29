@@ -36,7 +36,14 @@ public final class Attributes {
 	public Attributes() {
 		
 	}
-	
+	/**
+	 * Puts <key:value> pair into attributes. 
+	 *  
+	 *  if value is null attribute will be removed from set if exists
+	 *  
+	 * @param key  unique attribute name
+	 * @param value  value of attribute
+	 */
 	public void putValue(String key, String value) {
 		if (values==null) values = new ArrayList<String>();
 		
