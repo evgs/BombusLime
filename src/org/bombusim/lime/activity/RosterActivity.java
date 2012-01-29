@@ -8,6 +8,7 @@ import org.bombusim.lime.logger.LoggerActivity;
 import org.bombusim.lime.service.XmppService;
 import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.xmpp.handlers.IqRoster;
+import org.bombusim.xmpp.stanza.Presence;
 
 import android.app.AlertDialog;
 import android.app.ExpandableListActivity;
@@ -136,7 +137,6 @@ public class RosterActivity extends ExpandableListActivity {
 		inflater.inflate(R.menu.contact_menu, menu);
 		
 		//enable items available only if logged in
-		
 		menu.setGroupEnabled(R.id.groupLoggedIn, sb.isLoggedIn(c.getRosterJid()) );
 		
 	}
@@ -168,6 +168,15 @@ public class RosterActivity extends ExpandableListActivity {
 			confirmDeleteContact(ctc);
 			return true;
 			
+		case R.id.cmdSubscrRequestFrom:
+			subscription(ctc, Presence.PRESENCE_SUBSCRIBE);
+			return true;
+		case R.id.cmdSubscrSendTo:
+			subscription(ctc, Presence.PRESENCE_SUBSCRIBED);
+			return true;
+		case R.id.cmdSubscrRemove:
+			subscription(ctc, Presence.PRESENCE_UNSUBSCRIBED);
+			return true;
 			
 		default:
 			Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show();
@@ -258,6 +267,13 @@ public class RosterActivity extends ExpandableListActivity {
 		AlertDialog alert = builder.create();
 		alert.setOwnerActivity(this);
 		alert.show();
+	}
+
+	private void subscription(Contact contact, String subscriptionAction) {
+		IqRoster.setSubscription(
+				contact.getJid(), 
+				subscriptionAction, 
+				sb.getXmppStream(contact.getRosterJid()));
 	}
 
 	protected void deleteContact(Contact c) {
