@@ -1,5 +1,6 @@
 package org.bombusim.lime.activity;
 
+import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 
 import android.os.Bundle;
@@ -13,4 +14,9 @@ public class LimePrefs extends PreferenceActivity{
 		addPreferencesFromResource(R.xml.prefs);
 	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+		Lime.getInstance().loadPreferences();
+	}
 }

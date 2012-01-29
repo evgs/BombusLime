@@ -52,7 +52,7 @@ public class Lime extends Application {
 		
 		instance = this;
 		
-		prefs = new Preferences(getApplicationContext());
+		loadPreferences();
 		
 		accounts = AccountsFactory.loadAccounts(getApplicationContext());
 		
@@ -64,6 +64,10 @@ public class Lime extends Application {
 		
 		avatarSize = getResources().getDimensionPixelSize(R.dimen.avatarSize);
 		
+	}
+
+	public void loadPreferences() {
+		prefs = new Preferences(getApplicationContext());
 	}
 
 	@Override
