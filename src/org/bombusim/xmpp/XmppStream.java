@@ -68,7 +68,7 @@ import android.content.Intent;
 
 public class XmppStream extends XmppParser {
     
-    private static final long KEEPALIVE_PERIOD = 10*60*1000; //15 minutes
+    private static final long KEEPALIVE_PERIOD_MINUTE = 60*1000; //1 minute
 
 	public static final int KEEP_ALIVE_TYPE_PING = 3;
 	public static final int KEEP_ALIVE_TYPE_IQ   = 2;
@@ -405,6 +405,10 @@ public class XmppStream extends XmppParser {
 		//start new timer
 		keepAliveTimer = new Timer();
 		
+		//TODO: reload keep-alive option every period 
+		//TODO: or describe option affects only after reconnect 
+		long period = Lime.getInstance().prefs.keepAlivePeriodMinutes * KEEPALIVE_PERIOD_MINUTE;
+		
 		keepAliveTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
@@ -418,7 +422,7 @@ public class XmppStream extends XmppParser {
 				}
 				
 			}
-		}, KEEPALIVE_PERIOD, KEEPALIVE_PERIOD);
+		}, period, period);
 	}
 	
     private void broadcastTerminatedConnection(Exception exception) {
