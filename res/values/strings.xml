@@ -149,6 +149,6 @@
     <string name="cancel">Cancel</string>
     <string name="newGroupName">New group name</string>
     <string name="invalidJid">Please provide correct Jabber ID in form username@domain.tld</string>
-    <string name="networkDown">Can\&apos;t save changes. Network is down</string>
+    <string name="networkDown">Can\&apos;t save changes. Connection is broken</string>
     
 </resources>

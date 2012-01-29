@@ -94,5 +94,18 @@
     <string name="sendMessage">Отправить</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
+    <string name="nickname">Имя</string>
+    <string name="nicknameResolveFromVCard">из VCard</string>
+    <string name="contactAddGroup">Новая группа&#8230;</string>
+    <string name="contactGroups">Группы</string>
+    <string name="newContactTitle">Добавление нового контакта</string>
+    <string name="editContactTitle">Редактирование контакта</string>
+    <string name="add">Добавить</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="newGroupName">Имя новой группы</string>
+    <string name="invalidJid">Требуется указать правильный Jabber ID вида username@domain.tld</string>
+    <string name="networkDown">Соединение разорвано. Невозможно сохранить изменения.</string>
+    
     
 </resources>
