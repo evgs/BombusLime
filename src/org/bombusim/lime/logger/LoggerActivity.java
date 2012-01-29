@@ -62,11 +62,11 @@ public class LoggerActivity extends Activity {
         
         loggerEnabled = (CheckBox) findViewById(R.id.loggerEnable);
         
-        loggerEnabled.setChecked(Lime.getInstance().localXmlEnabled);
+        loggerEnabled.setChecked(LimeLog.getLocalXmlEnabled());
         loggerEnabled.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				Lime.getInstance().localXmlEnabled = isChecked;
+				LimeLog.setlocalXmlEnabled(isChecked);
 			}
 		});
         

@@ -21,4 +21,10 @@ public class LimeLog {
 		Log.e(tag, message);
 		Lime.getInstance().getLog().addLogEvent(LoggerEvent.ERROR, tag+": "+message, details);
 	}
+	public static boolean getLocalXmlEnabled() {
+		return Lime.getInstance().getLog().localXmlEnabled;
+	}
+	public static void setlocalXmlEnabled(boolean enabled) {
+		Lime.getInstance().getLog().localXmlEnabled = enabled;
+	}
 }

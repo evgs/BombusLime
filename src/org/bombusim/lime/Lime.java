@@ -34,8 +34,6 @@ public class Lime extends Application {
 	
 	public Preferences prefs;
 	
-	public boolean localXmlEnabled = false;
-	
 	public ArrayList<XmppAccount> accounts;
 	
 	public Roster getRoster() { return roster; } 

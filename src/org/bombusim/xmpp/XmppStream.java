@@ -346,7 +346,7 @@ public class XmppStream extends XmppParser {
             	throw new IOException("(-1) End of stream reached");
             
         	Lime.getInstance().getLog().addLogStreamingEvent(LoggerEvent.XMLIN, jid, cbuf, length);
-        	if (Lime.getInstance().localXmlEnabled)   sendBroadcast(LoggerData.UPDATE_LOG);
+        	if (LimeLog.getLocalXmlEnabled())   sendBroadcast(LoggerData.UPDATE_LOG);
             
             parser.parse(cbuf, length);
             
@@ -459,7 +459,7 @@ public class XmppStream extends XmppParser {
   
     public synchronized void send(byte[] data, int length) throws IOException {
     	Lime.getInstance().getLog().addLogStreamingEvent(LoggerEvent.XMLOUT, jid, data, length);
-    	if (Lime.getInstance().localXmlEnabled)   sendBroadcast(LoggerData.UPDATE_LOG);
+    	if (LimeLog.getLocalXmlEnabled())   sendBroadcast(LoggerData.UPDATE_LOG);
     	
     	if (dataStream == null) throw new IOException("Writing to closed stream");
     	dataStream.write(data, length);
