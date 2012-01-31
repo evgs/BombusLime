@@ -49,7 +49,7 @@
     </string-array>
     
     
-    <string name="plainPasswordPromt">Передача пароля открытым текстом</string>
+    <string name="plainPasswordPromt">Передавать пароль открытым текстом</string>
     <string-array name="plainPassword">
         <item>Всегда</item>
         <item>Только по зашифрованному каналу</item>
@@ -67,7 +67,7 @@
     <string name="showPassword">Показывать вводимый пароль</string>
     <string name="advancedSettings">Дополнительные настройки</string>
     <string name="specificXmppHostPort">Указать адрес сервера вручную</string>
-	<string name="account">Account</string>        
+	<string name="account">Аккаунт</string>        
      
     <string name="streamCompression">Сжатие траффика</string>
     
