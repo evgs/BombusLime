@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-   
     <!-- localized presence representation -->
     <string name="presence_offline">unavailable</string>
     <string name="presence_error">error</string>
@@ -34,7 +33,7 @@
     <string name="accountConnection">Connection settings</string>
     <string name="accountResource">Resource</string>
     
-    <string name="sslPrompt">Choose encryption</string>
+    <string name="sslPrompt">Encrypted TLS/SSL connection</string>
     <string-array name="sslOptions">
         <item>Disabled</item>
         <item>Enabled if available</item>
@@ -50,7 +49,7 @@
     </string-array>
     
     
-    <string name="plainPasswordPromt">Use plain password</string>
+    <string name="plainPasswordPromt">Plain-password authentication</string>
     <string-array name="plainPassword">
         <item>Always</item>
         <item>Over encrypted connection</item>

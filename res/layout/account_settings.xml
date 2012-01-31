@@ -12,9 +12,8 @@
         
         <TextView
             style="?android:attr/listSeparatorTextViewStyle"
-            android:text="@string/account"
             android:layout_marginTop="5dip"
-        />
+            android:text="@string/account" />
 	        
         <EditText android:id="@+id/jid"
             android:layout_width="match_parent"
@@ -79,6 +78,13 @@
 	            android:text="@string/accountSecurity"
 	            android:layout_marginTop="5dip"
 	        />
+
+	        <TextView
+	            android:id="@+id/textView2"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/sslPrompt"
+	            android:textAppearance="?android:attr/textAppearanceMedium" />
 	
 	        <Spinner
 	            android:id="@+id/ssl"
@@ -89,6 +95,13 @@
 	            >
 	            
 	        </Spinner>
+
+	        <TextView
+	            android:id="@+id/textView3"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/plainPasswordPromt"
+	            android:textAppearance="?android:attr/textAppearanceMedium" />
 	        
 	        <Spinner
 	            android:id="@+id/plainpassword"
