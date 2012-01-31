@@ -46,10 +46,10 @@ public class XmppJid {
         	resourcePos=s.length();
         }
         else 
-        	resource=s.substring(resourcePos+1);
+        	resource=s.substring(resourcePos+1).trim();
         
         //TODO: nameprep
-        bareJid=strconv.toLowerCase(s.substring(0,resourcePos));
+        bareJid=strconv.toLowerCase(s.substring(0,resourcePos).trim());
     }
     
     /** Compares two Jids */

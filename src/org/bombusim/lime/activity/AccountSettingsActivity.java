@@ -4,6 +4,7 @@ import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 import org.bombusim.lime.data.AccountsFactory;
 import org.bombusim.xmpp.XmppAccount;
+import org.bombusim.xmpp.XmppJid;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -15,7 +16,7 @@ import android.widget.Spinner;
 
 public class AccountSettingsActivity extends Activity {
 
-	EditText jid;
+	EditText editJid;
 	EditText pass;
 	EditText resource;
 	EditText priority;
@@ -120,15 +121,18 @@ public class AccountSettingsActivity extends Activity {
 	
 	@Override
 	protected void onPause() {
-		// TODO Auto-generated method stub
+		// TODO add save/cancel buttons into form
+		// TODO check saveAccount() result
 		saveAccount();
 		super.onPause();
 	}
-	void saveAccount() {
+	boolean saveAccount() {
 		XmppAccount account = Lime.getInstance().accounts.get(0);
 
-		account.userJid = jid.getText().toString();
+		XmppJid jid = new XmppJid(editJid.getText().toString());
+		if (!jid.isValid()) return false; //not saved
 		account.password = pass.getText().toString();
+		account.userJid = jid.getBareJid();
 		//TODO: non-empty password
 		//pass.setHint("••••••••");
 
@@ -160,6 +164,8 @@ public class AccountSettingsActivity extends Activity {
 		account.enablePlainAuth = plainpassword.getSelectedItemPosition();
 
 		AccountsFactory.saveAccount(getApplicationContext(), account);
+		
+		return true;
 	}
 
 }
