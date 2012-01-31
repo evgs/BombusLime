@@ -55,35 +55,41 @@
 	    
 	</RelativeLayout>
 
-    <ImageButton
-        android:id="@+id/sendButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:src="@android:drawable/sym_action_email" />
-    
-    <EditText
-        android:id="@+id/messageBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/sendButton"
-        
-        android:singleLine="false" >
-	    
-	    <!-- 
-		android:nextFocusUp="@id/messageBox" 
-		android:nextFocusLeft="@id/messageBox" -->
-        
-    </EditText>
+	<LinearLayout 
+	        android:id="@+id/messageBar"
+	        android:layout_height="wrap_content"
+	        android:layout_width="fill_parent"
+	        android:layout_alignParentBottom="true"
+	        android:orientation="horizontal"
+	    >
+	    <EditText
+	        android:id="@+id/messageBox"
+	        android:layout_width="0dip"
+	        android:layout_height="wrap_content"
+	        
+	        android:singleLine="false" 
+	        android:layout_weight="1"
+	        >
+		    
+		    <!-- 
+			android:nextFocusUp="@id/messageBox" 
+			android:nextFocusLeft="@id/messageBox" -->
+	        
+	    </EditText>
 
+	    <ImageButton
+	        android:id="@+id/sendButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@android:drawable/sym_action_email" />
+	    
+	</LinearLayout>
+    
     <ListView
         android:id="@+id/chatListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/messageBox"
+        android:layout_above="@+id/messageBar"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/contact_head"
         android:transcriptMode="normal" >
