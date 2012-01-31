@@ -565,8 +565,8 @@ public class XmppStream extends XmppParser {
     	
     	iqroster.queryRoster(this);
 
-    	
-    	Presence online = new Presence(status, account.priority, statusMessage, "evgs");
+    	//TODO: nickname
+    	Presence online = new Presence(status, account.priority, statusMessage, null /* nick */);
     	//offline messages will be delivered after this presence
     	send(online);
     	
