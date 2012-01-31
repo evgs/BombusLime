@@ -17,18 +17,18 @@ import android.widget.Spinner;
 public class AccountSettingsActivity extends Activity {
 
 	EditText editJid;
-	EditText pass;
-	EditText resource;
-	EditText priority;
-	EditText xmpphost;
-	EditText xmppport;
+	EditText editPass;
+	EditText editResource;
+	EditText editPriority;
+	EditText editXmppHost;
+	EditText editXmppPort;
 	
-	CheckBox specifichostport;
-	CheckBox zlib;
-	CheckBox autologin;
+	CheckBox checkSspecificHostPort;
+	CheckBox checkZlib;
+	CheckBox checkAutologin;
 	
-	Spinner security;
-	Spinner plainpassword;
+	Spinner spinSecurity;
+	Spinner spinPlainPassword;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,42 +39,42 @@ public class AccountSettingsActivity extends Activity {
 		
 		setContentView(R.layout.account_settings);
 		
-		jid  = ((EditText)findViewById(R.id.jid));
-		jid.setText(account.userJid);
+		editJid  = ((EditText)findViewById(R.id.jid));
+		editJid.setText(account.userJid);
 		
-		pass = ((EditText)findViewById(R.id.password));
-		pass.setText(account.password);
+		editPass = ((EditText)findViewById(R.id.password));
+		editPass.setText(account.password);
 		//TODO: non-empty password
 		//pass.setHint("••••••••");
 		
-		resource = ((EditText)findViewById(R.id.resource));
-		resource.setText(account.resource);
+		editResource = ((EditText)findViewById(R.id.resource));
+		editResource.setText(account.resource);
 		
-		priority = ((EditText)findViewById(R.id.priority));
-		priority.setText(String.valueOf(account.priority));
+		editPriority = ((EditText)findViewById(R.id.priority));
+		editPriority.setText(String.valueOf(account.priority));
 
-		autologin = ((CheckBox)findViewById(R.id.autoLogin));
-		autologin.setChecked(account.autoLogin);
+		checkAutologin = ((CheckBox)findViewById(R.id.autoLogin));
+		checkAutologin.setChecked(account.autoLogin);
 
-		xmpphost = ((EditText)findViewById(R.id.xmpphost));
-		xmpphost.setText(account.xmppHost);
+		editXmppHost = ((EditText)findViewById(R.id.xmpphost));
+		editXmppHost.setText(account.xmppHost);
 
-		xmppport = ((EditText)findViewById(R.id.xmppport));
-		xmppport.setText(String.valueOf(account.xmppPort));
+		editXmppPort = ((EditText)findViewById(R.id.xmppport));
+		editXmppPort.setText(String.valueOf(account.xmppPort));
 		
-		specifichostport = ((CheckBox)findViewById(R.id.specificHostPort));
-		specifichostport.setChecked(account.specificHostPort);
+		checkSspecificHostPort = ((CheckBox)findViewById(R.id.specificHostPort));
+		checkSspecificHostPort.setChecked(account.specificHostPort);
 		
-		zlib = ((CheckBox)findViewById(R.id.zlib));
-		zlib.setChecked(account.trafficCompression);
+		checkZlib = ((CheckBox)findViewById(R.id.zlib));
+		checkZlib.setChecked(account.trafficCompression);
 		
 		//TODO: populate in runtime to ensure correct order;
-		security = ((Spinner)findViewById(R.id.ssl));
-		security.setSelection(account.secureConnection);
+		spinSecurity = ((Spinner)findViewById(R.id.ssl));
+		spinSecurity.setSelection(account.secureConnection);
 		
 		//TODO: populate in runtime to ensure correct order;
-		plainpassword = ((Spinner)findViewById(R.id.plainpassword));
-		plainpassword.setSelection(account.enablePlainAuth);
+		spinPlainPassword = ((Spinner)findViewById(R.id.plainpassword));
+		spinPlainPassword.setSelection(account.enablePlainAuth);
 
 		
 		findViewById(R.id.advancedSettings).setOnClickListener(new View.OnClickListener() {
@@ -96,7 +96,7 @@ public class AccountSettingsActivity extends Activity {
 				else
 					inputtype |= InputType.TYPE_TEXT_VARIATION_PASSWORD;
 
-				pass.setInputType(inputtype);
+				editPass.setInputType(inputtype);
 			}
 		});
 
@@ -131,37 +131,39 @@ public class AccountSettingsActivity extends Activity {
 
 		XmppJid jid = new XmppJid(editJid.getText().toString());
 		if (!jid.isValid()) return false; //not saved
-		account.password = pass.getText().toString();
+		
 		account.userJid = jid.getBareJid();
+		
+		account.password = editPass.getText().toString();
 		//TODO: non-empty password
 		//pass.setHint("••••••••");
 
-		account.resource = resource.getText().toString();
+		account.resource = editResource.getText().toString();
 		
 		try {
-			account.priority = Integer.parseInt(priority.getText().toString());
+			account.priority = Integer.parseInt(editPriority.getText().toString());
 		} catch (NumberFormatException ex) {
 			account.priority = XmppAccount.DEFAULT_PRIORITY;
 		}
 
-		account.autoLogin = autologin.isChecked();
+		account.autoLogin = checkAutologin.isChecked();
 		
-		account.xmppHost = xmpphost.getText().toString();
+		account.xmppHost = editXmppHost.getText().toString();
 		try {
-			account.xmppPort = Integer.parseInt(xmppport.getText().toString());
+			account.xmppPort = Integer.parseInt(editXmppPort.getText().toString());
 		} catch (NumberFormatException ex) {
 			account.xmppPort = XmppAccount.DEFAULT_XMPP_PORT;
 		}
 		
-		account.specificHostPort = specifichostport.isChecked();
+		account.specificHostPort = checkSspecificHostPort.isChecked();
 		
-		account.trafficCompression = zlib.isChecked();
-		
-		//TODO: populate in runtime to ensure correct order;
-		account.secureConnection = security.getSelectedItemPosition();
+		account.trafficCompression = checkZlib.isChecked();
 		
 		//TODO: populate in runtime to ensure correct order;
-		account.enablePlainAuth = plainpassword.getSelectedItemPosition();
+		account.secureConnection = spinSecurity.getSelectedItemPosition();
+		
+		//TODO: populate in runtime to ensure correct order;
+		account.enablePlainAuth = spinPlainPassword.getSelectedItemPosition();
 
 		AccountsFactory.saveAccount(getApplicationContext(), account);
 		
