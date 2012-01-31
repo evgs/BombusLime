@@ -246,73 +246,70 @@ public class XmppStream extends XmppParser {
 		
 		incomingQueue = new ArrayList<XmppObject>();
         
-    	if (host == null) {
-    		
-    		if (account.specificHostPort) {
-    			host = account.xmppHost;
-    			port = account.xmppPort;
-    		} else {
-    		
-        		// workaround for android 2.2 and org.xbill.DNS
-        		// java.net.SocketException: Bad address family
-    			// see http://stackoverflow.com/questions/2879455/android-2-2-and-bad-address-family-on-socket-connect
-    			// see http://code.google.com/p/android/issues/detail?id=9431
-        		// android 2.3: ok
-    			
-    			if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.FROYO) {
-    				//TODO: check if IPv6 enabled kernel
-    				java.lang.System.setProperty("java.net.preferIPv4Stack", "true");
-    				java.lang.System.setProperty("java.net.preferIPv6Addresses", "false");
-    			}
-        	
-    			String srvRecord = "_xmpp-client._tcp." + server;
-    			
-    			LimeLog.i("SRV", "Lookup for " + srvRecord, null);
-    			
-    			Lookup l = new Lookup(srvRecord, Type.SRV);
-        	
-    			//TODO: caching SRV requests
-        	
-    			Record [] records = l.run();
-    			
-    			switch (l.getResult()) {
-    			case Lookup.HOST_NOT_FOUND:
-    				throw new UnknownHostException("Host not found: "+server);
-    				
-    			case Lookup.TYPE_NOT_FOUND:
-    				LimeLog.i("SRV", server + " has no SRV record", null);
-    				host = server;
-    				port = 5222;
-    				break;
-    				
-    			case Lookup.TRY_AGAIN:
-    				throw new IOException("Network is down during SRV lookup");
-    				
-    			case Lookup.UNRECOVERABLE:
-    				throw new IOException("Network is down during SRV lookup (unrecoverable)");
-    				
-    			case Lookup.SUCCESSFUL:
-    			default:
-        			if (records != null) {
-        				host = ((SRVRecord)records[0]).getTarget().toString();
-        				port = ((SRVRecord)records[0]).getPort();
-        			}
-    			}
-        	
-        	
-    		}
-    		
-    		if (host==null) {
-				LimeLog.i("SRV", "Assuming host = "+ server, null);
+		if (account.specificHostPort) {
+			host = account.xmppHost;
+			port = account.xmppPort;
+		} else {
 		
-    			host = server;
-    		}
-    		
-    		if (port == 0) port = XmppAccount.DEFAULT_XMPP_PORT;
-    		if (port == XmppAccount.DEFAULT_XMPP_PORT  && account.secureConnection == XmppAccount.SECURE_CONNECTION_LEGACY_SSL) {
-    			port = XmppAccount.DEFAULT_SECURE_XMPP_PORT;
-    		}
-    	}
+    		// workaround for android 2.2 and org.xbill.DNS
+    		// java.net.SocketException: Bad address family
+			// see http://stackoverflow.com/questions/2879455/android-2-2-and-bad-address-family-on-socket-connect
+			// see http://code.google.com/p/android/issues/detail?id=9431
+    		// android 2.3: ok
+			
+			if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.FROYO) {
+				//TODO: check if IPv6 enabled kernel
+				java.lang.System.setProperty("java.net.preferIPv4Stack", "true");
+				java.lang.System.setProperty("java.net.preferIPv6Addresses", "false");
+			}
+    	
+			//TODO: caching SRV requests
+	    	
+			String srvRecord = "_xmpp-client._tcp." + server;
+			
+			LimeLog.i("SRV", "Lookup for " + srvRecord, null);
+			
+			Lookup l = new Lookup(srvRecord, Type.SRV);
+    	
+			Record [] records = l.run();
+			
+			switch (l.getResult()) {
+			case Lookup.HOST_NOT_FOUND:
+				throw new UnknownHostException("Host not found: "+server);
+				
+			case Lookup.TYPE_NOT_FOUND:
+				LimeLog.i("SRV", server + " has no SRV record", null);
+				host = server;
+				port = 5222;
+				break;
+				
+			case Lookup.TRY_AGAIN:
+				throw new IOException("Network is down during SRV lookup");
+				
+			case Lookup.UNRECOVERABLE:
+				throw new IOException("Network is down during SRV lookup (unrecoverable)");
+				
+			case Lookup.SUCCESSFUL:
+			default:
+    			if (records != null) {
+    				host = ((SRVRecord)records[0]).getTarget().toString();
+    				port = ((SRVRecord)records[0]).getPort();
+    			}
+			}
+    	
+    	
+		}
+		
+		if (host==null) {
+			LimeLog.i("SRV", "Assuming host = "+ server, null);
+	
+			host = server;
+		}
+		
+		if (port == 0) port = XmppAccount.DEFAULT_XMPP_PORT;
+		if (port == XmppAccount.DEFAULT_XMPP_PORT  && account.secureConnection == XmppAccount.SECURE_CONNECTION_LEGACY_SSL) {
+			port = XmppAccount.DEFAULT_SECURE_XMPP_PORT;
+		}
     	
     	dataStream = new NetworkSocketDataStream(host, port);
     	
