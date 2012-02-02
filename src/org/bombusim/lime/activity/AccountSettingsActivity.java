@@ -3,12 +3,20 @@ package org.bombusim.lime.activity;
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 import org.bombusim.lime.data.AccountsFactory;
+import org.bombusim.lime.logger.LoggerActivity;
+import org.bombusim.lime.service.XmppService;
+import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.xmpp.XmppAccount;
 import org.bombusim.xmpp.XmppJid;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -30,51 +38,26 @@ public class AccountSettingsActivity extends Activity {
 	Spinner spinSecurity;
 	Spinner spinPlainPassword;
 	
+	private XmppServiceBinding sb;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		//TODO: account selector
-		XmppAccount account = Lime.getInstance().accounts.get(0);
-		
 		setContentView(R.layout.account_settings);
 		
 		editJid  = ((EditText)findViewById(R.id.jid));
-		editJid.setText(account.userJid);
-		
 		editPass = ((EditText)findViewById(R.id.password));
-		editPass.setText(account.password);
-		//TODO: non-empty password
-		//pass.setHint("••••••••");
-		
 		editResource = ((EditText)findViewById(R.id.resource));
-		editResource.setText(account.resource);
-		
 		editPriority = ((EditText)findViewById(R.id.priority));
-		editPriority.setText(String.valueOf(account.priority));
-
 		checkAutologin = ((CheckBox)findViewById(R.id.autoLogin));
-		checkAutologin.setChecked(account.autoLogin);
-
 		editXmppHost = ((EditText)findViewById(R.id.xmpphost));
-		editXmppHost.setText(account.xmppHost);
-
 		editXmppPort = ((EditText)findViewById(R.id.xmppport));
-		editXmppPort.setText(String.valueOf(account.xmppPort));
-		
 		checkSspecificHostPort = ((CheckBox)findViewById(R.id.specificHostPort));
-		checkSspecificHostPort.setChecked(account.specificHostPort);
-		
-		checkZlib = ((CheckBox)findViewById(R.id.zlib));
-		checkZlib.setChecked(account.trafficCompression);
-		
-		//TODO: populate in runtime to ensure correct order;
 		spinSecurity = ((Spinner)findViewById(R.id.ssl));
-		spinSecurity.setSelection(account.secureConnection);
-		
-		//TODO: populate in runtime to ensure correct order;
 		spinPlainPassword = ((Spinner)findViewById(R.id.plainpassword));
-		spinPlainPassword.setSelection(account.enablePlainAuth);
+
+		loadActiveAccount();
 
 		
 		findViewById(R.id.advancedSettings).setOnClickListener(new View.OnClickListener() {
@@ -112,6 +95,40 @@ public class AccountSettingsActivity extends Activity {
 		findViewById(R.id.layoutAdvancedSettings).setVisibility(View.GONE);
 		
 		updateHostState();
+		
+		sb=new XmppServiceBinding(this);
+	}
+
+	private void loadActiveAccount() {
+		//TODO: account selector
+		XmppAccount account = Lime.getInstance().getActiveAccount();
+
+		editJid.setText(account.userJid);
+		
+		editPass.setText(account.password);
+		//TODO: non-empty password
+		//pass.setHint("••••••••");
+		
+		editResource.setText(account.resource);
+		
+		editPriority.setText(String.valueOf(account.priority));
+
+		checkAutologin.setChecked(account.autoLogin);
+
+		editXmppHost.setText(account.xmppHost);
+
+		editXmppPort.setText(String.valueOf(account.xmppPort));
+		
+		checkSspecificHostPort.setChecked(account.specificHostPort);
+		
+		checkZlib = ((CheckBox)findViewById(R.id.zlib));
+		checkZlib.setChecked(account.trafficCompression);
+		
+		//TODO: populate in runtime to ensure correct order;
+		spinSecurity.setSelection(account.secureConnection);
+		
+		//TODO: populate in runtime to ensure correct order;
+		spinPlainPassword.setSelection(account.enablePlainAuth);
 	}
 	
 	void updateHostState() {
@@ -120,14 +137,30 @@ public class AccountSettingsActivity extends Activity {
 	}
 	
 	@Override
+	protected void onResume() {
+		sb.doBindService();
+		
+		super.onResume();
+	}
+	
+	@Override
 	protected void onPause() {
 		// TODO add save/cancel buttons into form
 		// TODO check saveAccount() result
+		sb.doDisconnect();
+		
 		saveAccount();
+		
+		//TODO: invalidate roster
+		Lime.getInstance().loadAccounts();
+
 		super.onPause();
+
+		sb.doUnbindService();
 	}
+	
 	boolean saveAccount() {
-		XmppAccount account = Lime.getInstance().accounts.get(0);
+		XmppAccount account = Lime.getInstance().getActiveAccount();
 
 		XmppJid jid = new XmppJid(editJid.getText().toString());
 		if (!jid.isValid()) return false; //not saved
@@ -170,4 +203,63 @@ public class AccountSettingsActivity extends Activity {
 		return true;
 	}
 
+	
+	@Override
+	public boolean onCreateOptionsMenu(android.view.Menu menu) {
+		getMenuInflater().inflate(R.menu.account_menu, menu);
+	
+		return true;
+	};
+
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.cmdAdd:    {
+			sb.doDisconnect();
+			
+			saveAccount();
+			Lime.getInstance().addNewAccount();
+			loadActiveAccount();
+			break;
+		}
+		case R.id.cmdDelete:   {
+			sb.doDisconnect();
+			
+			Lime.getInstance().deleteActiveAccount();
+			loadActiveAccount();
+			break;
+		}
+		
+		case R.id.cmdSelectActive:   {
+			String accountLabels[]=Lime.getInstance().getAccountLabels();
+			int activeAccount = Lime.getInstance().getActiveAccountIndex();
+			
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Select active account")
+			.setSingleChoiceItems(accountLabels, activeAccount, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					
+					Lime.getInstance().setActiveAccountIndex(which);
+					loadActiveAccount();
+					
+					dialog.dismiss();
+				}
+			});
+			AlertDialog alert = builder.create();
+			alert.setOwnerActivity(this);
+			alert.show();
+			
+			break;
+		}
+
+		default: return true; // on submenu
+		}
+		
+		return false;
+	}
+	
 }

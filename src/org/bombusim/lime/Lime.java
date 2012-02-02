@@ -34,7 +34,8 @@ public class Lime extends Application {
 	
 	public Preferences prefs;
 	
-	public ArrayList<XmppAccount> accounts;
+	private ArrayList<XmppAccount> accounts;
+	private int activeAccountIndex;	
 	
 	public Roster getRoster() { return roster; } 
 	
@@ -53,17 +54,21 @@ public class Lime extends Application {
 		instance = this;
 		
 		loadPreferences();
-		
-		accounts = AccountsFactory.loadAccounts(getApplicationContext());
-		
+
 		log = new LoggerData();
 		
 		vcardResolver = new VcardResolver(this);
 
-		roster=new Roster(accounts.get(0).userJid);
+		loadAccounts();
 		
 		avatarSize = getResources().getDimensionPixelSize(R.dimen.avatarSize);
 		
+	}
+
+	public void loadAccounts() {
+		accounts = AccountsFactory.loadAccounts(getApplicationContext());
+		activeAccountIndex = AccountsFactory.getActiveAccountIndex(getApplicationContext());
+		roster=new Roster(getActiveAccount().userJid);
 	}
 
 	public void loadPreferences() {
@@ -114,6 +119,10 @@ public class Lime extends Application {
 		return version;
 	}
 
+	public XmppAccount getActiveAccount() {
+		return accounts.get(activeAccountIndex);
+	}
+	
 	public String getOsId() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(android.os.Build.MANUFACTURER).append(' ');
@@ -140,4 +149,27 @@ public class Lime extends Application {
 		}
 		return smilify;
 	}
+
+	public void addNewAccount() {
+		int active=AccountsFactory.addNew(accounts);
+		AccountsFactory.saveAccount(getApplicationContext(), accounts.get(active));
+		setActiveAccountIndex(active);
+	}
+
+	public void setActiveAccountIndex(int active) {
+		AccountsFactory.saveActiveAccountIndex(getApplicationContext(), active);
+		activeAccountIndex = active;
+	}
+
+	public void deleteActiveAccount() {
+		AccountsFactory.removeAccount(getApplicationContext(), getActiveAccount());
+		accounts.remove(getActiveAccount());
+		setActiveAccountIndex(accounts.size()-1);
+	}
+
+	public String[] getAccountLabels() {
+		return AccountsFactory.getLabels(accounts);
+	}
+
+	public int getActiveAccountIndex() { return activeAccountIndex; }
 }

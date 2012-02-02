@@ -244,7 +244,7 @@ public class RosterActivity extends ExpandableListActivity {
 			openEditContact.putExtra(EditContactActivity.MY_JID, c.getRosterJid());
 			openEditContact.putExtra(EditContactActivity.JID,   c.getJid());
 		} else {
-			String rJid = Lime.getInstance().accounts.get(0).userJid;
+			String rJid = Lime.getInstance().getActiveAccount().userJid;
 			openEditContact.putExtra(EditContactActivity.MY_JID, rJid);
 			//openEditContact.putExtra(EditContactActivity.JID,   c.getJid());
 		}

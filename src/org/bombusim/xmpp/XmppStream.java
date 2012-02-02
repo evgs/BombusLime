@@ -78,7 +78,7 @@ public class XmppStream extends XmppParser {
 
 	String sessionId;
     
-    final XmppAccount account;
+    XmppAccount account;
     
     public String jid;        //bareJid, should be used to refer account 
     public String jidSession; //binded JID, should be used instead of account data 
@@ -120,17 +120,23 @@ public class XmppStream extends XmppParser {
 	
     public XmppStream( XmppAccount account) {
     	
-    	this.account = account;
-
-		server = new XmppJid(account.userJid).getServer();
-		
-		jid = account.userJid;
-		jidSession = jid + '/' + account.resource;
+    	bindAccount(account);
     	
     	dispatcherQueue = new ArrayList<XmppObjectListener>();
     	
     }
 
+	public void bindAccount(XmppAccount account) {
+
+		this.account = account;
+
+		server = new XmppJid(account.userJid).getServer();
+		
+		jid = account.userJid;
+		jidSession = jid + '/' + account.resource;
+		
+	}
+    
     public void setLocaleLang(String lang) {
     	this.lang = lang;
     }

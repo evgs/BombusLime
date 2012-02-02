@@ -68,13 +68,15 @@ public class XmppService extends Service implements Runnable {
 	public int onStartCommand(Intent intent, int flags, int startId) {
         //LimeLog.i("XmppService", "Received start id " + startId, intent.toString());
 		
+		XmppAccount activeAccount = Lime.getInstance().getActiveAccount();
+		
 		// TODO start multiple connections
 		if (s==null) {
-			XmppAccount a=Lime.getInstance().accounts.get(0);
-			s=new XmppStream(a);
+			s=new XmppStream(activeAccount);
 			s.setContext(this);
+		} else {
+			s.bindAccount(activeAccount);
 		}
-		
 		
 		br = new ConnBroadcastReceiver();
 		registerReceiver(br, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
