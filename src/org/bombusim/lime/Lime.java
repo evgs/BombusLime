@@ -110,7 +110,10 @@ public class Lime extends Application {
 			try {
 				PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 
-				version = pinfo.versionName + " ("+ pinfo.versionCode + ")";
+				//version = pinfo.versionName + " ("+ pinfo.versionCode + ")";
+				version = pinfo.versionName 
+						+ "." + getResources().getString(R.string.git_count)
+						+ " ("+ getResources().getString(R.string.git_short) + ")";
 			} catch (NameNotFoundException e) {
 				version = "unknown";
 			}
