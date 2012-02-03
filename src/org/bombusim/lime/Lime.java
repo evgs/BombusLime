@@ -68,6 +68,9 @@ public class Lime extends Application {
 	public void loadAccounts() {
 		accounts = AccountsFactory.loadAccounts(getApplicationContext());
 		activeAccountIndex = AccountsFactory.getActiveAccountIndex(getApplicationContext());
+		//TODO: remove workaround when new AccountListActivity will be added 
+		if (activeAccountIndex >= accounts.size())
+			activeAccountIndex = 0;
 		roster=new Roster(getActiveAccount().userJid);
 	}
 
