@@ -11,6 +11,7 @@
         <item android:id="@+id/cmdAddContact" android:orderInCategory="7" android:icon="@android:drawable/ic_menu_add" android:title="Add Contact"/>
 	    <item android:id="@+id/cmdDisco" android:orderInCategory="8" android:icon="@android:drawable/ic_menu_search" android:title="Service Discovery"/>
     </group>
+    <item android:id="@+id/cmdAbout" android:title="@string/aboutBombusLime" android:orderInCategory="50"></item>
     
 
 </menu>
