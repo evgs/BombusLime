@@ -14,8 +14,8 @@ import android.net.Uri;
 
 public class NotificationMgr {
     private static final int MESSAGE_MAXLEN_NOTIFY = 250;
-	private int NOTIFICATION_ONLINE = R.string.app_name;
-    private int NOTIFICATION_CHAT = R.string.chatNotify;
+	private final static int NOTIFICATION_ONLINE = R.string.app_name;
+    private final static int NOTIFICATION_CHAT = R.string.chatNotify;
 	
     //TODO: read from configuration
 	private boolean serviceIcon = true;

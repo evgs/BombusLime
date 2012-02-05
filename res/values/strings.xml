@@ -15,7 +15,6 @@
     <string name="subscr_received">You are now authorized</string>
     <string name="subscr_deleted">Your authorization has been removed</string>
     
-    <string name="app_name">BombusLime</string>
     <string name="labelJidUserName">User Name</string>
     <string name="labelPassword">Password</string>
     <string name="labelResource">Resource</string>
@@ -41,14 +40,6 @@
         <item>Using legacy SSL</item>
     </string-array>
 
-    <string-array name="sslOptionsVals">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-    
-    
     <string name="plainPasswordPromt">Plain-password authentication</string>
     <string-array name="plainPassword">
         <item>Always</item>
@@ -56,11 +47,6 @@
         <item>Never</item>
     </string-array>
     
-    <string-array name="plainPasswordVals">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
     
     <string name="xmppPort">port</string>
     <string name="xmppHost">Host name or IP</string>
@@ -70,25 +56,6 @@
 	<string name="account">Account</string>        
      
     <string name="streamCompression">Stream Compression</string>
-    <string-array name="vcardFields">
-        <item>FN</item>
-        <item>NICKNAME</item>
-        <item>BDAY</item>
-        <item>ADR/STREET</item>
-        <item>ADR/EXTADR</item>
-        <item>ADR/LOCALITY</item>
-        <item>ADR/REGION</item>
-        <item>ADR/PCODE</item>
-        <item>ADR/CTRY</item>
-        <item>TEL/HOME</item>
-        <item>TEL/NUMBER</item>
-        <item>EMAIL/USERID</item>
-        <item>TITLE</item>
-        <item>ORG/ORGNAME</item>
-        <item>ORG/UNIT</item>
-        <item>URL</item>
-        <item>DESC</item>
-    </string-array>
     
     <string-array name="vcardLabels">
         <item>Full Name</item>
@@ -109,8 +76,6 @@
         <item>Website</item>
         <item>About</item>
     </string-array>
-    
-    <dimen name="avatarSize">48dp</dimen>
     
     <string name="xmppServiceDescription">Provides XMPP connectivity layer</string>
     

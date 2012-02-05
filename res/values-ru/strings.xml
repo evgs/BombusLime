@@ -15,7 +15,6 @@
     <string name="subscr_received">Вы получили подписку</string>
     <string name="subscr_deleted">Подписка на присутствие удалена!</string>
     
-    <string name="app_name">BombusLime</string>
     <string name="labelJidUserName">Имя пользователя</string>
     <string name="labelPassword">Пароль</string>
     <string name="labelResource">Ресурс</string>
@@ -40,26 +39,12 @@
         <item>Всегда шифровать соединение</item>
         <item>Использовать устаревший порт SSL (5223)</item>
     </string-array>
-
-    <string-array name="sslOptionsVals">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-    
     
     <string name="plainPasswordPromt">Передавать пароль открытым текстом</string>
     <string-array name="plainPassword">
         <item>Всегда</item>
         <item>Только по зашифрованному каналу</item>
         <item>Никогда</item>
-    </string-array>
-    
-    <string-array name="plainPasswordVals">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
     </string-array>
     
     <string name="xmppPort">порт</string>
