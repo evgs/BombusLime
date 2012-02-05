@@ -6,7 +6,10 @@ GIT_COUNT=`git rev-list --all | wc -l`
 ONAME=BombusLime_${GIT_COUNT}_${GIT_SHORT}.apk
 echo $ONAME
 
-cp bin/BombusLime.apk outweb
-cp bin/BombusLime.apk outweb/$ONAME
+./gitinfo.sh
+ant debug
+
+cp bin/BombusLime-debug.apk outweb/BombusLime.apk
+cp bin/BombusLime-debug.apk outweb/$ONAME
 
 
