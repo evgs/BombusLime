@@ -587,4 +587,9 @@ public class XmppStream extends XmppParser {
 		serviceContext.sendBroadcast(new Intent(message));
 	}
 	
+	public void sendBroadcast(String message, String param) {
+		serviceContext.sendBroadcast(new Intent(message)
+			.putExtra("param", param)
+		);
+	}
 }
