@@ -24,20 +24,24 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class RosterActivity extends ExpandableListActivity {
 	XmppServiceBinding sb;
 	
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		
 		ExpandableListAdapter adapter=new RosterAdapter(this);
 		
@@ -46,9 +50,24 @@ public class RosterActivity extends ExpandableListActivity {
 		registerForContextMenu(getExpandableListView());
 	
 		sb = new XmppServiceBinding(this);
-		
+
 		//temporary
 		Lime.getInstance().sb=sb;
+
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.roster_title);
+		updateRosterTitle();
+	}
+
+	private void updateRosterTitle() {
+		String rJid = Lime.getInstance().getActiveAccount().userJid;
+		((TextView) findViewById(R.id.activeJid)).setText(rJid);
+
+		boolean isSecure = false; 
+		try { 
+			isSecure = sb.getXmppStream(rJid).isSecured();
+		} catch (Exception e){};
+		
+		((ImageView) findViewById(R.id.imageSSL)).setVisibility(isSecure? View.VISIBLE : View.GONE);
 	}
 
 	@Override
@@ -197,6 +216,9 @@ public class RosterActivity extends ExpandableListActivity {
 	
 	//TODO: update only group if presence update 
 	void refreshVisualContent(){
+		//TODO: fix update
+		updateRosterTitle();
+		
 		ExpandableListView lv = getExpandableListView(); 
 		lv.setVisibility(View.GONE);
 		RosterAdapter ra = (RosterAdapter)getExpandableListAdapter();
