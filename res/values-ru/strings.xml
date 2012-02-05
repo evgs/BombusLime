@@ -93,5 +93,6 @@
     <string name="invalidJid">Требуется указать правильный Jabber ID вида username@domain.tld</string>
     <string name="networkDown">Соединение разорвано. Невозможно сохранить изменения.</string>
     <string name="aboutBombusLime">О программе</string>
+    <string name="messageDelivered">Сообщение доставлено</string>
     
 </resources>
