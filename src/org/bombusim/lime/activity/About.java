@@ -13,6 +13,8 @@ import android.content.DialogInterface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.widget.TextView;
 
 public class About {
 	private About(){};
@@ -48,5 +50,9 @@ public class About {
 		AlertDialog alert = builder.create();
 		alert.setOwnerActivity(hostActivity);
 		alert.show();
+		
+		// Make the textview clickable. Must be called after show()   
+	    ((TextView)alert.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+
 	}
 }
