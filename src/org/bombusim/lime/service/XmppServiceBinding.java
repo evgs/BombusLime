@@ -29,8 +29,19 @@ public class XmppServiceBinding {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			xmppService = ((XmppService.LocalBinder)service).getService();
+			if (bindlistener !=null) bindlistener.onBindService(xmppService);
 		}
 	};
+	
+	public interface BindListener {
+		abstract void onBindService(XmppService service);
+	}
+	
+	private BindListener bindlistener;
+	
+	public void setBindListener(BindListener bl) {
+		this.bindlistener = bl;
+	}
 	
 	public void doBindService() { 
 		Lime.getInstance().bindService(new Intent(context, XmppService.class), xsc, Context.BIND_AUTO_CREATE); 
@@ -39,7 +50,6 @@ public class XmppServiceBinding {
 	public void doUnbindService() {
 		if (xmppService != null)
 			Lime.getInstance().unbindService(xsc);
-		xmppService = null;
 	}
 	
 	public XmppStream getXmppStream(String rosterJid) {

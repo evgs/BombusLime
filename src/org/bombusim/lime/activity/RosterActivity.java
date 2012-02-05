@@ -48,12 +48,12 @@ public class RosterActivity extends ExpandableListActivity {
 		setListAdapter(adapter);
 		
 		registerForContextMenu(getExpandableListView());
-	
+
 		sb = new XmppServiceBinding(this);
 
 		//temporary
 		Lime.getInstance().sb=sb;
-
+	
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.roster_title);
 		updateRosterTitle();
 	}
@@ -233,6 +233,14 @@ public class RosterActivity extends ExpandableListActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
+		sb.setBindListener(new XmppServiceBinding.BindListener() {
+			@Override
+			public void onBindService(XmppService service) {
+				updateRosterTitle();
+			}
+		});
+		
 		sb.doBindService();
 		//update view to actual state
 		refreshVisualContent();
