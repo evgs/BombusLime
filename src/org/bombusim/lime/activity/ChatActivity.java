@@ -9,6 +9,7 @@ import org.bombusim.lime.data.ChatHistoryDbAdapter;
 import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Message;
 import org.bombusim.lime.service.XmppServiceBinding;
+import org.bombusim.xmpp.handlers.MessageDispatcher;
 import org.bombusim.xmpp.stanza.XmppMessage;
 
 import android.app.Activity;
@@ -47,6 +48,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
 
 public class ChatActivity extends Activity {
 	public static final String MY_JID = "fromJid";
@@ -345,6 +347,11 @@ public class ChatActivity extends Activity {
 		
 		//TODO: resource magic
 		XmppMessage msg = new XmppMessage(to, text, null, false);
+		msg.setAttribute("id", String.valueOf(out.getId()) );
+		
+		//TODO: optional delivery confirmation request
+		msg.addChildNs("request", MessageDispatcher.URN_XMPP_RECEIPTS);
+		
 		//TODO: message queue
 		serviceBinding.getXmppStream(visavis.getRosterJid()).send(msg);
 		
@@ -359,7 +366,15 @@ public class ChatActivity extends Activity {
 		
 	}
 	
-	private ChatBroadcastReceiver br;
+	private class DeliveredReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Toast.makeText(ChatActivity.this, R.string.messageDelivered, Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	private ChatBroadcastReceiver bcUpdateChat;
+	private DeliveredReceiver bcDelivered;
 	
 	@Override
 	protected void onResume() {
@@ -375,9 +390,12 @@ public class ChatActivity extends Activity {
 		BaseAdapter ca = (BaseAdapter) (chatListView.getAdapter());
         chatListView.setSelection(ca.getCount()-1);
 
-		br = new ChatBroadcastReceiver();
+		bcUpdateChat = new ChatBroadcastReceiver();
 		//TODO: presence receiver
-		registerReceiver(br, new IntentFilter(Chat.UPDATE_CHAT));
+		registerReceiver(bcUpdateChat, new IntentFilter(Chat.UPDATE_CHAT));
+
+		bcDelivered = new DeliveredReceiver();
+		registerReceiver(bcDelivered, new IntentFilter(Chat.DELIVERED));
 		
 		super.onResume();
 	}
@@ -415,6 +433,7 @@ public class ChatActivity extends Activity {
 	protected void onPause() {
 		super.onPause();
 		serviceBinding.doUnbindService();
-		unregisterReceiver(br);
+		unregisterReceiver(bcUpdateChat);
+		unregisterReceiver(bcDelivered);
 	}
 }

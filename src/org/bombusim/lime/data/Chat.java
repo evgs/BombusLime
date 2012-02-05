@@ -12,6 +12,8 @@ public class Chat {
 
 	private static final int HISTORY_DEFAULT_CONTEXT_SIZE = 20;
 	private static final int HISTORY_UNLIMITED = -1;
+
+	public static final String DELIVERED = "org.bombusim.lime.data.DELIVERED";
 	
 	Contact visavis;
 	
