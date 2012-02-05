@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.bombusim.lime.Lime;
 
 import android.database.Cursor;
+import android.util.Log;
 
 public class Chat {
 	public static final String UPDATE_CHAT = "org.bombusim.lime.data.UPDATE_CHAT";
@@ -55,7 +56,12 @@ public class Chat {
 
 	public Cursor getCursor() {
 		
+		//benchmarking
+		long st=System.currentTimeMillis();
 		Cursor hist = readDbAdapter.getMessageCursor( visavis.getJid(), HISTORY_UNLIMITED );
+		long delay = System.currentTimeMillis() - st;
+		
+		Log.d("SQLite", visavis.getJid() + ": delay=" + delay);
 		
 		return hist;
 	}

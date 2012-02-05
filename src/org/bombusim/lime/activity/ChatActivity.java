@@ -72,7 +72,6 @@ public class ChatActivity extends Activity {
 	Contact visavis;
 	
 	Chat chat;
-	int chatSize; //caching chat.getChatSize() to provide atomic updating
 	
 	protected String visavisNick;
 	protected String myNick;
@@ -100,11 +99,6 @@ public class ChatActivity extends Activity {
         visavis = Lime.getInstance().getRoster().findContact(jid, rJid);
         
         chat = Lime.getInstance().getChatFactory().getChat(jid, rJid);
-
-        //TODO: detach old cursor
-        Cursor cursor = chat.getCursor();
-        chatListView.setAdapter(new ChatListAdapter(this, cursor));
-        startManagingCursor(cursor);
 
         vAvatar.setImageBitmap(visavis.getLazyAvatar(true));
         vNick.setText(visavis.getScreenName());
@@ -394,11 +388,20 @@ public class ChatActivity extends Activity {
 		Cursor c = chat.getCursor();
 		
 		CursorAdapter ca = (CursorAdapter) (chatListView.getAdapter());
+		if (ca == null) {
+			ca = new ChatListAdapter(this, c);
+	        chatListView.setAdapter(ca);
+	        startManagingCursor(c);
+		} else {
+	        //TODO: detach old cursor
+			ca.changeCursor(c);
+	        startManagingCursor(c);
+			
+	        ca.notifyDataSetChanged();
+
+			chatListView.invalidate();
+		}
 		
-		ca.changeCursor(c);
-		ca.notifyDataSetChanged();
-		
-		chatListView.invalidate();
 
 		chatListView.setVisibility(View.VISIBLE);
 
