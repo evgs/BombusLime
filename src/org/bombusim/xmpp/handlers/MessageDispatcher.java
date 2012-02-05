@@ -16,6 +16,8 @@ import org.bombusim.xmpp.stanza.XmppMessage;
 
 public class MessageDispatcher implements XmppObjectListener{
 
+	private static final String URN_XMPP_RECEIPTS = "urn:xmpp:receipts";
+
 	@Override
 	public int blockArrived(XmppObject data, XmppStream stream)
 			throws IOException, XmppException {
@@ -32,11 +34,20 @@ public class MessageDispatcher implements XmppObjectListener{
 		msg.subj = m.getSubject();
 		//TODO: timestamp
 		
+		String id = m.getAttribute("id");
 		//TODO: resource magic
 		try {
 			Chat c = Lime.getInstance().getChatFactory().getChat(from.getBareJid(), stream.jid); 
 			c.addMessage(msg);
 			Lime.getInstance().notificationMgr().showChatNotification(c.getVisavis(), body);
+			
+			if (m.findNamespace("request", URN_XMPP_RECEIPTS)!=null) {
+				XmppMessage confirmReceived = new XmppMessage(m.getFrom());
+				confirmReceived.setAttribute("id", id);
+				confirmReceived.addChildNs("received", URN_XMPP_RECEIPTS);
+				
+				stream.send(confirmReceived);
+			}
 			
 			stream.sendBroadcast(Chat.UPDATE_CHAT);
 
@@ -46,10 +57,10 @@ public class MessageDispatcher implements XmppObjectListener{
 		
 		
 		
-		return BLOCK_REJECTED;
+		return BLOCK_PROCESSED;
 	}
 
 	@Override
-	public String capsXmlns() { return null; }
+	public String capsXmlns() { return URN_XMPP_RECEIPTS; }
 
 }
