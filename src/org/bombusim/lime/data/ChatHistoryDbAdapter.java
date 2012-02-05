@@ -36,9 +36,13 @@ public class ChatHistoryDbAdapter  {
 		this.rJid = rJid;
 	}
 	
-	public void open() {
+	public void open(boolean readOnly) {
 		try {
-			db = dbHelper.getWritableDatabase();
+			if (readOnly) {
+				db = dbHelper.getReadableDatabase();
+			} else {
+				db = dbHelper.getWritableDatabase();
+			}
 		} catch (SQLException ex) {
 			db = dbHelper.getReadableDatabase();
 		}
@@ -94,8 +98,10 @@ public class ChatHistoryDbAdapter  {
 		String select =  KEY_RJID + "='" + rJid + "'" 
 		      +" AND " + KEY_JID  + "='"+jid+"'" ;
 		
-		String orderBy = KEY_TIME + " DESC";
+		String orderBy = KEY_TIME + " ASC";
 		
+		//TODO: limit now wors correctly only if order = DESC
+		//TODO: limit should be by age
 		String sLimit = (limit>0)? String.valueOf(limit) : null;
 		
 		Cursor ind = db.query(DATABASE_TABLE, null /*new String[] {KEY_ID, KEY_TIME}*/, select, null, null, null, orderBy, sLimit);
@@ -113,7 +119,7 @@ public class ChatHistoryDbAdapter  {
 		return msg; 
 	}
 	
-	public Message getMessageFromCursor(Cursor cursor) {
+	public static Message getMessageFromCursor(Cursor cursor) {
 		int type      = cursor.getInt(cursor.getColumnIndex(KEY_TYPE));
 		String jid    = cursor.getString(cursor.getColumnIndex(KEY_JID));
 		String body   = cursor.getString(cursor.getColumnIndex(KEY_BODY));

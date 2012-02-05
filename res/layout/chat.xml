@@ -92,7 +92,7 @@
         android:layout_above="@+id/messageBar"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/contact_head"
-        android:transcriptMode="normal" >
+        android:transcriptMode="alwaysScroll" >
 
     </ListView>
 

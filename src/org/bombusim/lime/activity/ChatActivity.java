@@ -5,6 +5,7 @@ import java.security.InvalidParameterException;
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 import org.bombusim.lime.data.Chat;
+import org.bombusim.lime.data.ChatHistoryDbAdapter;
 import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Message;
 import org.bombusim.lime.service.XmppServiceBinding;
@@ -15,6 +16,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.text.ClipboardManager;
 import android.text.Spannable;
@@ -37,6 +39,7 @@ import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.BaseAdapter;
+import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -95,9 +98,13 @@ public class ChatActivity extends Activity {
 
         //TODO: move into ChatFactory
         visavis = Lime.getInstance().getRoster().findContact(jid, rJid);
+        
         chat = Lime.getInstance().getChatFactory().getChat(jid, rJid);
 
-        chatListView.setAdapter(new ChatListAdapter(this));
+        //TODO: detach old cursor
+        Cursor cursor = chat.getCursor();
+        chatListView.setAdapter(new ChatListAdapter(this, cursor));
+        startManagingCursor(cursor);
 
         vAvatar.setImageBitmap(visavis.getLazyAvatar(true));
         vNick.setText(visavis.getScreenName());
@@ -223,81 +230,40 @@ public class ChatActivity extends Activity {
     	chatListView.setItemsCanFocus(true);
 	}
 
-	private class ChatListAdapter extends BaseAdapter {
+	private class ChatListAdapter extends CursorAdapter {
     	
-        public ChatListAdapter(Context context)
-        {
-            mContext = context;
-        }
-
         
-        /**
-         * The number of items in the list is determined by the number of speeches
-         * in our array.
-         * 
-         * @see android.widget.ListAdapter#getCount()
-         */
-        public int getCount() {
-            return chatSize;
-        }
+        public ChatListAdapter(Context context, Cursor c) {
+			super(context, c);
+			this.mContext = context;
+		}
 
-        /**
-         * Since the data comes from an array, just returning
-         * the index is sufficent to get at the data. If we
-         * were using a more complex data structure, we
-         * would return whatever object represents one 
-         * row in the list.
-         * 
-         * @see android.widget.ListAdapter#getItem(int)
-         */
-        public Object getItem(int position) {
-            return position;
-        }
-
-        /**
-         * Use message id as a unique id.
-         * @see android.widget.ListAdapter#getItemId(int)
-         */
-        public long getItemId(int position) {
-            return chat.getMessage(position).getId();
-        }
-
-        /**
-         * Make a SpeechView to hold each row.
-         * @see android.widget.ListAdapter#getView(int, android.view.View, android.view.ViewGroup)
-         */
-        public View getView(int position, View convertView, ViewGroup parent) {
-            MessageView sv;
-            Message m=chat.getMessage(position);
-            
-            if (convertView == null) {
-                sv = new MessageView(mContext);
-            } else {
-                sv = (MessageView)convertView;
-            }
-            
-            String sender = (m.type == Message.TYPE_MESSAGE_OUT)? myNick : visavisNick ;  
-            sv.setText(m.timestamp, sender, m.messageBody, m.type);
-            //sv.setExpanded(p.expanded);
-            
-            return sv;
-        }
-
-        /*public void toggle(int position) {
-            LoggerEvent p=getLogRecords().get(position);
-            if (p.message !=null) {
-            	p.expanded = !p.expanded; 
-            	notifyDataSetChanged();
-            }
-        }*/
-        
-        /**
+		/**
          * Remember our context so we can use it when constructing views.
          */
         private Context mContext;
+
+		@Override
+		public void bindView(View view, Context context, Cursor cursor) {
+			MessageView sv = (MessageView) view;
+			
+			// TODO Auto-generated method stub
+			Message m = ChatHistoryDbAdapter.getMessageFromCursor(cursor);
+			
+            String sender = (m.type == Message.TYPE_MESSAGE_OUT)? myNick : visavisNick ;  
+            sv.setText(m.timestamp, sender, m.messageBody, m.type);
+
+		}
+
+		@Override
+		public View newView(Context context, Cursor cursor, ViewGroup parent) {
+			View v = new MessageView(context);
+			bindView(v, context, cursor);
+			return v;
+		}
         
     }
-
+	
 	// Time formatter
 	private Time tf=new Time(Time.getCurrentTimezone());
 	private final static long MS_PER_DAY = 1000*60*60*24;
@@ -412,7 +378,8 @@ public class ChatActivity extends Activity {
 
 		refreshVisualContent();
 		
-        chatListView.setSelection(chatSize-1);
+		BaseAdapter ca = (BaseAdapter) (chatListView.getAdapter());
+        chatListView.setSelection(ca.getCount()-1);
 
 		br = new ChatBroadcastReceiver();
 		//TODO: presence receiver
@@ -424,8 +391,13 @@ public class ChatActivity extends Activity {
 	public void refreshVisualContent() {
 		
 		chatListView.setVisibility(View.GONE);
-		chatSize = chat.getChatSize();
-		((BaseAdapter)chatListView.getAdapter()).notifyDataSetChanged();
+		Cursor c = chat.getCursor();
+		
+		CursorAdapter ca = (CursorAdapter) (chatListView.getAdapter());
+		
+		ca.changeCursor(c);
+		ca.notifyDataSetChanged();
+		
 		chatListView.invalidate();
 
 		chatListView.setVisibility(View.VISIBLE);

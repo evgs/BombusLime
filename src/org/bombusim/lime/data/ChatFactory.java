@@ -12,6 +12,14 @@ public class ChatFactory {
 		chats = new ArrayList<Chat>();
 	}
 	
+	public void closeAll() {
+		for (Chat chat : chats) {
+			chat.closeChat();
+		}
+		
+		chats.clear();
+	}
+	
 	public Chat getChat(String visavisJid, String myJid) {
 		Contact visavis = null;
 		//1. search already opened chat
