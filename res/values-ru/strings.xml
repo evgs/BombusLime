@@ -94,5 +94,6 @@
     <string name="networkDown">Соединение разорвано. Невозможно сохранить изменения.</string>
     <string name="aboutBombusLime">О программе</string>
     <string name="messageDelivered">Сообщение доставлено</string>
+    <string name="chatSentOffline">Пользователь отключен от сети. Сообщение сохранено на сервере.</string>
     
 </resources>
