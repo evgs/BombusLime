@@ -105,7 +105,11 @@ public class SASLAuth implements XmppObjectListener{
                 	}
 
 
-            		LimeLog.w("SASL", "PLAIN unsecure auth", null);
+            		if (stream.isSecured()) {
+            			LimeLog.i("SASL", "PLAIN auth over secured stream", null);
+            		} else {
+            			LimeLog.w("SASL", "UNSECURE PLAIN auth", null);
+            		}
                 	
                 	XmppJid jid = new XmppJid(stream.account.userJid);
             		String bareJid = jid.getBareJid();
