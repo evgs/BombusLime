@@ -1,6 +1,7 @@
 package org.bombusim.lime.activity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
@@ -45,7 +46,7 @@ public class RosterAdapter extends BaseExpandableListAdapter {
     }
 	
     //-------------------------------------------------------------------------------------------
-    private class RosterGroup {
+    private class RosterGroup implements Comparable<RosterGroup>{
     	public String groupName;
     	public ArrayList<Contact> contacts;
     	public boolean collapsed;
@@ -53,6 +54,11 @@ public class RosterAdapter extends BaseExpandableListAdapter {
     	public RosterGroup(String name) {
     		this.groupName = name;
 			contacts = new ArrayList<Contact>();
+		}
+
+		@Override
+		public int compareTo(RosterGroup another) {
+			return groupName.compareToIgnoreCase(another.groupName);
 		}
     }
     
@@ -96,6 +102,8 @@ public class RosterAdapter extends BaseExpandableListAdapter {
 			} else i++;
 		}
 		
+		//4. sort groups
+		Collections.sort(groups);
 	}
 
     private void addContactToGroup(Contact contact, String groupName) {

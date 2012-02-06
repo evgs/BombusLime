@@ -256,7 +256,7 @@ public class Contact implements Comparable<Contact>{
 		int diff = activeResource.presence - another.activeResource.presence;
 		if (diff !=0) return diff;
 		//TODO: compare fast indexes
-		return getScreenName().compareTo(another.getScreenName());
+		return getScreenName().compareToIgnoreCase(another.getScreenName());
 	}
 
 	public CharSequence getFullName() {
