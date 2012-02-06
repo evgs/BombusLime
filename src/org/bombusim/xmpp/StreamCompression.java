@@ -31,6 +31,7 @@ package org.bombusim.xmpp;
 
 import java.io.IOException;
 
+import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.xmpp.exception.XmppException;
 
 /**
@@ -55,6 +56,8 @@ public class StreamCompression implements XmppObjectListener {
 	            if (compr!=null) { 
 	                if (compr.getChildBlockByText("zlib")!=null) {
 	                    //step 2. negotiating compression
+	        			LimeLog.i("ZLIB", "Requesting stream compression", null);
+
 	                    XmppObject askCompr=new XmppObject("compress", null, null);
 	                    askCompr.setNameSpace(XMLNS_COMPRESSION);
 	                    askCompr.addChild("method", "zlib");
