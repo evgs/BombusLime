@@ -117,5 +117,9 @@
     <string name="networkDown">Can\&apos;t save changes. Connection is broken</string>
     <string name="aboutBombusLime">About</string>
     <string name="messageDelivered">Message Delivered</string>
-    
+    <string name="chatSentOffline">User is now offline. Message will be stored on server.</string>
+
+    <string name="recentPresences">Recent</string>
+    <string name="priority">Priority</string>
+    <string name="set">Set</string>
 </resources>

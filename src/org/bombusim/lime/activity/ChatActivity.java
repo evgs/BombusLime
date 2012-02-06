@@ -370,6 +370,10 @@ public class ChatActivity extends Activity {
 		//TODO: message queue
 		serviceBinding.getXmppStream(visavis.getRosterJid()).send(msg);
 		
+		if (visavis.getPresence() == Presence.PRESENCE_OFFLINE) {
+			Toast.makeText(this, R.string.chatSentOffline, Toast.LENGTH_LONG).show();
+		}
+		
 	}
 
 	private class ChatBroadcastReceiver extends BroadcastReceiver {
