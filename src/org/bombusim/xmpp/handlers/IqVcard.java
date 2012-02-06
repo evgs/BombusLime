@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.data.Vcard;
+import org.bombusim.xmpp.XmppJid;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppObjectListener;
 import org.bombusim.xmpp.XmppStream;
@@ -25,11 +26,13 @@ public class IqVcard implements XmppObjectListener {
 		
 		if (vcard == null) return BLOCK_REJECTED;
 		
-		Vcard result = new Vcard(data.getAttribute("from"), vcard);
+		String from = data.getAttribute("from");
+		
+		Vcard result = new Vcard(from, vcard);
 		
 		Lime.getInstance().getRoster().notifyVcard(result);
 		
-		stream.sendBroadcast(Roster.UPDATE_ROSTER);
+		stream.sendBroadcast(Roster.UPDATE_ROSTER, new XmppJid(from).getBareJid());
 		
 		return NO_MORE_BLOCKS;
 	}
