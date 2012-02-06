@@ -24,17 +24,31 @@
         <item>DESC</item>
     </string-array>
     
-    <string-array name="sslOptionsVals">
+    <integer-array name="sslOptionsVals">
         <item>0</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
-    </string-array>
+    </integer-array>
     
-    <string-array name="plainPasswordVals">
+    <integer-array name="plainPasswordVals">
         <item>0</item>
         <item>1</item>
         <item>2</item>
-    </string-array>
+    </integer-array>
+    
+    <array name="statusIcons">
+      	<item>@drawable/status_offline</item>
+  		<item>@drawable/status_online</item>
+  		<item>@drawable/status_chat</item>
+  		<item>@drawable/status_away</item>
+  		<item>@drawable/status_xa</item>
+  		<item>@drawable/status_dnd</item>
+  		<item>@drawable/status_ask</item>
+  		<item>@drawable/status_unknown</item>
+  		<item>@drawable/status_invisible</item>
+    </array>
+    
+    
     
 </resources>
