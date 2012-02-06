@@ -31,6 +31,7 @@ package org.bombusim.xmpp;
 
 import java.io.IOException;
 
+import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.xmpp.exception.XmppAuthException;
 import org.bombusim.xmpp.exception.XmppException;
 
@@ -65,6 +66,7 @@ public class StartTLS implements XmppObjectListener{
        		//server provides STARTTLS, and it is enabled (or required) on client side 
 			if (starttls.compareNameSpace(XMLNS_STARTTLS)) {
                 //step 2. negotiating starttls
+				LimeLog.i("STARTTLS", "Requesting stream encryption", null);
 				stream.send(starttls);
 				return XmppObjectListener.BLOCK_PROCESSED;
 			}

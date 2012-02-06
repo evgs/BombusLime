@@ -61,7 +61,7 @@ public class NetworkSocketDataStream extends NetworkDataStream{
 	}
 	
 	public void setTLS() throws IOException{
-		LimeLog.i("Socket", "STARTTLS", null);
+		LimeLog.i("Socket", "Switching to secure socket layer", null);
 		
 		//TODO: check on different devices:
 		// !!! ENSURE TLS enabled in account settings before test

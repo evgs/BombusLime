@@ -320,7 +320,8 @@ public class XmppStream extends XmppParser {
     	dataStream = new NetworkSocketDataStream(host, port);
     	
     	if (account.secureConnection == XmppAccount.SECURE_CONNECTION_LEGACY_SSL) {
-    		((NetworkSocketDataStream)dataStream).setTLS();
+			LimeLog.w("XMPP", "Initiating legacy SSL", null);
+			setTLS();
     	}
     	
         XMLParser parser = new XMLParser( this );
