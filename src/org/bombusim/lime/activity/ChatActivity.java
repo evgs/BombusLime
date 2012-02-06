@@ -8,8 +8,10 @@ import org.bombusim.lime.data.Chat;
 import org.bombusim.lime.data.ChatHistoryDbAdapter;
 import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Message;
+import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.xmpp.handlers.MessageDispatcher;
+import org.bombusim.xmpp.stanza.Presence;
 import org.bombusim.xmpp.stanza.XmppMessage;
 
 import android.app.Activity;
@@ -17,7 +19,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.ClipboardManager;
 import android.text.Spannable;
@@ -102,11 +107,27 @@ public class ChatActivity extends Activity {
         
         chat = Lime.getInstance().getChatFactory().getChat(jid, rJid);
 
-        vAvatar.setImageBitmap(visavis.getLazyAvatar(true));
+        updateContactBar();
+        
+        contactHead.requestFocus(); //stealing focus from messageBox
+	}
+
+	private void updateContactBar() {
+		
+		Bitmap avatar = visavis.getLazyAvatar(true);
+		if (avatar != null) {
+			vAvatar.setImageBitmap(avatar);
+		} else {
+			vAvatar.setImageResource(R.drawable.ic_contact_picture);
+		}
+		
         vNick.setText(visavis.getScreenName());
         vStatusMessage.setText(visavis.getStatusMessage());
         
-        contactHead.requestFocus(); //stealing focus from messageBox
+        TypedArray si = getResources().obtainTypedArray(R.array.statusIcons);
+        Drawable std = si.getDrawable(visavis.getPresence());
+        
+        vStatus.setImageDrawable(std);
 	}
 	
 	@Override
@@ -231,13 +252,7 @@ public class ChatActivity extends Activity {
         
         public ChatListAdapter(Context context, Cursor c) {
 			super(context, c);
-			this.mContext = context;
 		}
-
-		/**
-         * Remember our context so we can use it when constructing views.
-         */
-        private Context mContext;
 
 		@Override
 		public void bindView(View view, Context context, Cursor cursor) {
@@ -373,6 +388,17 @@ public class ChatActivity extends Activity {
 		}
 	}
 	
+	private class PresenceReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String jid = intent.getStringExtra("param");
+			if (jid==null || visavis.getJid().equals(jid) ) {
+				updateContactBar();
+			}
+		}
+	}
+	
+	private PresenceReceiver bcPresence;
 	private ChatBroadcastReceiver bcUpdateChat;
 	private DeliveredReceiver bcDelivered;
 	
@@ -396,6 +422,9 @@ public class ChatActivity extends Activity {
 
 		bcDelivered = new DeliveredReceiver();
 		registerReceiver(bcDelivered, new IntentFilter(Chat.DELIVERED));
+		
+		bcPresence = new PresenceReceiver();
+		registerReceiver(bcPresence, new IntentFilter(Roster.UPDATE_ROSTER));
 		
 		super.onResume();
 	}
@@ -435,5 +464,6 @@ public class ChatActivity extends Activity {
 		serviceBinding.doUnbindService();
 		unregisterReceiver(bcUpdateChat);
 		unregisterReceiver(bcDelivered);
+		unregisterReceiver(bcPresence);
 	}
 }
