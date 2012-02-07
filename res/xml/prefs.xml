@@ -10,7 +10,27 @@
         android:order="1"
         />
     <PreferenceCategory android:key="PREFS_NOTIFY" android:title="@string/chatNotify" android:order="20">
-	    <RingtonePreference android:title="Incoming message sound" android:order="10" android:key="RINGTONE_MESSAGE" android:ringtoneType="notification" />
+	    <RingtonePreference 
+	        android:key="RINGTONE_MESSAGE" 
+	        android:title="@string/incomingMessageSound" 
+	        android:order="10" 
+	        android:ringtoneType="notification" />
+	    <CheckBoxPreference 
+	        android:key="NOTIFY_LED" 
+	        android:title="@string/notificationLed" 
+	        android:order="30" 
+	        android:summaryOff="@string/cbDisabled" 
+	        android:summaryOn="@string/systemEnabled" 
+	        android:defaultValue="true"
+	        />
+	    <CheckBoxPreference 
+	        android:key="NOTIFY_VIBRA" 
+	        android:summaryOff="@string/cbDisabled" 
+	        android:title="@string/notifyVibration" 
+	        android:summaryOn="@string/systemEnabled" 
+	        android:defaultValue="true" 
+	        android:order="20"
+	        />
         
     </PreferenceCategory><PreferenceCategory 
         android:key="PREFS_DEBUG" 

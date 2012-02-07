@@ -8,6 +8,8 @@ public class Preferences {
 	public boolean autoServiceStartup;
 	public boolean adbXmlLog;
 	public String ringtoneMessage;
+	public boolean vibraNotifyMessage;
+	public boolean ledNotifyMessage;
 	
 	public int keepAlivePeriodMinutes;
 	
@@ -20,7 +22,9 @@ public class Preferences {
 		autoServiceStartup = prefs.getBoolean("AUTO_SERVICE_STARTUP", false);
 		adbXmlLog = prefs.getBoolean("ADB_XML_LOG", true);
 		
-		ringtoneMessage = prefs.getString("RINGTONE_MESSAGE", "");
+		ringtoneMessage    = prefs.getString("RINGTONE_MESSAGE", "");
+		vibraNotifyMessage = prefs.getBoolean("NOTIFY_VIBRA", true);
+		ledNotifyMessage   = prefs.getBoolean("NOTIFY_LED",   true);
 		
 		String ka = prefs.getString("KEEP_ALIVE_PERIOD", "");
 		

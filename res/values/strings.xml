@@ -81,7 +81,7 @@
     
     <string name="resourcePriority">Priority</string>
     <string name="accountAutoLogin">Connect on startup</string>
-    <string name="chatNotify">New message</string>
+    <string name="chatNotify">New message notification</string>
     <string name="messageMenuTitle">Message</string>
     <string name="copyToClipboard">Copy to clipboard</string>
     <string name="removeMessage">Remove from history</string>
@@ -118,8 +118,13 @@
     <string name="aboutBombusLime">About</string>
     <string name="messageDelivered">Message Delivered</string>
     <string name="chatSentOffline">User is now offline. Message will be stored on server.</string>
-
+    <string name="incomingMessageSound">Notification ringtone</string>
+    <string name="notifyVibration">Vibration</string>
+    <string name="notificationLed">Blink Notification Led</string>
+    <string name="systemEnabled">If enabled globally</string>
+    
     <string name="recentPresences">Recent</string>
     <string name="priority">Priority</string>
     <string name="set">Set</string>
+    
 </resources>

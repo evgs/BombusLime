@@ -29,8 +29,9 @@ public class NotificationMgr {
 		mNM = (NotificationManager)(context.getSystemService(Context.NOTIFICATION_SERVICE));
 	}
 	
+	private long lastMessageId = -1;
 	
-	public void showChatNotification(Contact visavis, String message) {
+	public void showChatNotification(Contact visavis, String message, long id) {
 		
 		// target ChatActivity
 		Intent openChat =  new Intent(context, ChatActivity.class);
@@ -59,30 +60,47 @@ public class NotificationMgr {
         
         //TODO: optional
         //TODO: check activity is already visible
-        String ringtone = Lime.getInstance().prefs.ringtoneMessage;
+        Preferences p = Lime.getInstance().prefs;
+        
+        String ringtone = p.ringtoneMessage;
         if (ringtone.length() == 0) {
             notification.defaults |= Notification.DEFAULT_SOUND; 
         } else {
         	notification.sound = Uri.parse(ringtone);
         }
         
-        notification.defaults |= Notification.DEFAULT_VIBRATE;
-        //notification.defaults |= Notification.DEFAULT_LIGHTS;
+        if (p.vibraNotifyMessage)
+        	notification.defaults |= Notification.DEFAULT_VIBRATE;
         
-        notification.flags |= Notification.FLAG_SHOW_LIGHTS;
-        notification.ledARGB = Color.GREEN;
-        notification.ledOnMS  = 300;
-        notification.ledOffMS = 1000;
+        
+        if (p.ledNotifyMessage) {
+        	//notification.defaults |= Notification.DEFAULT_LIGHTS;
+            notification.flags |= Notification.FLAG_SHOW_LIGHTS;
+            notification.ledARGB = Color.GREEN;
+            notification.ledOnMS  = 300;
+            notification.ledOffMS = 1000;
+        }
+        
         
         
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
         // Send the notification.
-        mNM.notify(NOTIFICATION_CHAT, notification);
+        synchronized (this) {
+            mNM.notify(NOTIFICATION_CHAT, notification);
+            lastMessageId = id;
+		}
 
 	}
 	
-
+	public void cancelChatNotification(long id) {
+		synchronized (this) {
+			if (id == lastMessageId)
+				mNM.cancel(NOTIFICATION_CHAT);
+			lastMessageId = -1;
+		}
+	}
+	
 	public void showOnlineNotification(boolean online) {
 		if (!serviceIcon) return;
 	
