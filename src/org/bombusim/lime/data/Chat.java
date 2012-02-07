@@ -34,15 +34,23 @@ public class Chat {
 	public Contact getVisavis() { return visavis; }
 	
 	public void addMessage(Message msg) {
-		//TODO: unread
-		ChatHistoryDbAdapter db = new ChatHistoryDbAdapter(Lime.getInstance().getApplicationContext(), visavis.getRosterJid());
-		db.open(false);
-		db.putMessage(msg, -1);
-		db.close();
+		synchronized(visavis) {
+			if (msg.unread) {
+				visavis.setUnread( visavis.getUnread() +1 );
+			}
+			
+			ChatHistoryDbAdapter db = new ChatHistoryDbAdapter(Lime.getInstance().getApplicationContext(), visavis.getRosterJid());
+			db.open(false);
+			db.putMessage(msg, -1);
+			db.close();
+		}
 	}
 	
 	public void markRead(long id){
-		//TODO: mark unread
+		ChatHistoryDbAdapter db = new ChatHistoryDbAdapter(Lime.getInstance().getApplicationContext(), visavis.getRosterJid());
+		db.open(false);
+		db.markUnread(id, false);
+		db.close();
 	}
 
 	public void removeFromHistory(long id) {

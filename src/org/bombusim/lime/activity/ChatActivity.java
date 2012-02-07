@@ -464,10 +464,28 @@ public class ChatActivity extends Activity {
 	
 	@Override
 	protected void onPause() {
-		super.onPause();
 		serviceBinding.doUnbindService();
 		unregisterReceiver(bcUpdateChat);
 		unregisterReceiver(bcDelivered);
 		unregisterReceiver(bcPresence);
+		
+		markAllRead();
+		
+		super.onPause();
+	}
+
+	private void markAllRead() {
+		synchronized(visavis) {
+			visavis.setUnread(0);
+
+			CursorAdapter ca = (CursorAdapter) chatListView.getAdapter();
+			Cursor cursor = ca.getCursor();
+			
+			if (cursor.moveToLast()) do {
+				Message m = ChatHistoryDbAdapter.getMessageFromCursor(cursor);
+				if (!m.unread) break;
+				chat.markRead(m.getId());
+			} while (cursor.moveToPrevious());
+		}
 	}
 }
