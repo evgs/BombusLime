@@ -19,7 +19,7 @@
         android:layout_height="fill_parent"
         android:layout_alignParentRight="true"
         android:layout_marginLeft="6dip"
-        android:src="@android:drawable/sym_action_chat" />
+        android:src="@drawable/chat_inactive" />
     
     <TextView
         android:id="@+id/rit_jid"
