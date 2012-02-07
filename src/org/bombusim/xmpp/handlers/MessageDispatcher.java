@@ -48,7 +48,7 @@ public class MessageDispatcher implements XmppObjectListener{
 			Chat c = Lime.getInstance().getChatFactory().getChat(from.getBareJid(), stream.jid); 
 			msg.unread = true;
 			c.addMessage(msg);
-			Lime.getInstance().notificationMgr().showChatNotification(c.getVisavis(), body);
+			Lime.getInstance().notificationMgr().showChatNotification(c.getVisavis(), body, msg.getId());
 			
 			if (m.findNamespace("request", URN_XMPP_RECEIPTS)!=null) {
 				XmppMessage confirmReceived = new XmppMessage(m.getFrom());

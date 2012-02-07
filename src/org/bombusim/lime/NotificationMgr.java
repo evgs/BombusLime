@@ -29,8 +29,6 @@ public class NotificationMgr {
 		mNM = (NotificationManager)(context.getSystemService(Context.NOTIFICATION_SERVICE));
 	}
 	
-	private long lastMessageId = -1;
-	
 	public void showChatNotification(Contact visavis, String message, long id) {
 		
 		// target ChatActivity
@@ -88,16 +86,17 @@ public class NotificationMgr {
         // Send the notification.
         synchronized (this) {
             mNM.notify(NOTIFICATION_CHAT, notification);
-            lastMessageId = id;
+            Lime.getInstance().lastMessageId = id;
 		}
 
 	}
 	
 	public void cancelChatNotification(long id) {
 		synchronized (this) {
-			if (id == lastMessageId)
+			if (id == Lime.getInstance().lastMessageId) {
 				mNM.cancel(NOTIFICATION_CHAT);
-			lastMessageId = -1;
+				Lime.getInstance().lastMessageId = -1;
+			}
 		}
 	}
 	

@@ -485,6 +485,7 @@ public class ChatActivity extends Activity {
 				Message m = ChatHistoryDbAdapter.getMessageFromCursor(cursor);
 				if (!m.unread) break;
 				chat.markRead(m.getId());
+				Lime.getInstance().notificationMgr().cancelChatNotification(m.getId());
 			} while (cursor.moveToPrevious());
 		}
 	}

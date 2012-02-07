@@ -107,6 +107,10 @@ public class Lime extends Application {
 	}
 
 	private String version;
+
+	//tracking last message notification. 
+	//TODO: variable may be lost if application restarted :(
+	public long lastMessageId = -1;
 	
 	public String getVersion() {
 		if (version==null) {
