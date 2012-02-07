@@ -58,7 +58,7 @@
     
     <string name="resourcePriority">Приоритет</string>
     <string name="accountAutoLogin">Подключаться при старте</string>
-    <string name="chatNotify">Новое сообщение</string>
+    <string name="chatNotify">Уведомление о новом сообщении</string>
     <string name="messageMenuTitle">Сообщение</string>
     <string name="copyToClipboard">Скопировать текст</string>
     <string name="removeMessage">Удалить из истории</string>
@@ -95,5 +95,9 @@
     <string name="aboutBombusLime">О программе</string>
     <string name="messageDelivered">Сообщение доставлено</string>
     <string name="chatSentOffline">Пользователь отключен от сети. Сообщение сохранено на сервере.</string>
+    <string name="incomingMessageSound">Звук уведомления</string>
+    <string name="notifyVibration">Вибрация</string>
+    <string name="notificationLed">Мигание светодиодом</string>
+    <string name="systemEnabled">Использовать настройки телефона</string>
     
 </resources>
