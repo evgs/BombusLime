@@ -58,7 +58,8 @@ public class MessageDispatcher implements XmppObjectListener{
 				stream.send(confirmReceived);
 			}
 			
-			stream.sendBroadcast(Chat.UPDATE_CHAT);
+			stream.sendBroadcast(Chat.UPDATE_CHAT, from.getBareJid());
+			stream.sendBroadcast(Roster.UPDATE_ROSTER, from.getBareJid());
 
 		} catch (Exception e) {
 			e.printStackTrace(); //Will handle only NPE

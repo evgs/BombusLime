@@ -190,7 +190,14 @@ public class RosterAdapter extends BaseExpandableListAdapter {
         holder.status.setImageBitmap(mIconStar[c.getPresence()]);
         holder.jid.setText(c.getScreenName());
         holder.presence.setText(c.getStatusMessage());
-        holder.chatIcon.setVisibility(c.hasActiveChats() ? View.VISIBLE : View.GONE);
+        
+        if ( c.getUnread() > 0 || c.hasActiveChats() ) {
+        	holder.chatIcon.setImageResource( (c.getUnread()>0) ? R.drawable.chat : R.drawable.chat_inactive );
+        	holder.chatIcon.setVisibility(View.VISIBLE);
+        } else {
+        	holder.chatIcon.setVisibility(View.GONE);
+        }
+        
 
         return convertView;
     }

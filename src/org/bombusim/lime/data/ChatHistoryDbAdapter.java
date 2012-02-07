@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 
 
 //TODO: create abstract class DbAdapter
@@ -165,4 +166,23 @@ public class ChatHistoryDbAdapter  {
 		}
 		
 	} // AccountDbHelper
+
+	public int countUnread(String jid) {
+		String select = KEY_RJID + "='" + rJid + "'" 
+			      +" AND " + KEY_JID  + "='"+jid+"'"
+			      +" AND " + KEY_UNREAD + "= 1";
+		
+		SQLiteStatement dbUnreadCountQuery;
+		
+		dbUnreadCountQuery = db.compileStatement("select count(*) from " + DATABASE_TABLE + " where " + select);
+		
+		return (int) dbUnreadCountQuery.simpleQueryForLong();
+	}
+
+	public void markUnread(long id, boolean unread) {
+		ContentValues v = new ContentValues();
+		v.put(KEY_UNREAD,   unread? 1:0);
+		
+		id = db.update(DATABASE_TABLE, v, KEY_ID+"="+id, null);
+	}
 }

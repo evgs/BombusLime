@@ -209,6 +209,8 @@ public class RosterActivity extends ExpandableListActivity {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			String from = intent.getStringExtra("param");
+			//TODO: refresh if contact displayed 
 			refreshVisualContent();
 		}
 		

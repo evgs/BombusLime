@@ -23,6 +23,8 @@ public class Contact implements Comparable<Contact>{
 	
 	private boolean activeChats;
 
+	private int unread = -1;
+
 	private int updateMark;
 
 	//Tab-separated group names
@@ -230,7 +232,15 @@ public class Contact implements Comparable<Contact>{
 	}
 
 	public boolean hasActiveChats() { return activeChats; }
+	
+	public int getUnread() {
+		if (unread < 0) 
+			unread = Chat.countUnread(jid, rosterJid);
+		return unread; 	
+	}
 
+	public void setUnread(int i) { this.unread = i; }
+	
 	public void setActiveChats(boolean has) { activeChats = has; }
 
 	public void dropAvatar() {

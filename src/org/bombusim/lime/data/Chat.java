@@ -41,10 +41,6 @@ public class Chat {
 		db.close();
 	}
 	
-	public int getUnreadCount() {
-		//TODO: return unread messages count
-		return 0;
-	}
 	public void markRead(long id){
 		//TODO: mark unread
 	}
@@ -66,5 +62,15 @@ public class Chat {
 		Log.d("SQLite", visavis.getJid() + ": delay=" + delay);
 		
 		return hist;
+	}
+
+	public static int countUnread(String jid, String rosterJid) {
+		ChatHistoryDbAdapter rDbA = new ChatHistoryDbAdapter(Lime.getInstance().getApplicationContext(), rosterJid);
+		
+		rDbA.open(true);
+		int unread = rDbA.countUnread(jid);
+		rDbA.close();
+		
+		return unread;
 	}
 }
