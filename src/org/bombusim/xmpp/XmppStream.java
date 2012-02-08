@@ -114,6 +114,8 @@ public class XmppStream extends XmppParser {
 	
 	private Timer keepAliveTimer;
 	
+	private EntityCaps caps;
+	
     /**
      * Constructor. Connects to the server and sends the jabber welcome message.
      *
@@ -557,6 +559,8 @@ public class XmppStream extends XmppParser {
     	
     	loggedIn=true;
     	
+    	caps = new EntityCaps();
+    	
     	IqRoster iqroster=new IqRoster();
     	addBlockListener(iqroster);
 
@@ -572,10 +576,15 @@ public class XmppStream extends XmppParser {
     	
     	addBlockListener(new IqFallback());
     	
+    	addBlockListener(caps);
+    	
+    	updateCaps();
+    	
     	iqroster.queryRoster(this);
 
     	//TODO: nickname
     	Presence online = new Presence(status, account.priority, statusMessage, null /* nick */);
+    	online.addChild(caps.getresenceCaps());
     	//offline messages will be delivered after this presence
     	send(online);
     	
@@ -583,7 +592,19 @@ public class XmppStream extends XmppParser {
 
     }
     
-    private Context serviceContext;
+    private void updateCaps() {
+		ArrayList<String> features = new ArrayList<String>();
+		
+		for (XmppObjectListener listener : dispatcherQueue) {
+			String feature = listener.capsXmlns();
+			if (feature !=null)
+				features.add(feature);
+		}
+		
+		caps.updateFeatures(features);
+	}
+
+	private Context serviceContext;
     
 	public void setContext(Context context) {
 		serviceContext = context;

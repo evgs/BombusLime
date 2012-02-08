@@ -240,7 +240,7 @@ public final class XmppError {
         if (errChilds!=null) for (int index=0; index<errChilds.size(); index++) {
             XmppObject child=errChilds.get(index);
             
-            String xmlns=child.getAttribute("xmlns");
+            String xmlns=child.getNamespace();
             if (xmlns!=null) if (!xmlns.equals(ns)) continue;
             
             String tag=child.getTagName();

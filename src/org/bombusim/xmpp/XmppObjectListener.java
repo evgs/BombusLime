@@ -47,7 +47,8 @@ public abstract class XmppObjectListener  implements Comparable<XmppObjectListen
    public static final int PRIORITY_AUTH_FALLBACK      = 500;
    public static final int PRIORITY_MUC                = 1000;
    public static final int PRIORITY_BASIC_IM           = 2000;
-   public static final int PRIORITY_IQUNKNOWN_FALLBACK = 3000;
+   public static final int PRIORITY_DISCO              = 2000;
+   public static final int PRIORITY_IQUNKNOWN_FALLBACK = 4000;
    
 
    

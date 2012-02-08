@@ -70,7 +70,7 @@ public class NonSASLAuth extends XmppObjectListener{
         
         switch (authType) {
             case AUTH_DIGEST:
-			MessageDigest sha1;
+            	MessageDigest sha1;
 			
 				try {
 					sha1 = MessageDigest.getInstance("SHA-1");

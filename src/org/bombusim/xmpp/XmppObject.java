@@ -192,28 +192,37 @@ public class XmppObject
       return xmlnsatr.equals(xmlns);
   } 
 
-  public void setNameSpace(String xmlns){
-      setAttribute("xmlns", xmlns);
+	public String getNamespace() {
+		return getAttribute("xmlns");
+	}
+  
+  public XmppObject setNameSpace(String xmlns){
+      return setAttribute("xmlns", xmlns);
   }
   /**
    * Method to set an attribute value
+   * 
    *
    * @param attributeName The name of the attribute to set
    * @param value The value of the attribute
+   * 
+   * @return reference to this XmppObject
    */
 
-  public void setAttribute( String attributeName, String value )  {
+  public XmppObject setAttribute( String attributeName, String value )  {
       if( attributeName == null )
-          return;
+          return this;
       
       if( attributes == null )
           attributes = new Attributes();
       
       attributes.putValue(attributeName, value);
+      
+      return this;
   }
 
-  public void setTypeAttribute( String value ) {
-      setAttribute("type",value);
+  public XmppObject setTypeAttribute( String value ) {
+      return setAttribute("type",value);
   }
   
   /**
@@ -335,4 +344,5 @@ public class XmppObject
   }
 
     void setTagName(String tagName) { this.tagName=tagName; }
+
 }
