@@ -34,20 +34,37 @@ import org.bombusim.xmpp.exception.XmppException;
 
 /**
  *
- * @author Evg_S
+ * @author evgs
  */
-public interface XmppObjectListener {
+public abstract class XmppObjectListener  implements Comparable<XmppObjectListener>{
    public final static int BLOCK_REJECTED=0;
    public final static int BLOCK_PROCESSED=1;
    public final static int NO_MORE_BLOCKS=2;
+
+   
+   public static final int PRIORITY_STREAM             = 50;
+   public static final int PRIORITY_AUTH               = 100;
+   public static final int PRIORITY_AUTH_FALLBACK      = 500;
+   public static final int PRIORITY_MUC                = 1000;
+   public static final int PRIORITY_BASIC_IM           = 2000;
+   public static final int PRIORITY_IQUNKNOWN_FALLBACK = 3000;
+   
+
+   
   /**
    * Method to handle an incomming block.
    *
    * @parameter data The incomming block
    */
 
-  public int blockArrived(XmppObject data, XmppStream stream) throws IOException, XmppException;
+    abstract public int blockArrived(XmppObject data, XmppStream stream) throws IOException, XmppException;
   
-  public String capsXmlns();
-    
+    public String capsXmlns() { return null; }
+  
+    public int priority() { return PRIORITY_BASIC_IM; }
+  
+  @Override
+	public int compareTo(XmppObjectListener another) {
+		return priority() - another.priority();
+	}
 }
