@@ -2,7 +2,9 @@ package org.bombusim.lime;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.RingtoneManager;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 
 public class Preferences {
 	public boolean autoServiceStartup;
@@ -22,7 +24,10 @@ public class Preferences {
 		autoServiceStartup = prefs.getBoolean("AUTO_SERVICE_STARTUP", false);
 		adbXmlLog = prefs.getBoolean("ADB_XML_LOG", true);
 		
-		ringtoneMessage    = prefs.getString("RINGTONE_MESSAGE", "");
+		ringtoneMessage    = prefs.getString("RINGTONE_MESSAGE",
+				RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString()
+		);
+		
 		vibraNotifyMessage = prefs.getBoolean("NOTIFY_VIBRA", true);
 		ledNotifyMessage   = prefs.getBoolean("NOTIFY_LED",   true);
 		

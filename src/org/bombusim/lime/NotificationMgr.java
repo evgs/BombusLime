@@ -61,9 +61,7 @@ public class NotificationMgr {
         Preferences p = Lime.getInstance().prefs;
         
         String ringtone = p.ringtoneMessage;
-        if (ringtone.length() == 0) {
-            notification.defaults |= Notification.DEFAULT_SOUND; 
-        } else {
+        if (ringtone.length() != 0) {
         	notification.sound = Uri.parse(ringtone);
         }
         
