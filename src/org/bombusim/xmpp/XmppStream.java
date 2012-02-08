@@ -47,6 +47,7 @@ import org.bombusim.xml.XMLException;
 import org.bombusim.xml.XMLParser;
 import org.bombusim.xmpp.exception.XmppException;
 import org.bombusim.xmpp.exception.XmppTerminatedException;
+import org.bombusim.xmpp.handlers.IqFallback;
 import org.bombusim.xmpp.handlers.IqPing;
 import org.bombusim.xmpp.handlers.IqRoster;
 import org.bombusim.xmpp.handlers.IqTimeReply;
@@ -568,6 +569,8 @@ public class XmppStream extends XmppParser {
     	addBlockListener(new MessageDispatcher());
     	
     	addBlockListener(new IqPing());
+    	
+    	addBlockListener(new IqFallback());
     	
     	iqroster.queryRoster(this);
 
