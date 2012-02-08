@@ -74,7 +74,7 @@ public class EntityCaps  extends XmppObjectListener {
 	}
 
 	private String getVersionName() {
-		return Lime.getInstance().getString(R.id.appName)
+		return Lime.getInstance().getString(R.string.app_name)
 				+' '
 				+Lime.getInstance().getVersion();
 	}
