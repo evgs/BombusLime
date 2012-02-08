@@ -476,6 +476,8 @@ public class ChatActivity extends Activity {
 
 	private void markAllRead() {
 		synchronized(visavis) {
+			int unreadCount = visavis.getUnread();
+			
 			visavis.setUnread(0);
 
 			CursorAdapter ca = (CursorAdapter) chatListView.getAdapter();
@@ -483,10 +485,13 @@ public class ChatActivity extends Activity {
 			
 			if (cursor.moveToLast()) do {
 				Message m = ChatHistoryDbAdapter.getMessageFromCursor(cursor);
-				if (!m.unread) break;
-				chat.markRead(m.getId());
-				Lime.getInstance().notificationMgr().cancelChatNotification(m.getId());
-			} while (cursor.moveToPrevious());
+				if (m.unread) {
+					chat.markRead(m.getId());
+					Lime.getInstance().notificationMgr().cancelChatNotification(m.getId());
+					
+					unreadCount--;
+				}
+			} while ( (unreadCount != 0) && cursor.moveToPrevious());
 		}
 	}
 }
