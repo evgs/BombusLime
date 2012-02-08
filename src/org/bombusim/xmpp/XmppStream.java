@@ -32,6 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -514,6 +515,7 @@ public class XmppStream extends XmppParser {
     
     public void addBlockListener(XmppObjectListener listener) { 
         dispatcherQueue.add(listener);
+        Collections.sort(dispatcherQueue);
     }
     public void cancelBlockListener(XmppObjectListener listener) {
     	dispatcherQueue.remove(listener);

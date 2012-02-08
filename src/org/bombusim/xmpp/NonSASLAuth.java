@@ -43,7 +43,7 @@ import org.bombusim.xmpp.stanza.Iq;
  * Status: OBSOLETE
  * @author evgs
  */
-public class NonSASLAuth implements XmppObjectListener{
+public class NonSASLAuth extends XmppObjectListener{
     
 	
     public NonSASLAuth() { }
@@ -163,6 +163,8 @@ public class NonSASLAuth implements XmppObjectListener{
         return XmppObjectListener.BLOCK_REJECTED;        
     }
     
+	public final static int PRIORITY_NONSASL = SASLAuth.PRIORITY_SASLAUTH + 10;
 	@Override
-	public String capsXmlns() {	return null; }
+	public int priority() { return PRIORITY_NONSASL; }
+
 }

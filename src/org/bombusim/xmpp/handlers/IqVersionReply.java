@@ -42,7 +42,7 @@ import org.bombusim.xmpp.stanza.Iq;
  *
  * @author Eugene Stahov
  */
-public class IqVersionReply implements XmppObjectListener {
+public class IqVersionReply extends XmppObjectListener {
 	
     private final static String CAPS_XMLNS = "jabber:iq:version";
 	@Override
@@ -69,58 +69,7 @@ public class IqVersionReply implements XmppObjectListener {
             return XmppObjectListener.BLOCK_PROCESSED;
         }
         
-        /*
-        if (data.getAttribute("id").equals("getver")) {
-            String body=null;
-            if (type.equals("error")) {
-                body=locale.SR.MS_NO_VERSION_AVAILABLE;
-            } else if (type.equals("result")) {
-                XmppObject vc=data.getChildBlock("query");
-                if (vc!=null) {
-                    body=dispatchVersion(vc);
-                }
-            } else return BLOCK_REJECTED;
-            
-            if (body!=null) {
-                Client.Roster roster=StaticData.getInstance().roster;
-                
-                Msg m=new Msg(Msg.MESSAGE_TYPE_IN, "ver", locale.SR.MS_CLIENT_INFO, body);
-                roster.messageStore( roster.getContact( data.getAttribute("from"), false), m);
-                roster.querysign=false;
-                roster.redraw();
-                return JabberBlockListener.BLOCK_PROCESSED;
-            }
-            //
-        }*/
         return BLOCK_REJECTED;
 
     }
-    
-    /*
-    // constructs version request
-    public static XmppObject query(String to) {
-        XmppObject result=new Iq(to, Iq.TYPE_GET, "getver");
-        result.addChildNs("query", "jabber:iq:version");
-        return result;
-    }
-    
-    
-    private final static String TOPFIELDS []={ "name",  "version",  "os"  }; 
-    
-
-    private String dispatchVersion(XmppObject data) {
-        if (!data.isJabberNameSpace("jabber:iq:version")) return "unknown version namespace";
-        StringBuilder vc=new StringBuilder();
-        //vc.append((char)0x01);
-        for (int i=0; i<TOPFIELDS.length; i++){
-            String field=data.getChildBlockText(TOPFIELDS[i]);
-            if (field.length()>0) 
-                vc.append(TOPFIELDS[i])
-                  .append((char)0xa0)
-                  .append(field)
-                  .append((char)'\n');
-        }
-        return vc.toString();
-    }
-    */
 }

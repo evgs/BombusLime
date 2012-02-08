@@ -36,7 +36,7 @@ import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.exception.XmppException;
 import org.bombusim.xmpp.stanza.Iq;
 
-public class IqPing implements XmppObjectListener{
+public class IqPing extends XmppObjectListener{
     
     private static final String URN_XMPP_PING = "urn:xmpp:ping";
 

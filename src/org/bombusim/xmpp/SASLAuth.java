@@ -43,7 +43,7 @@ import org.bombusim.xmpp.stanza.Iq;
  *
  * @author evgs
  */
-public class SASLAuth implements XmppObjectListener{
+public class SASLAuth extends XmppObjectListener{
     
     /** Creates a new instance of SASLAuth */
     //public SASLAuth(Account account, LoginListener listener, JabberStream stream) {
@@ -314,7 +314,8 @@ public class SASLAuth implements XmppObjectListener{
         return resp;
     }
 
+	public final static int PRIORITY_SASLAUTH = PRIORITY_AUTH;
 	@Override
-	public String capsXmlns() {	return null; }
-    
+	public int priority() { return PRIORITY_SASLAUTH; }
+
 }

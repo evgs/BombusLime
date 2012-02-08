@@ -13,7 +13,7 @@ import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.exception.XmppException;
 import org.bombusim.xmpp.stanza.Presence;
 
-public class PresenceDispatcher implements XmppObjectListener{
+public class PresenceDispatcher extends XmppObjectListener{
 
 	@Override
 	public int blockArrived(XmppObject data, XmppStream stream)
@@ -55,10 +55,5 @@ public class PresenceDispatcher implements XmppObjectListener{
 		stream.sendBroadcast(Roster.UPDATE_ROSTER, fromJid.getBareJid());
 
 		return BLOCK_PROCESSED;
-	}
-
-	@Override
-	public String capsXmlns() {
-		return null;
 	}
 }

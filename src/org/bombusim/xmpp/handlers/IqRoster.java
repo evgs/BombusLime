@@ -40,7 +40,7 @@ import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.stanza.Iq;
 import org.bombusim.xmpp.stanza.Presence;
 
-public class IqRoster implements XmppObjectListener{
+public class IqRoster extends XmppObjectListener{
 
 	private static final String XMLNS_JABBER_IQ_ROSTER = "jabber:iq:roster";
 	private static final String REMOVE = "remove";
@@ -129,9 +129,6 @@ public class IqRoster implements XmppObjectListener{
 		return BLOCK_REJECTED;
 	}
 	
-	@Override
-	public String capsXmlns() {	return null; }
-
 	public static void deleteContact(String jid, XmppStream stream) {
 		XmppObject q = new Iq(null, Iq.TYPE_SET, "rm_"+jid);
 		

@@ -36,7 +36,7 @@ import org.bombusim.xmpp.exception.XmppException;
 /**
  * This XmppObjectListener will terminate stream if no authentication methods triggered
  */
-public class AuthFallback implements XmppObjectListener {
+public class AuthFallback extends XmppObjectListener {
 
 	@Override
 	public int blockArrived(XmppObject data, XmppStream stream)
@@ -45,10 +45,7 @@ public class AuthFallback implements XmppObjectListener {
 		throw new XmppAuthException("No known authentication methods found");
 	}
 
-	@Override
-	public String capsXmlns() {
-		return null;
-	}
 	
-
+	@Override
+	public int priority() { return PRIORITY_AUTH_FALLBACK; }
 }

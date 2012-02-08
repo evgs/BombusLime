@@ -40,7 +40,7 @@ import org.bombusim.xmpp.exception.XmppException;
  *
  */
 
-public class StreamCompression implements XmppObjectListener {
+public class StreamCompression extends XmppObjectListener {
 
 	private static final String XMLNS_COMPRESSION = "http://jabber.org/protocol/compress";
 
@@ -81,6 +81,7 @@ public class StreamCompression implements XmppObjectListener {
 	    return BLOCK_REJECTED;
 	}
 
+	public final static int PRIORITY_ZLIB = StartTLS.PRIORITY_STARTTLS+10;
 	@Override
-	public String capsXmlns() { return null; }
+	public int priority() { return PRIORITY_ZLIB; }
 }

@@ -35,7 +35,7 @@ import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.xmpp.exception.XmppAuthException;
 import org.bombusim.xmpp.exception.XmppException;
 
-public class StartTLS implements XmppObjectListener{
+public class StartTLS extends XmppObjectListener{
 	public final static String XMLNS_STARTTLS = "urn:ietf:params:xml:ns:xmpp-tls";
 	
 	@Override
@@ -86,6 +86,7 @@ public class StartTLS implements XmppObjectListener{
 		return BLOCK_REJECTED;
 	}
 
+	public final static int PRIORITY_STARTTLS = PRIORITY_STREAM;
 	@Override
-	public String capsXmlns() { return null; }
+	public int priority() { return PRIORITY_STARTTLS; }
 }

@@ -12,7 +12,7 @@ import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.exception.XmppException;
 import org.bombusim.xmpp.stanza.Iq;
 
-public class IqVcard implements XmppObjectListener {
+public class IqVcard extends XmppObjectListener {
 
 	@Override
 	public int blockArrived(XmppObject data, XmppStream stream)

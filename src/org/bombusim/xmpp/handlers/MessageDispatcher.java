@@ -14,7 +14,7 @@ import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.exception.XmppException;
 import org.bombusim.xmpp.stanza.XmppMessage;
 
-public class MessageDispatcher implements XmppObjectListener{
+public class MessageDispatcher extends XmppObjectListener{
 
 	public static final String URN_XMPP_RECEIPTS = "urn:xmpp:receipts";
 

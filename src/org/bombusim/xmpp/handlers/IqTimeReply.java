@@ -42,7 +42,7 @@ import android.text.format.Time;
  *
  * @author EvgS
  */
-public class IqTimeReply implements XmppObjectListener{
+public class IqTimeReply extends XmppObjectListener{
     
     public IqTimeReply(){};
 
