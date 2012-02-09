@@ -413,6 +413,8 @@ public class ChatActivity extends Activity {
 		if (state.equals(ChatStates.PAUSED))
 			if (!ChatStates.COMPOSING.equals(sentChatState)) return;
 		
+		if ( visavis.getPresence() == Presence.PRESENCE_OFFLINE ) return;
+		
 		String to = visavis.getJid(); 
 
 		//TODO: resource magic
