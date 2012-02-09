@@ -32,7 +32,7 @@ public class IqVcard extends XmppObjectListener {
 		
 		Lime.getInstance().getRoster().notifyVcard(result);
 		
-		stream.sendBroadcast(Roster.UPDATE_ROSTER, new XmppJid(from).getBareJid());
+		stream.sendBroadcast(Roster.UPDATE_CONTACT, new XmppJid(from).getBareJid());
 		
 		return NO_MORE_BLOCKS;
 	}

@@ -7,7 +7,7 @@ import org.bombusim.lime.Lime;
 
 public class Roster {
 	
-	public static final String UPDATE_ROSTER = "org.bombusim.lime.data.UPDATE_ROSTER";
+	public static final String UPDATE_CONTACT = "org.bombusim.lime.data.UPDATE_ROSTER";
 	
 	private ArrayList<Contact> contacts;
 

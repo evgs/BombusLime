@@ -42,7 +42,7 @@ public class MessageDispatcher extends XmppObjectListener{
 		msg.subj = m.getSubject();
 		//TODO: timestamp
 		
-		//TODO: resource magic
+		//TODO: resource magic - should switch active resource
 		try {
 			
 			Chat c = Lime.getInstance().getChatFactory().getChat(from.getBareJid(), stream.jid); 
@@ -59,7 +59,7 @@ public class MessageDispatcher extends XmppObjectListener{
 			}
 			
 			stream.sendBroadcast(Chat.UPDATE_CHAT, from.getBareJid());
-			stream.sendBroadcast(Roster.UPDATE_ROSTER, from.getBareJid());
+			stream.sendBroadcast(Roster.UPDATE_CONTACT, from.getBareJid());
 
 		} catch (Exception e) {
 			e.printStackTrace(); //Will handle only NPE
@@ -70,6 +70,13 @@ public class MessageDispatcher extends XmppObjectListener{
 		return BLOCK_PROCESSED;
 	}
 
+	public final static int PRIORITY_MESSAGE_DISPATCHER = PRIORITY_BASIC_IM;
+	
+	@Override
+	public int priority() {
+		return PRIORITY_MESSAGE_DISPATCHER;
+	}
+	
 	@Override
 	public String capsXmlns() { return URN_XMPP_RECEIPTS; }
 

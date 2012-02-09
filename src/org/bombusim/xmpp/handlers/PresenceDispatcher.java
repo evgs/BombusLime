@@ -52,7 +52,7 @@ public class PresenceDispatcher extends XmppObjectListener{
 		
 		//at last: repaint roster
 		//TODO: broadcast contact id to avoid unnececary roster repaints
-		stream.sendBroadcast(Roster.UPDATE_ROSTER, fromJid.getBareJid());
+		stream.sendBroadcast(Roster.UPDATE_CONTACT, fromJid.getBareJid());
 
 		return BLOCK_PROCESSED;
 	}

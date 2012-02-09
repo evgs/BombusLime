@@ -428,7 +428,7 @@ public class ChatActivity extends Activity {
 		registerReceiver(bcDelivered, new IntentFilter(Chat.DELIVERED));
 		
 		bcPresence = new PresenceReceiver();
-		registerReceiver(bcPresence, new IntentFilter(Roster.UPDATE_ROSTER));
+		registerReceiver(bcPresence, new IntentFilter(Roster.UPDATE_CONTACT));
 		
 		super.onResume();
 	}

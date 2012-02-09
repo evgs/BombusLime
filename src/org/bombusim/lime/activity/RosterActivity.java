@@ -211,6 +211,7 @@ public class RosterActivity extends ExpandableListActivity {
 		public void onReceive(Context context, Intent intent) {
 			String from = intent.getStringExtra("param");
 			//TODO: refresh if contact displayed 
+			//TODO: refresh single contact if specified, not recollate roster again (usecase: mass presence update)
 			refreshVisualContent();
 		}
 		
@@ -247,7 +248,7 @@ public class RosterActivity extends ExpandableListActivity {
 		//update view to actual state
 		refreshVisualContent();
 		br = new RosterBroadcastReceiver();
-		registerReceiver(br, new IntentFilter(Roster.UPDATE_ROSTER));
+		registerReceiver(br, new IntentFilter(Roster.UPDATE_CONTACT));
 	}
 	
 	@Override

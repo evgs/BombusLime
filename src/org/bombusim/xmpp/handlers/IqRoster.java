@@ -120,8 +120,8 @@ public class IqRoster extends XmppObjectListener{
 			if (set) 				
 				stream.send(new Iq(null,Iq.TYPE_RESULT, id));
 
-			
-			stream.sendBroadcast(Roster.UPDATE_ROSTER);
+			//Global roster update
+			stream.sendBroadcast(Roster.UPDATE_CONTACT);
 			
 			return BLOCK_PROCESSED;
 			

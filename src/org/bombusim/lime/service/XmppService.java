@@ -157,7 +157,7 @@ public class XmppService extends Service implements Runnable {
 		   	s.close();
 		   	
 		   	Lime.getInstance().getRoster().forceRosterOffline(s.jid);
-			s.sendBroadcast(Roster.UPDATE_ROSTER);
+			s.sendBroadcast(Roster.UPDATE_CONTACT);
 
 		   	
 		}
