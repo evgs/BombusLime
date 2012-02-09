@@ -411,7 +411,7 @@ public class ChatActivity extends Activity {
 		
 		//state machine check: composing->paused
 		if (state.equals(ChatStates.PAUSED))
-			if (!sentChatState.equals(ChatStates.COMPOSING)) return;
+			if (!ChatStates.COMPOSING.equals(sentChatState)) return;
 		
 		String to = visavis.getJid(); 
 
