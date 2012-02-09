@@ -10,6 +10,7 @@ import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Message;
 import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.service.XmppServiceBinding;
+import org.bombusim.xmpp.handlers.ChatStates;
 import org.bombusim.xmpp.handlers.MessageDispatcher;
 import org.bombusim.xmpp.stanza.Presence;
 import org.bombusim.xmpp.stanza.XmppMessage;
@@ -25,9 +26,11 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.ClipboardManager;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.TextWatcher;
 import android.text.format.Time;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ForegroundColorSpan;
@@ -62,11 +65,6 @@ public class ChatActivity extends Activity {
 	private String jid;
 	private String rJid;
 	
-	private ImageView vAvatar;
-	private ImageView vStatus;
-	private TextView vNick;
-	private TextView vStatusMessage;
-	
 	private EditText messageBox;
 	private ImageButton sendButton;
 	
@@ -79,6 +77,8 @@ public class ChatActivity extends Activity {
 	Contact visavis;
 	
 	Chat chat;
+	
+	String sentChatState;
 	
 	protected String visavisNick;
 	protected String myNick;
@@ -114,6 +114,8 @@ public class ChatActivity extends Activity {
 
 	private void updateContactBar() {
 		
+        ImageView vAvatar = (ImageView) findViewById(R.id.rit_photo);        
+		
 		Bitmap avatar = visavis.getLazyAvatar(true);
 		if (avatar != null) {
 			vAvatar.setImageBitmap(avatar);
@@ -121,13 +123,21 @@ public class ChatActivity extends Activity {
 			vAvatar.setImageResource(R.drawable.ic_contact_picture);
 		}
 		
-        vNick.setText(visavis.getScreenName());
-        vStatusMessage.setText(visavis.getStatusMessage());
+		((TextView) findViewById(R.id.rit_jid))
+        			.setText(visavis.getScreenName());
+		
+        ((TextView) findViewById(R.id.rit_presence))
+                    .setText(visavis.getStatusMessage());
         
         TypedArray si = getResources().obtainTypedArray(R.array.statusIcons);
         Drawable std = si.getDrawable(visavis.getPresence());
         
-        vStatus.setImageDrawable(std);
+        ((ImageView) findViewById(R.id.rit_statusIcon))
+        			.setImageDrawable(std);
+        
+        ((ImageView) findViewById(R.id.composing))
+        			.setVisibility( (chat.isComposing()) ? View.VISIBLE : View.GONE );
+
 	}
 	
 	@Override
@@ -142,10 +152,6 @@ public class ChatActivity extends Activity {
         serviceBinding = new XmppServiceBinding(this);
   
         contactHead = findViewById(R.id.contact_head);
-        vAvatar = (ImageView) findViewById(R.id.rit_photo);        
-        vStatus = (ImageView) findViewById(R.id.rit_statusIcon);
-        vNick = (TextView) findViewById(R.id.rit_jid);
-        vStatusMessage = (TextView) findViewById(R.id.rit_presence);
 
         messageBox = (EditText) findViewById(R.id.messageBox);
         sendButton = (ImageButton) findViewById(R.id.sendButton);
@@ -167,15 +173,30 @@ public class ChatActivity extends Activity {
         messageBox.setOnKeyListener(new OnKeyListener() {
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
+
 				if (event.getAction() != KeyEvent.ACTION_DOWN) return false; //filtering only KEY_DOWN
+				
 				if (keyCode != KeyEvent.KEYCODE_ENTER) return false;
 				//if (event.isShiftPressed()) return false; //typing multiline messages with SHIFT+ENTER
 				sendMessage();
 				return true; //Key was processed
 			}
 		});
+
+        messageBox.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				sendChatState(ChatStates.COMPOSING);
+			}
+		});
         
-        //TODO: localize
         //TODO: optional behavior
         //messageBox.setImeActionLabel("Send", EditorInfo.IME_ACTION_SEND); //Keeps IME opened
         messageBox.setImeActionLabel(getString(R.string.sendMessage), EditorInfo.IME_ACTION_DONE); //Closes IME
@@ -367,6 +388,10 @@ public class ChatActivity extends Activity {
 		//TODO: optional delivery confirmation request
 		msg.addChildNs("request", MessageDispatcher.URN_XMPP_RECEIPTS);
 		
+		//TODO: optional chat state notifications
+		msg.addChildNs(ChatStates.ACTIVE, ChatStates.XMLNS_CHATSTATES);
+		sentChatState = ChatStates.ACTIVE;
+		
 		//TODO: message queue
 		serviceBinding.getXmppStream(visavis.getRosterJid()).send(msg);
 		
@@ -376,6 +401,32 @@ public class ChatActivity extends Activity {
 		
 	}
 
+	protected void sendChatState(String state) {
+
+		//TODO: optional chat state notifications
+
+		if (!chat.acceptComposingEvents()) return;
+		
+		if (state.equals(sentChatState)) return; //no duplicates
+		
+		//state machine check: composing->paused
+		if (state.equals(ChatStates.PAUSED))
+			if (!sentChatState.equals(ChatStates.COMPOSING)) return;
+		
+		String to = visavis.getJid(); 
+
+		//TODO: resource magic
+		XmppMessage msg = new XmppMessage(to);
+		//msg.setAttribute("id", "chatState");
+		
+		msg.addChildNs(state, ChatStates.XMLNS_CHATSTATES);
+		sentChatState = state;
+		
+		serviceBinding.getXmppStream(visavis.getRosterJid()).send(msg);
+		
+	}
+	
+	
 	private class ChatBroadcastReceiver extends BroadcastReceiver {
 
 		@Override
@@ -464,6 +515,9 @@ public class ChatActivity extends Activity {
 	
 	@Override
 	protected void onPause() {
+		//TODO: save unsent message from EditText
+		sendChatState(ChatStates.PAUSED);
+		
 		serviceBinding.doUnbindService();
 		unregisterReceiver(bcUpdateChat);
 		unregisterReceiver(bcDelivered);

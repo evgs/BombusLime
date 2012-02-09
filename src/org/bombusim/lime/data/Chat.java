@@ -17,6 +17,19 @@ public class Chat {
 	
 	Contact visavis;
 	
+	//XEP-0085 Chat state notifications
+	private String chatState;
+	
+	public boolean acceptComposingEvents() { return chatState!=null; }
+	public void setChatState(String state) {
+		this.chatState = state;
+	}
+	
+	public boolean isComposing() {
+		if (chatState == null) return false;
+		return (chatState.equals("composing")); 
+	}
+	
 	private ChatHistoryDbAdapter readDbAdapter;
 	
 	public Chat(Contact contact) {

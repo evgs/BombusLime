@@ -40,8 +40,7 @@ public final class XmppMessage extends XmppObject
    */
 
   public XmppMessage( String to ) {
-      super();
-    setAttribute( "to", to );
+	  this(to, null, null, false);
   }
 
   /**

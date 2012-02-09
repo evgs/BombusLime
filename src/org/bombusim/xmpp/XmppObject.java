@@ -264,6 +264,12 @@ public class XmppObject
     return null;
   }
 
+  /**
+   * Searches child XmppObject by tag and namespace
+   * @param tagName tag name to search. May be null (match any tag)
+   * @param xmlns namespace attribute to search
+   * @return child XmppObject, or null if not found
+   */
 
   public XmppObject findNamespace(String tagName, String xmlns) {
       if (childBlocks==null) return null;

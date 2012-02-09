@@ -47,6 +47,7 @@ import org.bombusim.xml.XMLException;
 import org.bombusim.xml.XMLParser;
 import org.bombusim.xmpp.exception.XmppException;
 import org.bombusim.xmpp.exception.XmppTerminatedException;
+import org.bombusim.xmpp.handlers.ChatStates;
 import org.bombusim.xmpp.handlers.IqFallback;
 import org.bombusim.xmpp.handlers.IqPing;
 import org.bombusim.xmpp.handlers.IqRoster;
@@ -577,6 +578,9 @@ public class XmppStream extends XmppParser {
     	addBlockListener(new IqFallback());
     	
     	addBlockListener(caps);
+
+    	//TODO: optional chat states
+    	addBlockListener(new ChatStates());
     	
     	updateCaps();
     	

@@ -50,6 +50,15 @@
 	        android:layout_alignParentBottom="true"
 	        android:layout_alignRight="@+id/rit_photo"
 	        android:src="@drawable/status_online" />
+
+	    <ImageView
+	        android:id="@+id/composing"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	        android:layout_centerVertical="true"
+	        android:visibility="gone"
+	        android:src="@android:drawable/ic_menu_edit" />
 	    
 	</RelativeLayout>
 
