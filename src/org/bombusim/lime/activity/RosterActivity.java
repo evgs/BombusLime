@@ -238,11 +238,44 @@ public class RosterActivity extends ExpandableListActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String from = intent.getStringExtra("param");
-			//TODO: refresh if contact displayed 
-			//TODO: refresh single contact if specified, not recollate roster again (usecase: mass presence update)
+			
+			if (from !=null) {
+				for (Contact c: Lime.getInstance().getRoster().getContacts()) {
+					if (c.getJid().equals(from)) {
+						refreshSingleContact(c);
+					}
+				}
+				
+				return;
+			}
 			refreshVisualContent();
 		}
 		
+	}
+	
+	void refreshSingleContact(Contact c) {
+		ExpandableListView lv = getExpandableListView();
+
+		int firstVisible = lv.getFirstVisiblePosition();
+		int lastVisible = lv.getLastVisiblePosition();
+
+		for (int position = firstVisible; position<=lastVisible; position++) {
+			try {
+				Contact clv = (Contact) lv.getItemAtPosition(position);
+				if (c == clv) {
+					View cv = lv.getChildAt(position);
+					if (cv !=null) { 
+						cv.invalidate();
+					} else {
+						//can't find view for contact, so refresh all
+						//TODO: is it real need to refresh all?
+						refreshVisualContent();
+						return;
+					}
+				}
+			} catch (ClassCastException e) {}
+		}
+
 	}
 	
 	//TODO: update only group if presence update 
