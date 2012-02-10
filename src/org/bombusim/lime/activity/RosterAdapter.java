@@ -22,6 +22,9 @@ public class RosterAdapter extends BaseExpandableListAdapter {
 
     private LayoutInflater mInflater;
     private Bitmap mIconRobot;
+    private Bitmap mIconActiveChat;
+    private Bitmap mIconInactiveChat;
+    private Bitmap mIconComposing;
     private Bitmap[] mIconStar;
     
     public RosterAdapter(Context context) {
@@ -30,6 +33,10 @@ public class RosterAdapter extends BaseExpandableListAdapter {
 
         // Icons bound to the rows.
         mIconRobot = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_contact_picture);
+        mIconActiveChat = BitmapFactory.decodeResource(context.getResources(), R.drawable.chat);
+        mIconInactiveChat = BitmapFactory.decodeResource(context.getResources(), R.drawable.chat_inactive);
+        mIconComposing = BitmapFactory.decodeResource(context.getResources(), R.drawable.chat_inactive);
+        
         mIconStar = new Bitmap[] { 
         		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_offline),
         		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_online),
@@ -191,10 +198,13 @@ public class RosterAdapter extends BaseExpandableListAdapter {
         holder.jid.setText(c.getScreenName());
         holder.presence.setText(c.getStatusMessage());
         
-        if ( c.getUnread() > 0 || c.hasActiveChats() ) {
-        	holder.chatIcon.setImageResource( (c.getUnread()>0) ? R.drawable.chat : R.drawable.chat_inactive );
+        if ( c.getUnread() > 0) {
+        	holder.chatIcon.setImageBitmap(mIconActiveChat);
         	holder.chatIcon.setVisibility(View.VISIBLE);
-        } else {
+        } else if (c.hasActiveChats()) {
+        	holder.chatIcon.setImageBitmap(mIconInactiveChat);
+        	holder.chatIcon.setVisibility(View.VISIBLE);
+        } else { 
         	holder.chatIcon.setVisibility(View.GONE);
         }
         
