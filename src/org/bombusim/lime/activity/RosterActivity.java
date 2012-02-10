@@ -263,6 +263,10 @@ public class RosterActivity extends ExpandableListActivity {
 			try {
 				Contact clv = (Contact) lv.getItemAtPosition(position);
 				if (c == clv) {
+					
+					//TODO: remove this workaround
+					refreshVisualContent();
+					/*
 					View cv = lv.getChildAt(position);
 					if (cv !=null) { 
 						cv.invalidate();
@@ -271,7 +275,7 @@ public class RosterActivity extends ExpandableListActivity {
 						//TODO: is it real need to refresh all?
 						refreshVisualContent();
 						return;
-					}
+					}*/
 				}
 			} catch (ClassCastException e) {}
 		}
