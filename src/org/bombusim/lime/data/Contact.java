@@ -213,7 +213,10 @@ public class Contact implements Comparable<Contact>{
 			avatar = cached.getAvatar();
 			
 			//cache hit?
-			if (avatar!=null)  return avatar; 			
+			if (avatar!=null)  return avatar; 	
+			
+			//cache miss
+			avatarId = null;
 		}
 		
 
