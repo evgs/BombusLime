@@ -24,6 +24,7 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.BaseExpandableListAdapter;
@@ -56,6 +57,33 @@ public class RosterActivity extends ExpandableListActivity {
 	
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.roster_title);
 		updateRosterTitle();
+		
+		OnClickListener sslShowCert = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try { 
+					String rJid = Lime.getInstance().getActiveAccount().userJid;
+					showSslStatus(sb.getXmppStream(rJid).getCertificateInfo());
+				} catch (Exception e){};
+			}
+		};
+		
+		((ImageView) findViewById(R.id.imageSSL)).setOnClickListener(sslShowCert);
+		((TextView) findViewById(R.id.activeJid)).setOnClickListener(sslShowCert);
+	}
+
+	protected void showSslStatus(String certificateChain) {
+		if (certificateChain == null) return;
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.sslInfo)
+			   .setIcon(R.drawable.ssl_yes)
+			   .setMessage(certificateChain)
+		       .setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) { dialog.cancel(); }
+		       });
+		AlertDialog alert = builder.create();
+		alert.setOwnerActivity(this);
+		alert.show();
 	}
 
 	private void updateRosterTitle() {

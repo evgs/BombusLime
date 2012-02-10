@@ -623,4 +623,8 @@ public class XmppStream extends XmppParser {
 			.putExtra("param", param)
 		);
 	}
+
+	public String getCertificateInfo() {
+		return ((NetworkSocketDataStream)dataStream).getCertificateInfo();
+	}
 }

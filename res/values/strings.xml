@@ -122,6 +122,8 @@
     <string name="notifyVibration">Vibration</string>
     <string name="notificationLed">Blink Notification Led</string>
     <string name="systemEnabled">If enabled globally</string>
+    <string name="sslInfo">Certificate chain</string>
+    
     
     <string name="recentPresences">Recent</string>
     <string name="priority">Priority</string>

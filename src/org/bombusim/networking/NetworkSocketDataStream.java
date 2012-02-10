@@ -4,16 +4,21 @@ import java.io.IOException;
 
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.Principal;
+import java.text.DateFormat;
 
 import javax.net.ssl.HandshakeCompletedEvent;
 import javax.net.ssl.HandshakeCompletedListener;
+import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSocket;
 
 import javax.net.ssl.SSLSocketFactory;
+import javax.security.cert.X509Certificate;
 
 import org.bombusim.lime.logger.LimeLog;
 
 import android.net.SSLCertificateSocketFactory;
+import android.util.Log;
 
 //import org.apache.http.conn.ssl.SSLSocketFactory;
 
@@ -23,7 +28,7 @@ import com.jcraft.jzlib.InflaterInputStream;
 public class NetworkSocketDataStream extends NetworkDataStream{
 
 	private boolean zlib = false;
-	private boolean ssl = false;
+	private String certificateInfo;
 	
 	protected Socket socket;
 	protected String host;
@@ -82,12 +87,42 @@ public class NetworkSocketDataStream extends NetworkDataStream{
 			//sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER); 
 
 			
-		SSLSocket ssls=(SSLSocket) sf.createSocket(socket, host, port, true);
+		final SSLSocket ssls=(SSLSocket) sf.createSocket(socket, host, port, true);
 		
 		ssls.addHandshakeCompletedListener(new HandshakeCompletedListener() {
 			@Override
 			public void handshakeCompleted(HandshakeCompletedEvent event) {
-				ssl=true;
+				X509Certificate[] certs;
+				try {
+					certs = ssls.getSession().getPeerCertificateChain();
+				} catch (SSLPeerUnverifiedException e) { return; }
+				
+				StringBuilder so = new StringBuilder();
+				
+				for (X509Certificate cert : certs) {
+					so.append("X509 Certificate:\n").append(" Subject:");
+					appendPrincipal(so, cert.getSubjectDN());
+					so.append("\n Issued by:");
+					appendPrincipal(so, cert.getIssuerDN());
+					so.append("\n Valid from:    ").append( DateFormat.getInstance().format(cert.getNotBefore()) );
+					so.append("\n Expired after: ").append( DateFormat.getInstance().format(cert.getNotAfter()) );
+					so.append("\n\n");
+				}
+
+				certificateInfo = so.toString();
+				LimeLog.i("Socket", "Certificate chain verified", certificateInfo);
+			}
+
+			private void appendPrincipal(StringBuilder so, Principal p) {
+				String name = p.getName();
+				if (name==null) { so.append("<null>\n"); return; }
+				
+				String elements[] = name.split(",");
+				for (String e: elements) {
+					so.append("\n   ").append(e);
+				}
+				
+				so.append("\n");
 			}
 		});
 		
@@ -109,7 +144,12 @@ public class NetworkSocketDataStream extends NetworkDataStream{
 		}
 	}
 
-	public boolean isSecure() { return ssl; }
+	public boolean isSecure() { return certificateInfo != null; }
 	public boolean isCompressed() { return zlib; }
+
+	public String getCertificateInfo() {
+		// TODO Auto-generated method stub
+		return certificateInfo;
+	}
 }
 
