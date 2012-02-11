@@ -125,6 +125,7 @@
     <string name="sslInfo">Certificate chain</string>
     <string name="addSmileMenuItem">Add smile</string>
     <string name="addMeMenuItem">Insert /me</string>
+    <string name="shouldBeLoggedIn">You should be signed in to send message</string>
     
     <string name="recentPresences">Recent</string>
     <string name="priority">Priority</string>

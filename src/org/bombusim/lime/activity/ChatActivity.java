@@ -375,17 +375,15 @@ public class ChatActivity extends Activity {
 	
 	protected void sendMessage() {
 		String text = messageBox.getText().toString();
-		messageBox.setText("");
 		
 		//avoid sending of empty messages
 		if (text.length() == 0) return;
 		
-		String to = visavis.getJid(); 
-
+		String to = visavis.getJid();
+		
 		Message out = new Message(Message.TYPE_MESSAGE_OUT, to, text);
 		chat.addMessage(out);
-		refreshVisualContent();
-		
+
 		//TODO: resource magic
 		XmppMessage msg = new XmppMessage(to, text, null, false);
 		msg.setAttribute("id", String.valueOf(out.getId()) );
@@ -398,12 +396,22 @@ public class ChatActivity extends Activity {
 		sentChatState = ChatStates.ACTIVE;
 		
 		//TODO: message queue
-		serviceBinding.getXmppStream(visavis.getRosterJid()).send(msg);
+		if ( serviceBinding.sendStanza(visavis.getRosterJid(), msg) ) {
+			
+			//clear box after success sending
+			messageBox.setText("");
+
+			if (visavis.getPresence() == Presence.PRESENCE_OFFLINE) {
+				Toast.makeText(this, R.string.chatSentOffline, Toast.LENGTH_LONG).show();
+			}
 		
-		if (visavis.getPresence() == Presence.PRESENCE_OFFLINE) {
-			Toast.makeText(this, R.string.chatSentOffline, Toast.LENGTH_LONG).show();
+		} else {
+			Toast.makeText(this, R.string.shouldBeLoggedIn, Toast.LENGTH_LONG).show();
+			//not sent - removing from history
+			chat.removeFromHistory(out.getId());
 		}
 		
+		refreshVisualContent();
 	}
 
 	protected void sendChatState(String state) {
@@ -429,7 +437,7 @@ public class ChatActivity extends Activity {
 		msg.addChildNs(state, ChatStates.XMLNS_CHATSTATES);
 		sentChatState = state;
 		
-		serviceBinding.getXmppStream(visavis.getRosterJid()).send(msg);
+		serviceBinding.sendStanza(visavis.getRosterJid(), msg);
 		
 	}
 	
