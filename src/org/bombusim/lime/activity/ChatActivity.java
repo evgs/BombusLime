@@ -10,6 +10,7 @@ import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Message;
 import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.service.XmppServiceBinding;
+import org.bombusim.lime.widgets.ChatEditText;
 import org.bombusim.xmpp.handlers.ChatStates;
 import org.bombusim.xmpp.handlers.MessageDispatcher;
 import org.bombusim.xmpp.stanza.Presence;
@@ -23,6 +24,7 @@ import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.ClipboardManager;
@@ -37,9 +39,11 @@ import android.text.style.ForegroundColorSpan;
 import android.text.util.Linkify;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
@@ -65,7 +69,7 @@ public class ChatActivity extends Activity {
 	private String jid;
 	private String rJid;
 	
-	private EditText messageBox;
+	private ChatEditText messageBox;
 	private ImageButton sendButton;
 	
 	private ListView chatListView;
@@ -153,7 +157,7 @@ public class ChatActivity extends Activity {
   
         contactHead = findViewById(R.id.contact_head);
 
-        messageBox = (EditText) findViewById(R.id.messageBox);
+        messageBox = (ChatEditText) findViewById(R.id.messageBox);
         sendButton = (ImageButton) findViewById(R.id.sendButton);
 
         chatListView = (ListView) findViewById(R.id.chatListView);
@@ -262,6 +266,7 @@ public class ChatActivity extends Activity {
 			return super.onContextItemSelected(item);
 	  }
 	}	
+	
 	
     private void enableTrackballTraversing() {
     	//TODO: http://stackoverflow.com/questions/2679948/focusable-edittext-inside-listview

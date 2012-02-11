@@ -112,18 +112,31 @@ public class Smilify {
         	for (String s: synonims) {
         		addSmile(s, strnumber);
         	}
+        	
+        	smileTags[strnumber] = synonims[0];
         }
     }
 
-    private Drawable getSmileDrawable(int index) {
-    	if(smileTA == null) {
-    		smileTA = Lime.getInstance().getResources().obtainTypedArray(R.array.smileIds);
-    	}
-    	
-		Drawable d = smileTA.getDrawable(index);
+    public Drawable getSmileDrawable(int index) {
+    	    	
+		Drawable d = getSmileTA().getDrawable(index);
         d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
 
         return d;
+    }
+
+	private TypedArray getSmileTA() {
+		if(smileTA == null) {
+    		smileTA = Lime.getInstance().getResources().obtainTypedArray(R.array.smileIds);
+    	}
+		
+		return smileTA;
+	}
+    
+    public int getCount(){ return getSmileTA().length(); } 
+    
+    public String getSmileText(int index) {
+    	return smileTags[index];
     }
     
     
