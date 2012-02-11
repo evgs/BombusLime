@@ -3,6 +3,7 @@ package org.bombusim.lime.widgets;
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -49,6 +50,12 @@ public class ChatEditText extends EditText {
 		});
 	}
 
+	private Activity dialogHostActivity;
+	
+	public void setDialogHostActivity(Activity activity) {
+		this.dialogHostActivity = activity;
+	}
+	
 	protected void showAddSmileDialog() {
 		
 		View gridLayout = View.inflate(getContext(), R.layout.grid_smiles, null);
@@ -113,7 +120,7 @@ public class ChatEditText extends EditText {
 			}
 		});
 
-		//alert.setOwnerActivity(???);
+		alert.setOwnerActivity(dialogHostActivity);
 		alert.show();
 	}
 

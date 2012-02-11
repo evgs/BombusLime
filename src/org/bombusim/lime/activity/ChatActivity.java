@@ -493,6 +493,8 @@ public class ChatActivity extends Activity {
 			messageBox.setText(s);
 		}
 		
+		messageBox.setDialogHostActivity(this);
+		
 		super.onResume();
 	}
 	
@@ -538,6 +540,9 @@ public class ChatActivity extends Activity {
 		
 		markAllRead();
 		
+		//avoid memory leak
+		messageBox.setDialogHostActivity(null);
+
 		super.onPause();
 	}
 
