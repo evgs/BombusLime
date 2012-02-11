@@ -1,7 +1,9 @@
 package org.bombusim.lime.service;
 
 import org.bombusim.lime.Lime;
+import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppStream;
+import org.bombusim.xmpp.stanza.XmppMessage;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -66,5 +68,20 @@ public class XmppServiceBinding {
 	
 	public void doDisconnect() {
 		xmppService.disconnectAll();
+	}
+	
+	/**
+	 * Sending XMPP stanza
+	 * @param streamJid - JID identifies stream so be used  
+	 * @param stanza stanza to be sent
+	 * @return true if success, false otherwise
+	 */
+	public boolean sendStanza(String streamJid, XmppObject stanza) {
+		try {
+			return getXmppStream(streamJid).send(stanza);
+		} catch (Exception e) {	}
+		
+		return false;
+		
 	}
 }

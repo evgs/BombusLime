@@ -487,9 +487,10 @@ public class XmppStream extends XmppParser {
      * Method of sending a Jabber datablock to the server.
      *
      * @param block The data block to send to the server.
+     * @return true if no errors during sending, false otherwise
      */
     
-    public void send( XmppObject block )  {
+    public boolean send( XmppObject block )  {
     	
     	StringBuilder data=new StringBuilder(4096);
     	block.constructXML(data);
@@ -510,7 +511,10 @@ public class XmppStream extends XmppParser {
     		//TODO: verify action on error
     		e.printStackTrace();
     		close();
+    		return false;
 		}
+    	
+    	return true;
     }
     
     /**
