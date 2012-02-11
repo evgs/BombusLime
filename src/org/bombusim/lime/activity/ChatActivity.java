@@ -483,6 +483,11 @@ public class ChatActivity extends Activity {
 		bcPresence = new PresenceReceiver();
 		registerReceiver(bcPresence, new IntentFilter(Roster.UPDATE_CONTACT));
 		
+		String s = chat.getSuspendedText();
+		if (s!=null) {
+			messageBox.setText(s);
+		}
+		
 		super.onResume();
 	}
 	
@@ -517,7 +522,8 @@ public class ChatActivity extends Activity {
 	
 	@Override
 	protected void onPause() {
-		//TODO: save unsent message from EditText
+		chat.saveSuspendedText(messageBox.getText().toString());
+		
 		sendChatState(ChatStates.PAUSED);
 		
 		serviceBinding.doUnbindService();

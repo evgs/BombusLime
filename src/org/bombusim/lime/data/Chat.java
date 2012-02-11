@@ -31,6 +31,9 @@ public class Chat {
 	}
 	
 	private ChatHistoryDbAdapter readDbAdapter;
+
+	//TODO: store this text in database
+	private String suspendedText;
 	
 	public Chat(Contact contact) {
 		visavis = contact;
@@ -73,6 +76,14 @@ public class Chat {
 		db.close();
 	}
 
+	public String getSuspendedText() { 
+		return suspendedText; 
+	}
+
+	public void saveSuspendedText(String suspendedText) { 
+		this.suspendedText = suspendedText; 
+	}
+	
 	public Cursor getCursor() {
 		
 		//benchmarking
