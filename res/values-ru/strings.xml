@@ -99,5 +99,6 @@
     <string name="notifyVibration">Вибрация</string>
     <string name="notificationLed">Мигание светодиодом</string>
     <string name="systemEnabled">Использовать настройки телефона</string>
+    <string name="addSmileMenuItem">Вставить смайлик</string>
     
 </resources>
