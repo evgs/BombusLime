@@ -48,6 +48,14 @@ public class ChatEditText extends EditText {
 				return true;
 			}
 		});
+		
+		menu.add(R.string.addMeMenuItem).setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				pasteText("/me ");
+				return true;
+			}
+		});
 	}
 
 	private Activity dialogHostActivity;
@@ -110,18 +118,22 @@ public class ChatEditText extends EditText {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				
-				int st = getSelectionStart();
-				int en = getSelectionEnd();
-				
 				String smile = Lime.getInstance().getSmilify().getSmileText(position)+ ' ';
 				
-				getText().replace(st, en, smile);
+				pasteText(smile);
 				alert.cancel();
 			}
+
 		});
 
 		alert.setOwnerActivity(dialogHostActivity);
 		alert.show();
 	}
 
+	private void pasteText(String paste) {
+		int st = getSelectionStart();
+		int en = getSelectionEnd();
+		
+		getText().replace(st, en, paste);
+	}
 }
