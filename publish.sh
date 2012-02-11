@@ -16,6 +16,7 @@ fi
 
 echo Copying $ONAME
 
+mkdir -p outweb
 cp bin/BombusLime-debug.apk outweb/BombusLime.apk
 cp bin/BombusLime-debug.apk outweb/$ONAME
 
