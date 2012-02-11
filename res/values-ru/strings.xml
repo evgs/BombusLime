@@ -100,5 +100,6 @@
     <string name="notificationLed">Мигание светодиодом</string>
     <string name="systemEnabled">Использовать настройки телефона</string>
     <string name="addSmileMenuItem">Вставить смайлик</string>
+    <string name="addMeMenuItem">Вставить /me</string>
     
 </resources>
