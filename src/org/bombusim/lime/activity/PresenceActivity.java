@@ -147,8 +147,10 @@ public class PresenceActivity extends Activity {
 		
 		editMessage.setText(message);
 
-		String sPriority = String.valueOf(priority);
-		editPriority.setText(sPriority);
+		if (priority != XmppAccount.DEFAULT_PRIORITY) {
+			String sPriority = String.valueOf(priority);
+			editPriority.setText(sPriority);
+		}
 
 		StatusSpinnerAdapter adapter = (StatusSpinnerAdapter) spStatus.getAdapter();
 		
