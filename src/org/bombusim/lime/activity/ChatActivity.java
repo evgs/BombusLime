@@ -97,13 +97,12 @@ public class ChatActivity extends Activity {
 	@Override
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
-		setIntent(intent);
 
-		attachToChat();
+		attachToChat(intent);
 	}
 	
-	private void attachToChat(){
-        Bundle params = getIntent().getExtras();
+	private void attachToChat(Intent intent){
+        Bundle params = intent.getExtras();
         if (params == null) throw new InvalidParameterException("No parameters specified for ChatActivity");
         jid = params.getString(TO_JID);
         rJid = params.getString(MY_JID);
@@ -168,7 +167,7 @@ public class ChatActivity extends Activity {
         
         enableTrackballTraversing();
         
-        attachToChat();
+        attachToChat(getIntent());
         
         sendButton.setOnClickListener(new OnClickListener() {
 			@Override
