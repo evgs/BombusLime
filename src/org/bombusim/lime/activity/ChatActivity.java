@@ -9,6 +9,8 @@ import org.bombusim.lime.data.ChatHistoryDbAdapter;
 import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Message;
 import org.bombusim.lime.data.Roster;
+import org.bombusim.lime.logger.LoggerActivity;
+import org.bombusim.lime.service.XmppService;
 import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.lime.widgets.ChatEditText;
 import org.bombusim.xmpp.handlers.ChatStates;
@@ -224,6 +226,33 @@ public class ChatActivity extends Activity {
         
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(android.view.Menu menu) {
+		getMenuInflater().inflate(R.menu.chat_menu, menu);
+
+		//TODO: enable items available only if logged in
+		
+		return true;
+	};
+	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.closeChat:
+			visavis.setActiveChats(false);
+			Lime.getInstance().getChatFactory().closeChat(chat);
+			finish();
+			break;
+		
+		
+		default: return true; // on submenu
+		}
+		
+		return false;
+	}
+	
+	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {

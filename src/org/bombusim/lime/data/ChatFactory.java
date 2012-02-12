@@ -49,5 +49,10 @@ public class ChatFactory {
 		//PROFIT!
 		return c;
 	}
+	
+	public void closeChat (Chat c) {
+		chats.remove(c);
+		c.closeChat();
+	}
 
 }

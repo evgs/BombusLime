@@ -130,5 +130,6 @@
     <string name="recentPresences">Recent</string>
     <string name="priority">Priority</string>
     <string name="set">Set</string>
+    <string name="closeChat">Close chat</string>
     
 </resources>
