@@ -102,10 +102,10 @@ public class ChatActivity extends Activity {
 	}
 	
 	private void attachToChat(Intent intent){
-        Bundle params = intent.getExtras();
-        if (params == null) throw new InvalidParameterException("No parameters specified for ChatActivity");
-        jid = params.getString(TO_JID);
-        rJid = params.getString(MY_JID);
+        jid = intent.getStringExtra(TO_JID);
+        rJid = intent.getStringExtra(MY_JID);
+        
+        if (jid == null || rJid ==null) throw new InvalidParameterException("No parameters specified for ChatActivity");
 
         //TODO: move into ChatFactory
         visavis = Lime.getInstance().getRoster().findContact(jid, rJid);
