@@ -147,7 +147,7 @@ public class PresenceActivity extends Activity {
 		
 		editMessage.setText(message);
 
-		if (priority != XmppAccount.DEFAULT_PRIORITY) {
+		if (priority != XmppAccount.DEFAULT_PRIORITY_ACCOUNT) {
 			String sPriority = String.valueOf(priority);
 			editPriority.setText(sPriority);
 		}
