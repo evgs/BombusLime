@@ -127,15 +127,7 @@ public class RosterActivity extends ExpandableListActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.cmdLogin:    {
-			startService(new Intent(getBaseContext(), XmppService.class));
-			break;
-		}
-		case R.id.cmdLogout:   {
-			sb.doDisconnect();
-			Lime.getInstance().vcardResolver.restartQueue();
-			break;
-		}
+		case R.id.cmdLogin:     startActivityForResult(new Intent(getBaseContext(), PresenceActivity.class),        0); break;
 		
 		case R.id.cmdAddContact: openEditContactActivity(null); break;
 		

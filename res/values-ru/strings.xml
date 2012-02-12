@@ -19,7 +19,7 @@
     <string name="labelPassword">Пароль</string>
     <string name="labelResource">Ресурс</string>
     <string name="labelBareJid">Jabber ID</string>
-    <string name="buttonLogon">Войти</string>
+    <string name="menuStatus">Статус</string>
     <string name="logEnable">Enable</string>
     <string name="logFreeze">Freeze</string>
     <string name="logClear">Очистить</string>

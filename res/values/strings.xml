@@ -20,7 +20,7 @@
     <string name="labelResource">Resource</string>
     <string name="defaultResource">Lime</string>
     <string name="labelBareJid">Jabber ID</string>
-    <string name="buttonLogon">Sign in</string>
+    <string name="menuStatus">Status</string>
     <string name="logEnable">Enable</string>
     <string name="logFreeze">Freeze</string>
     <string name="logClear">Clear</string>
