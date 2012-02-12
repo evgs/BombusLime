@@ -9,7 +9,10 @@ import org.bombusim.lime.data.ChatHistoryDbAdapter;
 import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Message;
 import org.bombusim.lime.data.Roster;
+import org.bombusim.lime.logger.LoggerActivity;
+import org.bombusim.lime.service.XmppService;
 import org.bombusim.lime.service.XmppServiceBinding;
+import org.bombusim.lime.widgets.ChatEditText;
 import org.bombusim.xmpp.handlers.ChatStates;
 import org.bombusim.xmpp.handlers.MessageDispatcher;
 import org.bombusim.xmpp.stanza.Presence;
@@ -23,6 +26,7 @@ import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.ClipboardManager;
@@ -37,9 +41,11 @@ import android.text.style.ForegroundColorSpan;
 import android.text.util.Linkify;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
@@ -65,7 +71,7 @@ public class ChatActivity extends Activity {
 	private String jid;
 	private String rJid;
 	
-	private EditText messageBox;
+	private ChatEditText messageBox;
 	private ImageButton sendButton;
 	
 	private ListView chatListView;
@@ -91,13 +97,12 @@ public class ChatActivity extends Activity {
 	@Override
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
-		setIntent(intent);
 
-		attachToChat();
+		attachToChat(intent);
 	}
 	
-	private void attachToChat(){
-        Bundle params = getIntent().getExtras();
+	private void attachToChat(Intent intent){
+        Bundle params = intent.getExtras();
         if (params == null) throw new InvalidParameterException("No parameters specified for ChatActivity");
         jid = params.getString(TO_JID);
         rJid = params.getString(MY_JID);
@@ -153,7 +158,7 @@ public class ChatActivity extends Activity {
   
         contactHead = findViewById(R.id.contact_head);
 
-        messageBox = (EditText) findViewById(R.id.messageBox);
+        messageBox = (ChatEditText) findViewById(R.id.messageBox);
         sendButton = (ImageButton) findViewById(R.id.sendButton);
 
         chatListView = (ListView) findViewById(R.id.chatListView);
@@ -162,7 +167,7 @@ public class ChatActivity extends Activity {
         
         enableTrackballTraversing();
         
-        attachToChat();
+        attachToChat(getIntent());
         
         sendButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -221,6 +226,36 @@ public class ChatActivity extends Activity {
 	}
 
 	@Override
+	public boolean onCreateOptionsMenu(android.view.Menu menu) {
+		getMenuInflater().inflate(R.menu.chat_menu, menu);
+
+		//TODO: enable items available only if logged in
+		
+		return true;
+	};
+	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.closeChat:
+			visavis.setActiveChats(false);
+			Lime.getInstance().getChatFactory().closeChat(chat);
+			finish();
+			break;
+		
+		case R.id.addSmile:   messageBox.showAddSmileDialog();  break;
+		
+		case R.id.addMe:      messageBox.addMe(); break;
+		
+		default: return true; // on submenu
+		}
+		
+		return false;
+	}
+	
+	
+	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		
@@ -262,6 +297,7 @@ public class ChatActivity extends Activity {
 			return super.onContextItemSelected(item);
 	  }
 	}	
+	
 	
     private void enableTrackballTraversing() {
     	//TODO: http://stackoverflow.com/questions/2679948/focusable-edittext-inside-listview
@@ -337,7 +373,7 @@ public class ChatActivity extends Activity {
         	int addrEnd=0;
         	
         	if (message.startsWith("/me ")) {
-        		message = "*" + sender + message.substring(3);
+        		message = "*" + message.replaceAll("(/me)(?:\\s|$)", sender+' ');;
         	} else {
         		ss.append('<').append(sender).append("> ");
         	}
@@ -370,17 +406,15 @@ public class ChatActivity extends Activity {
 	
 	protected void sendMessage() {
 		String text = messageBox.getText().toString();
-		messageBox.setText("");
 		
 		//avoid sending of empty messages
 		if (text.length() == 0) return;
 		
-		String to = visavis.getJid(); 
-
+		String to = visavis.getJid();
+		
 		Message out = new Message(Message.TYPE_MESSAGE_OUT, to, text);
 		chat.addMessage(out);
-		refreshVisualContent();
-		
+
 		//TODO: resource magic
 		XmppMessage msg = new XmppMessage(to, text, null, false);
 		msg.setAttribute("id", String.valueOf(out.getId()) );
@@ -393,12 +427,22 @@ public class ChatActivity extends Activity {
 		sentChatState = ChatStates.ACTIVE;
 		
 		//TODO: message queue
-		serviceBinding.getXmppStream(visavis.getRosterJid()).send(msg);
+		if ( serviceBinding.sendStanza(visavis.getRosterJid(), msg) ) {
+			
+			//clear box after success sending
+			messageBox.setText("");
+
+			if (visavis.getPresence() == Presence.PRESENCE_OFFLINE) {
+				Toast.makeText(this, R.string.chatSentOffline, Toast.LENGTH_LONG).show();
+			}
 		
-		if (visavis.getPresence() == Presence.PRESENCE_OFFLINE) {
-			Toast.makeText(this, R.string.chatSentOffline, Toast.LENGTH_LONG).show();
+		} else {
+			Toast.makeText(this, R.string.shouldBeLoggedIn, Toast.LENGTH_LONG).show();
+			//not sent - removing from history
+			chat.removeFromHistory(out.getId());
 		}
 		
+		refreshVisualContent();
 	}
 
 	protected void sendChatState(String state) {
@@ -424,7 +468,7 @@ public class ChatActivity extends Activity {
 		msg.addChildNs(state, ChatStates.XMLNS_CHATSTATES);
 		sentChatState = state;
 		
-		serviceBinding.getXmppStream(visavis.getRosterJid()).send(msg);
+		serviceBinding.sendStanza(visavis.getRosterJid(), msg);
 		
 	}
 	
@@ -483,6 +527,13 @@ public class ChatActivity extends Activity {
 		bcPresence = new PresenceReceiver();
 		registerReceiver(bcPresence, new IntentFilter(Roster.UPDATE_CONTACT));
 		
+		String s = chat.getSuspendedText();
+		if (s!=null) {
+			messageBox.setText(s);
+		}
+		
+		messageBox.setDialogHostActivity(this);
+		
 		super.onResume();
 	}
 	
@@ -517,7 +568,8 @@ public class ChatActivity extends Activity {
 	
 	@Override
 	protected void onPause() {
-		//TODO: save unsent message from EditText
+		chat.saveSuspendedText(messageBox.getText().toString());
+		
 		sendChatState(ChatStates.PAUSED);
 		
 		serviceBinding.doUnbindService();
@@ -527,6 +579,9 @@ public class ChatActivity extends Activity {
 		
 		markAllRead();
 		
+		//avoid memory leak
+		messageBox.setDialogHostActivity(null);
+
 		super.onPause();
 	}
 

@@ -123,10 +123,13 @@
     <string name="notificationLed">Blink Notification Led</string>
     <string name="systemEnabled">If enabled globally</string>
     <string name="sslInfo">Certificate chain</string>
-    
+    <string name="addSmileMenuItem">Add smile</string>
+    <string name="addMeMenuItem">Insert /me</string>
+    <string name="shouldBeLoggedIn">You should be signed in to send message</string>
     
     <string name="recentPresences">Recent</string>
     <string name="priority">Priority</string>
     <string name="set">Set</string>
+    <string name="closeChat">Close chat</string>
     
 </resources>
