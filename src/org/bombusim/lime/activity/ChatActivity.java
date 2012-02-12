@@ -374,7 +374,7 @@ public class ChatActivity extends Activity {
         	int addrEnd=0;
         	
         	if (message.startsWith("/me ")) {
-        		message = "*" + sender + message.substring(3);
+        		message = "*" + message.replaceAll("(/me)(?:\\s|$)", sender+' ');;
         	} else {
         		ss.append('<').append(sender).append("> ");
         	}
