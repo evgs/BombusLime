@@ -50,5 +50,24 @@
     </array>
     
     
+    <array name="presenceArray">
+	    <item >@string/presence_online</item>
+	    <item >@string/presence_chat</item>
+	    <item >@string/presence_away</item>
+	    <item >@string/presence_xa</item>
+	    <item >@string/presence_dnd</item>
+	    <item >@string/presence_invisible</item>
+	    <item >@string/presence_offline</item>
+	</array>
+	
+    <array name="presenceIndexArray">
+	    <item >1</item>
+	    <item >2</item>
+	    <item >3</item>
+	    <item >4</item>
+	    <item >5</item>
+	    <item >8</item>
+	    <item >0</item>
+	</array>
     
 </resources>

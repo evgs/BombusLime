@@ -29,6 +29,7 @@
           ></activity>
         <activity android:name=".activity.LimePrefs"></activity>
         <activity android:name=".activity.VCardActivity"></activity>
+        <activity android:name=".activity.PresenceActivity"></activity>
         <activity android:name=".activity.EditContactActivity"></activity>
         </application>
 
