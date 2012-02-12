@@ -84,4 +84,12 @@ public class XmppServiceBinding {
 		return false;
 		
 	}
+	
+	/**
+	 * USE WITH CAUTION!!!
+	 * @return XmppService object
+	 */
+	public XmppService getXmppService() {
+		return xmppService;
+	}
 }

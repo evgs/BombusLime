@@ -60,6 +60,7 @@ public class XmppAccount {
 	public static final int DEFAULT_XMPP_PORT        = 5222;
 	public static final int DEFAULT_SECURE_XMPP_PORT = 5223;
 	public static final int DEFAULT_PRIORITY = 50;
+	public static final int DEFAULT_PRIORITY_ACCOUNT = -255;
 	
 	public int enablePlainAuth = PLAIN_AUTH_OVER_SSL;
 	

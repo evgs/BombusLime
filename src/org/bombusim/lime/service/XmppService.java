@@ -15,6 +15,7 @@ import org.bombusim.xmpp.XmppAccount;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.exception.XmppException;
+import org.bombusim.xmpp.stanza.Presence;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.ResolverConfig;
 
@@ -62,6 +63,22 @@ public class XmppService extends Service implements Runnable {
 		//TODO: select the stream by "fromJid"
 		return s;
 	}
+
+	//TODO: non-volatile storage
+	//common presences for accounts
+    private int status = Presence.PRESENCE_ONLINE; //our status code
+	private String statusMessage = "hello, jabber world!";
+	private int priority = XmppAccount.DEFAULT_PRIORITY_ACCOUNT;
+	
+	public String getStatusMessage() { return statusMessage; }
+	public int getStatus() { return status; }
+	public int getPriority() { return priority; }
+	
+	public void setCommonPresence(int status, String message, int priority) {
+		this.status = status;
+		this.statusMessage = message;
+		this.priority = priority;
+	}
 	
 	
 	@Override
@@ -78,12 +95,20 @@ public class XmppService extends Service implements Runnable {
 			s.bindAccount(activeAccount);
 		}
 		
-		br = new ConnBroadcastReceiver();
-		registerReceiver(br, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+		if (br == null) {
+			br = new ConnBroadcastReceiver();
+			registerReceiver(br, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+		}
 		
 	   	checkNetworkState();
 	   	
-	   	doConnect();
+	   	s.setPresence(status, statusMessage, priority);
+	   	
+	   	if (running) {
+			s.sendPresence();
+	   	} else {
+	   		doConnect();
+	   	}
 		
 	   	return START_STICKY;
 	}
@@ -98,7 +123,7 @@ public class XmppService extends Service implements Runnable {
 				Thread thread=new Thread( this );
 				thread.setName("XmppStream->"+s.jid);
 				thread.start();
-			}
+			} 
 		} else {
 			s.close();
 		}
@@ -221,6 +246,7 @@ public class XmppService extends Service implements Runnable {
         //TODO: remove try/catch when service on/off behavior will be changed 
         try {
         	unregisterReceiver(br);
+        	br = null;
         } catch (Exception e) {
         	e.printStackTrace();
         }
@@ -232,5 +258,4 @@ public class XmppService extends Service implements Runnable {
         
         stopSelf();
 	}
-
 }

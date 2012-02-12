@@ -100,8 +100,9 @@ public class XmppStream extends XmppParser {
 	protected int keepAliveType = KEEP_ALIVE_TYPE_PING;
     
     //private int status = Presence.PRESENCE_INVISIBLE; //our status code
-    private int status = Presence.PRESENCE_ONLINE; //our status code
-    private String statusMessage = "hello, jabber world!";
+    private int status; //our status code
+    private String statusMessage;
+	private int priority;
     
     private NetworkDataStream dataStream;
 
@@ -116,7 +117,7 @@ public class XmppStream extends XmppParser {
 	private Timer keepAliveTimer;
 	
 	private EntityCaps caps;
-	
+
     /**
      * Constructor. Connects to the server and sends the jabber welcome message.
      *
@@ -442,6 +443,16 @@ public class XmppStream extends XmppParser {
 
 
     
+    public int getStatus() { return status; }
+    public int getPriority() { return -255; }
+    public String getStatusMessage() { return statusMessage; }
+    
+    public void setPresence(int status, String statusMessage, int priority) {
+    	this.status = status;
+    	this.statusMessage = statusMessage;
+    	this.priority = priority;
+    }
+    
     
     /**
      * Method of sending data to the server.
@@ -590,15 +601,23 @@ public class XmppStream extends XmppParser {
     	
     	iqroster.queryRoster(this);
 
-    	//TODO: nickname
-    	Presence online = new Presence(status, account.priority, statusMessage, null /* nick */);
-    	online.addChild(caps.getresenceCaps());
-    	//offline messages will be delivered after this presence
-    	send(online);
+    	sendPresence();
     	
     	startKeepAliveTimer();
 
     }
+
+	public void sendPresence() {
+		//TODO: nickname
+    	Presence online = new Presence(
+    			status, 
+    			(priority==XmppAccount.DEFAULT_PRIORITY_ACCOUNT) ? account.priority : priority,
+    			statusMessage, 
+    			null /* nick */);
+    	online.addChild(caps.getresenceCaps());
+    	//offline messages will be delivered after this presence
+    	send(online);
+	}
     
     private void updateCaps() {
 		ArrayList<String> features = new ArrayList<String>();

@@ -1,14 +1,22 @@
 package org.bombusim.lime.activity;
 
+import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 import org.bombusim.lime.activity.RosterAdapter.ViewHolder;
+import org.bombusim.lime.service.XmppService;
+import org.bombusim.lime.service.XmppServiceBinding;
+import org.bombusim.xmpp.XmppAccount;
+import org.bombusim.xmpp.XmppStream;
+import org.bombusim.xmpp.stanza.Presence;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -28,6 +36,11 @@ public class PresenceActivity extends Activity {
 	EditText editMessage;
 	Button buttonRecent;
 	
+	Button buttonOk;
+	Button buttonCancel;
+	
+	private XmppServiceBinding sb;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,6 +57,8 @@ public class PresenceActivity extends Activity {
 		editMessage    = (EditText) findViewById(R.id.presenceMessage);
 		spStatus       = (Spinner)  findViewById(R.id.presenceStatus);
 		buttonRecent   = (Button)   findViewById(R.id.recentPresences);
+		buttonOk       = (Button)   findViewById(R.id.buttonOk);
+		buttonCancel   = (Button)   findViewById(R.id.buttonCancel);
 		
 		if (to !=null) {
 			presenceDirect.setVisibility(View.VISIBLE);
@@ -51,11 +66,107 @@ public class PresenceActivity extends Activity {
 			editPresenceTo.setText(to);
 		}
 		
-		spStatus.setAdapter(new StatusAdapter(this));
+		buttonOk.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) { setStatus(); finish(); }
+		});
 		
+		buttonCancel.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) { finish(); }
+		});
+
+		
+		spStatus.setAdapter(new StatusSpinnerAdapter(this));
+		
+		sb = new XmppServiceBinding(this);
 	}
 	
-	private class StatusAdapter extends BaseAdapter {
+	protected void setStatus() {
+		
+		int status = (int) spStatus.getSelectedItemId();
+		
+		String message = editMessage.getText().toString();
+		
+		int priority = XmppAccount.DEFAULT_PRIORITY_ACCOUNT;
+		
+		try {
+			priority = Integer.parseInt( editPriority.getText().toString().trim() );
+		} catch (Exception e) {};
+		
+		//TODO: send direct presence
+		sendBroadcastPresence(status, message, priority);
+	}
+
+	private void sendBroadcastPresence(int status, String message, int priority) {
+		sb.getXmppService().setCommonPresence(status, message, priority);
+		
+		if (status == Presence.PRESENCE_OFFLINE) {
+			sb.doDisconnect();
+			Lime.getInstance().vcardResolver.restartQueue();
+		} else {
+			startService(new Intent(getBaseContext(), XmppService.class));
+		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		sb.setBindListener(new XmppServiceBinding.BindListener() {
+			
+			@Override
+			public void onBindService(XmppService service) {
+				updateFormFields();
+			}
+		});
+		
+		sb.doBindService();
+	}
+	
+	protected void updateFormFields() {
+		
+		//TODO: create storage class instead of this hack
+		int status = sb.getXmppService().getStatus();
+		String message = sb.getXmppService().getStatusMessage();
+		int priority = sb.getXmppService().getPriority();
+		
+		//TODO: fix multiaccount logic
+		
+		if (rJid != null) {
+			XmppStream s = sb.getXmppStream(rJid);
+			
+			if (s!=null) {
+				status = s.getStatus();
+				
+				message = s.getStatusMessage();
+				
+				priority = s.getPriority();
+			}
+		}
+		
+		editMessage.setText(message);
+
+		String sPriority = String.valueOf(priority);
+		editPriority.setText(sPriority);
+
+		StatusSpinnerAdapter adapter = (StatusSpinnerAdapter) spStatus.getAdapter();
+		
+		for (int i=0; i<adapter.getCount(); i++) {
+			if (adapter.getItemId(i) == status) {
+				spStatus.setSelection(i);
+				break;
+			}
+		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		sb.doUnbindService();
+	}
+	
+	private class StatusSpinnerAdapter extends BaseAdapter {
 		private Context context;
 		
 		private TypedArray statusIcons;
@@ -64,7 +175,7 @@ public class PresenceActivity extends Activity {
 		
 		private LayoutInflater mInflater;
 		
-		public StatusAdapter(Context context) {
+		public StatusSpinnerAdapter(Context context) {
 			statusIcons   = context.getResources().obtainTypedArray(R.array.statusIcons);
 			statusIndexes = context.getResources().obtainTypedArray(R.array.presenceIndexArray);
 			statusNames   = context.getResources().obtainTypedArray(R.array.presenceArray);
@@ -82,7 +193,7 @@ public class PresenceActivity extends Activity {
 		public Object getItem(int position) { return statusNames.getString(position);	}
 
 		@Override
-		public long getItemId(int position) { return position; }
+		public long getItemId(int position) { return statusIndexes.getInt(position, 0); }
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
