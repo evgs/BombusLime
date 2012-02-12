@@ -17,6 +17,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -38,13 +40,27 @@ import android.widget.Toast;
 public class RosterActivity extends ExpandableListActivity {
 	XmppServiceBinding sb;
 	
+	private Bitmap[] statusIcons;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		
-		ExpandableListAdapter adapter=new RosterAdapter(this);
+		statusIcons = new Bitmap[] { 
+        		BitmapFactory.decodeResource(getResources(), R.drawable.status_offline),
+        		BitmapFactory.decodeResource(getResources(), R.drawable.status_online),
+        		BitmapFactory.decodeResource(getResources(), R.drawable.status_chat),
+        		BitmapFactory.decodeResource(getResources(), R.drawable.status_away),
+        		BitmapFactory.decodeResource(getResources(), R.drawable.status_xa),
+        		BitmapFactory.decodeResource(getResources(), R.drawable.status_dnd),
+        		BitmapFactory.decodeResource(getResources(), R.drawable.status_ask),
+        		BitmapFactory.decodeResource(getResources(), R.drawable.status_unknown),
+        		BitmapFactory.decodeResource(getResources(), R.drawable.status_invisible)
+        		};
+
+		ExpandableListAdapter adapter=new RosterAdapter(this, statusIcons);
 		
 		setListAdapter(adapter);
 		
@@ -55,6 +71,7 @@ public class RosterActivity extends ExpandableListActivity {
 		//temporary
 		Lime.getInstance().sb=sb;
 	
+		
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.roster_title);
 		updateRosterTitle();
 		
@@ -91,9 +108,17 @@ public class RosterActivity extends ExpandableListActivity {
 		((TextView) findViewById(R.id.activeJid)).setText(rJid);
 
 		boolean isSecure = false; 
+		
+		int status = Presence.PRESENCE_OFFLINE;
+		
 		try { 
 			isSecure = sb.getXmppStream(rJid).isSecured();
+			
+			status = sb.getXmppStream(rJid).getStatus();
+			
 		} catch (Exception e){};
+
+		((ImageView) findViewById(R.id.statusIcon)).setImageBitmap(statusIcons[status]);
 		
 		((ImageView) findViewById(R.id.imageSSL)).setVisibility(isSecure? View.VISIBLE : View.GONE);
 	}

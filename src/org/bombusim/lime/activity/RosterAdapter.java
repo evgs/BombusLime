@@ -27,7 +27,7 @@ public class RosterAdapter extends BaseExpandableListAdapter {
     private Bitmap mIconComposing;
     private Bitmap[] mIconStar;
     
-    public RosterAdapter(Context context) {
+    public RosterAdapter(Context context, Bitmap[] statusIcons) {
         // Cache the LayoutInflate to avoid asking for a new one each time.
         mInflater = LayoutInflater.from(context);
 
@@ -37,18 +37,8 @@ public class RosterAdapter extends BaseExpandableListAdapter {
         mIconInactiveChat = BitmapFactory.decodeResource(context.getResources(), R.drawable.chat_inactive);
         mIconComposing = BitmapFactory.decodeResource(context.getResources(), R.drawable.chat_inactive);
         
-        mIconStar = new Bitmap[] { 
-        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_offline),
-        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_online),
-        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_chat),
-        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_away),
-        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_xa),
-        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_dnd),
-        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_ask),
-        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_unknown),
-        		BitmapFactory.decodeResource(context.getResources(), R.drawable.status_invisible)
-        		};
-
+        mIconStar = statusIcons;
+        
         groups = new ArrayList<RosterAdapter.RosterGroup>();
     }
 	
