@@ -52,7 +52,7 @@ public class ChatEditText extends EditText {
 		menu.add(R.string.addMeMenuItem).setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
-				pasteText("/me ");
+				addMe();
 				return true;
 			}
 		});
@@ -64,7 +64,7 @@ public class ChatEditText extends EditText {
 		this.dialogHostActivity = activity;
 	}
 	
-	protected void showAddSmileDialog() {
+	public void showAddSmileDialog() {
 		
 		View gridLayout = View.inflate(getContext(), R.layout.grid_smiles, null);
 	
@@ -130,6 +130,8 @@ public class ChatEditText extends EditText {
 		alert.show();
 	}
 
+	public void addMe() { pasteText("/me "); }
+		
 	private void pasteText(String paste) {
 		int st = getSelectionStart();
 		int en = getSelectionEnd();

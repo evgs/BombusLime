@@ -245,6 +245,9 @@ public class ChatActivity extends Activity {
 			finish();
 			break;
 		
+		case R.id.addSmile:   messageBox.showAddSmileDialog();  break;
+		
+		case R.id.addMe:      messageBox.addMe(); break;
 		
 		default: return true; // on submenu
 		}
