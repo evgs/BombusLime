@@ -26,9 +26,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 public class PresenceActivity extends Activity {
-	String rJid;
-	String to;
-	
+
+	//widgets
 	View presenceDirect;
 	EditText editPresenceTo;
 	EditText editPriority;
@@ -40,6 +39,17 @@ public class PresenceActivity extends Activity {
 	Button buttonCancel;
 	
 	private XmppServiceBinding sb;
+	
+	boolean loadFields;
+	boolean saveFields;
+	
+	//Form parameters
+	int status;
+	int priority;
+	String message;
+
+	String rJid;
+	String to;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +78,7 @@ public class PresenceActivity extends Activity {
 		
 		buttonOk.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) { setStatus(); finish(); }
+			public void onClick(View v) { saveFields = true; finish(); }
 		});
 		
 		buttonCancel.setOnClickListener(new OnClickListener() {
@@ -80,19 +90,12 @@ public class PresenceActivity extends Activity {
 		spStatus.setAdapter(new StatusSpinnerAdapter(this));
 		
 		sb = new XmppServiceBinding(this);
+		
+		//load data to form
+		loadFields = true;
 	}
 	
 	protected void setStatus() {
-		
-		int status = (int) spStatus.getSelectedItemId();
-		
-		String message = editMessage.getText().toString();
-		
-		int priority = XmppAccount.DEFAULT_PRIORITY_ACCOUNT;
-		
-		try {
-			priority = Integer.parseInt( editPriority.getText().toString().trim() );
-		} catch (Exception e) {};
 		
 		//TODO: send direct presence
 		sendBroadcastPresence(status, message, priority);
@@ -117,34 +120,36 @@ public class PresenceActivity extends Activity {
 			
 			@Override
 			public void onBindService(XmppService service) {
-				updateFormFields();
+				setFormFields();
 			}
 		});
 		
 		sb.doBindService();
 	}
 	
-	protected void updateFormFields() {
+	protected void setFormFields() {
 		
-		//TODO: create storage class instead of this hack
-		int status = sb.getXmppService().getStatus();
-		String message = sb.getXmppService().getStatusMessage();
-		int priority = sb.getXmppService().getPriority();
-		
-		//TODO: fix multiaccount logic
-		
-		if (rJid != null) {
-			XmppStream s = sb.getXmppStream(rJid);
+		if (loadFields) {
+			//TODO: create storage class instead of this hack
+			status = sb.getXmppService().getStatus();
+			message = sb.getXmppService().getStatusMessage();
+			priority = sb.getXmppService().getPriority();
+
+			//TODO: fix multiaccount logic
 			
-			if (s!=null) {
-				status = s.getStatus();
+			if (rJid != null) {
+				XmppStream s = sb.getXmppStream(rJid);
 				
-				message = s.getStatusMessage();
-				
-				priority = s.getPriority();
+				if (s!=null) {
+					status = s.getStatus();
+					message = s.getStatusMessage();
+					priority = s.getPriority();
+				}
 			}
+
+			loadFields = false;
 		}
-		
+
 		editMessage.setText(message);
 
 		if (priority != XmppAccount.DEFAULT_PRIORITY_ACCOUNT) {
@@ -153,7 +158,7 @@ public class PresenceActivity extends Activity {
 		}
 
 		StatusSpinnerAdapter adapter = (StatusSpinnerAdapter) spStatus.getAdapter();
-		
+
 		for (int i=0; i<adapter.getCount(); i++) {
 			if (adapter.getItemId(i) == status) {
 				spStatus.setSelection(i);
@@ -165,6 +170,22 @@ public class PresenceActivity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		
+		//load data back from widgets
+		status = (int) spStatus.getSelectedItemId();
+		message = editMessage.getText().toString();
+		
+		priority = XmppAccount.DEFAULT_PRIORITY_ACCOUNT;
+		try {
+			priority = Integer.parseInt( editPriority.getText().toString().trim() );
+		} catch (Exception e) {};
+
+		if (saveFields) {
+			setStatus();
+			
+			saveFields = false;
+		}
+		
 		sb.doUnbindService();
 	}
 	
