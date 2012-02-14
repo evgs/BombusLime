@@ -41,13 +41,7 @@ public class PresenceActivity extends Activity {
 	private XmppServiceBinding sb;
 	
 	boolean loadFields;
-	boolean saveFields;
 	
-	//Form parameters
-	int status;
-	int priority;
-	String message;
-
 	String rJid;
 	String to;
 	
@@ -78,7 +72,10 @@ public class PresenceActivity extends Activity {
 		
 		buttonOk.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) { saveFields = true; finish(); }
+			public void onClick(View v) { 
+				doSetStatus();
+				finish(); 
+			}
 		});
 		
 		buttonCancel.setOnClickListener(new OnClickListener() {
@@ -91,14 +88,34 @@ public class PresenceActivity extends Activity {
 		
 		sb = new XmppServiceBinding(this);
 		
-		//load data to form
-		loadFields = true;
+		
+		if (savedInstanceState != null) {
+			setStatus  ( savedInstanceState.getInt("status") );
+			setMessage ( savedInstanceState.getString("message") );
+			setPriority( savedInstanceState.getInt("priority") );
+		} else {
+			//load data to form
+			loadFields = true;
+		}
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		outState.putInt("status", getStatus());
+		outState.putString("message", getMessage());
+		outState.putInt("priority", getPriority());
 	}
 	
-	protected void setStatus() {
+	protected void doSetStatus() {
 		
 		//TODO: send direct presence
-		sendBroadcastPresence(status, message, priority);
+		sendBroadcastPresence(
+				getStatus(), 
+				getMessage(), 
+				getPriority()
+			);
 	}
 
 	private void sendBroadcastPresence(int status, String message, int priority) {
@@ -128,35 +145,23 @@ public class PresenceActivity extends Activity {
 	}
 	
 	protected void setFormFields() {
-		
+
+		//Form parameters
+
 		if (loadFields) {
-			//TODO: create storage class instead of this hack
-			status = sb.getXmppService().getStatus();
-			message = sb.getXmppService().getStatusMessage();
-			priority = sb.getXmppService().getPriority();
-
 			//TODO: fix multiaccount logic
-			
-			if (rJid != null) {
-				XmppStream s = sb.getXmppStream(rJid);
-				
-				if (s!=null) {
-					status = s.getStatus();
-					message = s.getStatusMessage();
-					priority = s.getPriority();
-				}
-			}
 
+			//TODO: create storage class instead of this hack
+			setMessage( sb.getXmppService().getStatusMessage() );
+			setPriority( sb.getXmppService().getPriority() );
+			setStatus( sb.getXmppService().getStatus() );
+			
 			loadFields = false;
 		}
 
-		editMessage.setText(message);
+	}
 
-		if (priority != XmppAccount.DEFAULT_PRIORITY_ACCOUNT) {
-			String sPriority = String.valueOf(priority);
-			editPriority.setText(sPriority);
-		}
-
+	private void setStatus(int status) {
 		StatusSpinnerAdapter adapter = (StatusSpinnerAdapter) spStatus.getAdapter();
 
 		for (int i=0; i<adapter.getCount(); i++) {
@@ -167,28 +172,34 @@ public class PresenceActivity extends Activity {
 		}
 	}
 
+	private void setPriority(int priority) {
+		if (priority != XmppAccount.DEFAULT_PRIORITY_ACCOUNT) {
+			String sPriority = String.valueOf(priority);
+			editPriority.setText(sPriority);
+		}
+	}
+
+	private void setMessage(String message) { editMessage.setText(message); }
+
+	private int getStatus() { 	return (int) spStatus.getSelectedItemId(); 	}
+
+	private String getMessage() {  return editMessage.getText().toString(); }
+	
+	private int getPriority() {
+		try {
+			return Integer.parseInt( editPriority.getText().toString().trim() );
+		} catch (Exception e) {};
+
+		return XmppAccount.DEFAULT_PRIORITY_ACCOUNT;
+	}
+	
 	@Override
 	protected void onPause() {
 		super.onPause();
 		
-		//load data back from widgets
-		status = (int) spStatus.getSelectedItemId();
-		message = editMessage.getText().toString();
-		
-		priority = XmppAccount.DEFAULT_PRIORITY_ACCOUNT;
-		try {
-			priority = Integer.parseInt( editPriority.getText().toString().trim() );
-		} catch (Exception e) {};
-
-		if (saveFields) {
-			setStatus();
-			
-			saveFields = false;
-		}
-		
 		sb.doUnbindService();
 	}
-	
+
 	private class StatusSpinnerAdapter extends BaseAdapter {
 		private Context context;
 		
