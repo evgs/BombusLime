@@ -8,6 +8,7 @@ import javax.net.ssl.SSLException;
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 import org.bombusim.lime.activity.RosterActivity;
+import org.bombusim.lime.data.PresenceStorage;
 import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.xml.XMLException;
@@ -64,23 +65,6 @@ public class XmppService extends Service implements Runnable {
 		return s;
 	}
 
-	//TODO: non-volatile storage
-	//common presences for accounts
-    private int status = Presence.PRESENCE_ONLINE; //our status code
-	private String statusMessage = "hello, jabber world!";
-	private int priority = XmppAccount.DEFAULT_PRIORITY_ACCOUNT;
-	
-	public String getStatusMessage() { return statusMessage; }
-	public int getStatus() { return status; }
-	public int getPriority() { return priority; }
-	
-	public void setCommonPresence(int status, String message, int priority) {
-		this.status = status;
-		this.statusMessage = message;
-		this.priority = priority;
-	}
-	
-	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
         //LimeLog.i("XmppService", "Received start id " + startId, intent.toString());
@@ -102,7 +86,9 @@ public class XmppService extends Service implements Runnable {
 		
 	   	checkNetworkState();
 	   	
-	   	s.setPresence(status, statusMessage, priority);
+	   	PresenceStorage ps = new PresenceStorage(this);
+	   	
+	   	s.setPresence(ps.getStatus(), ps.getMessage(), ps.getPriority());
 	   	
 	   	if (running) {
 			s.sendPresence();
@@ -116,6 +102,7 @@ public class XmppService extends Service implements Runnable {
 	public boolean running = false;
 	
 	public void doConnect() {
+		//TODO: check presence status
 		if (networkAvailable) {
 			if (!running) {
 				running = true;

@@ -3,6 +3,7 @@ package org.bombusim.lime.activity;
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 import org.bombusim.lime.activity.RosterAdapter.ViewHolder;
+import org.bombusim.lime.data.PresenceStorage;
 import org.bombusim.lime.service.XmppService;
 import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.xmpp.XmppAccount;
@@ -39,8 +40,6 @@ public class PresenceActivity extends Activity {
 	Button buttonCancel;
 	
 	private XmppServiceBinding sb;
-	
-	boolean loadFields;
 	
 	String rJid;
 	String to;
@@ -95,7 +94,13 @@ public class PresenceActivity extends Activity {
 			setPriority( savedInstanceState.getInt("priority") );
 		} else {
 			//load data to form
-			loadFields = true;
+			//TODO: fix multiaccount logic
+
+			PresenceStorage ps = new PresenceStorage(this);
+			
+			setMessage( ps.getMessage() );
+			setPriority( ps.getPriority() );
+			setStatus( ps.getStatus() );
 		}
 	}
 
@@ -109,8 +114,9 @@ public class PresenceActivity extends Activity {
 	}
 	
 	protected void doSetStatus() {
-		
+
 		//TODO: send direct presence
+		
 		sendBroadcastPresence(
 				getStatus(), 
 				getMessage(), 
@@ -119,7 +125,8 @@ public class PresenceActivity extends Activity {
 	}
 
 	private void sendBroadcastPresence(int status, String message, int priority) {
-		sb.getXmppService().setCommonPresence(status, message, priority);
+		PresenceStorage ps = new PresenceStorage(this);
+		ps.setPresence(status, message, priority);
 		
 		if (status == Presence.PRESENCE_OFFLINE) {
 			sb.doDisconnect();
@@ -133,34 +140,9 @@ public class PresenceActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		
-		sb.setBindListener(new XmppServiceBinding.BindListener() {
-			
-			@Override
-			public void onBindService(XmppService service) {
-				setFormFields();
-			}
-		});
-		
 		sb.doBindService();
 	}
 	
-	protected void setFormFields() {
-
-		//Form parameters
-
-		if (loadFields) {
-			//TODO: fix multiaccount logic
-
-			//TODO: create storage class instead of this hack
-			setMessage( sb.getXmppService().getStatusMessage() );
-			setPriority( sb.getXmppService().getPriority() );
-			setStatus( sb.getXmppService().getStatus() );
-			
-			loadFields = false;
-		}
-
-	}
-
 	private void setStatus(int status) {
 		StatusSpinnerAdapter adapter = (StatusSpinnerAdapter) spStatus.getAdapter();
 
