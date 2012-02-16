@@ -1,4 +1,3 @@
-package org.bombusim.lime.data;
 /*
  * Copyright (c) 2005-2011, Eugene Stahov (evgs@bombus-im.org), 
  * http://bombus-im.org
@@ -19,7 +18,7 @@ package org.bombusim.lime.data;
  */
 
 
-import java.util.ArrayList;
+package org.bombusim.lime.data;
 
 import org.bombusim.lime.Lime;
 

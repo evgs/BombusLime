@@ -37,7 +37,7 @@ import javax.security.cert.X509Certificate;
 import org.bombusim.lime.logger.LimeLog;
 
 import android.net.SSLCertificateSocketFactory;
-import android.util.Log;
+
 
 //import org.apache.http.conn.ssl.SSLSocketFactory;
 

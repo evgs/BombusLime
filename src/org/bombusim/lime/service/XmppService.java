@@ -25,8 +25,6 @@ import java.net.UnknownHostException;
 import javax.net.ssl.SSLException;
 
 import org.bombusim.lime.Lime;
-import org.bombusim.lime.R;
-import org.bombusim.lime.activity.RosterActivity;
 import org.bombusim.lime.data.PresenceStorage;
 import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.logger.LimeLog;
@@ -35,13 +33,9 @@ import org.bombusim.xmpp.XmppAccount;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.exception.XmppException;
-import org.bombusim.xmpp.stanza.Presence;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.ResolverConfig;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;

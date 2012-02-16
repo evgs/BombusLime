@@ -24,7 +24,6 @@ import org.bombusim.xmpp.stanza.Presence;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 
 public class PresenceStorage {
 	private final static String STORAGE_NAME = "presence";

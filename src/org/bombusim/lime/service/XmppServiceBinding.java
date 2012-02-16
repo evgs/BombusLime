@@ -22,8 +22,6 @@ package org.bombusim.lime.service;
 import org.bombusim.lime.Lime;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppStream;
-import org.bombusim.xmpp.stanza.XmppMessage;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;

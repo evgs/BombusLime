@@ -23,7 +23,6 @@ import java.io.IOException;
 
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.data.Chat;
-import org.bombusim.lime.data.ChatFactory;
 import org.bombusim.lime.data.Message;
 import org.bombusim.lime.data.Roster;
 import org.bombusim.xmpp.XmppJid;

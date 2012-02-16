@@ -26,12 +26,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +41,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 public class ChatEditText extends EditText {
-
-	private static final int SMILES_MENU_ID = R.string.addSmileMenuItem;
 
 	public ChatEditText(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);

@@ -24,7 +24,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 
 public class Preferences {
 	public boolean autoServiceStartup;

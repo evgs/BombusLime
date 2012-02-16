@@ -41,12 +41,8 @@ public class VcardResolver {
 	private Contact pending;
 	private long timeout;
 	
-	private Context context;
-	
 	public VcardResolver(Context context) {
 		resetQueue();
-		
-		this.context = context;
 	}
 	
 	public void resetQueue() {
