@@ -80,7 +80,6 @@ public class Contact implements Comparable<Contact>{
 
 	public Resource setPresence(int presenceIndex, String resource, int priority) {
 		//TODO: check usecase "unavailable"
-		if (resource == null) return activeResource; //STUB
 		Resource c =  getResource(resource);
 		if (c == null) {
 			c = new Resource();
@@ -99,7 +98,7 @@ public class Contact implements Comparable<Contact>{
 	public Resource getResource(String resource) {
 		for (int i=0; i<resources.size(); i++) {
 			Resource c = resources.get(i);
-			if (c.resource.equals(resource)) return c;
+			if (compareNStrings(c.resource, resource)) return c;
 		}
 		return null;
 	}
