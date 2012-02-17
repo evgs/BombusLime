@@ -49,9 +49,13 @@ public class NotificationMgr {
 	}
 	
 	public void showChatNotification(Contact visavis, String message, long id) {
+		//cancelling old notification
+		mNM.cancel(NOTIFICATION_CHAT);
 		
 		// target ChatActivity
-		Intent openChat =  new Intent(context, ChatActivity.class);
+		// Every intent should have unique action or uri, 
+		// else we have a mess: same intents with different values.  
+		Intent openChat =  new Intent("Msg"+String.valueOf(id), null, context, ChatActivity.class);
 		openChat.putExtra(ChatActivity.MY_JID, visavis.getRosterJid());
 		openChat.putExtra(ChatActivity.TO_JID, visavis.getJid());
 		
