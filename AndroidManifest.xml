@@ -22,7 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".logger.LoggerActivity" android:label="@string/loggerActivity"></activity>
+        <activity android:name=".activity.LoggerActivity" android:label="@string/loggerActivity"></activity>
         <service android:name=".service.XmppService" android:description="@string/xmppServiceDescription"></service>
         <activity android:name=".activity.AccountSettingsActivity"></activity>
         <activity android:name=".activity.ChatActivity" 

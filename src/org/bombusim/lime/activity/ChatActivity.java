@@ -28,7 +28,6 @@ import org.bombusim.lime.data.ChatHistoryDbAdapter;
 import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Message;
 import org.bombusim.lime.data.Roster;
-import org.bombusim.lime.logger.LoggerActivity;
 import org.bombusim.lime.service.XmppService;
 import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.lime.widgets.ChatEditText;

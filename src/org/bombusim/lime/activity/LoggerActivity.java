@@ -17,12 +17,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.bombusim.lime.logger;
+package org.bombusim.lime.activity;
 
 import java.util.ArrayList;
 
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
+import org.bombusim.lime.logger.LimeLog;
+import org.bombusim.lime.logger.LoggerData;
+import org.bombusim.lime.logger.LoggerEvent;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
