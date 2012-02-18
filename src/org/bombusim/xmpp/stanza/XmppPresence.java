@@ -24,6 +24,8 @@ import org.bombusim.xml.Attributes;
 import org.bombusim.xmpp.XmppError;
 import org.bombusim.xmpp.XmppObject;
 
+import android.text.format.Time;
+
 public final class XmppPresence extends XmppObject {
 	public final static String PRESENCE_SUBSCRIBE    = "subscribe";
 	public final static String PRESENCE_SUBSCRIBED   = "subscribed";
@@ -141,7 +143,18 @@ public final class XmppPresence extends XmppObject {
       
   }
 
+  public long getTimeStamp() {
 
+	  Time t = new Time();
+
+      try {
+    	  //ISO8601/RFC3339 timestamp
+    	  t.parse3339( findNamespace("delay", "urn:xmpp:delay").getAttribute("stamp") );
+          return t.toMillis(false);
+          
+      } catch (Exception e) { }
+
+      return System.currentTimeMillis();
   }
 
   public int getPriority(){

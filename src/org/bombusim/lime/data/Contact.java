@@ -78,7 +78,7 @@ public class Contact implements Comparable<Contact>{
 	public long getId() { return _id; }
 	public void setId(long id) { this._id = id; } 
 
-	public Resource setPresence(int presenceIndex, String resource, int priority) {
+	public Resource setPresence(int presenceIndex, String resource, int priority, long timestamp) {
 		//TODO: check usecase "unavailable"
 		Resource c =  getResource(resource);
 		if (c == null) {
@@ -88,6 +88,7 @@ public class Contact implements Comparable<Contact>{
 		c.presence = presenceIndex;
 		c.resource = resource;
 		c.priority = priority;
+		c.timestamp = timestamp;
 		
 		Collections.sort(resources);
 		activeResource = resources.get(0);

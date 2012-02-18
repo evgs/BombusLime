@@ -53,7 +53,7 @@ public class PresenceDispatcher extends XmppObjectListener{
 		Contact c = Lime.getInstance().getRoster().findContact(fromJid.getBareJid(), stream.jid);
 		
 		if (c==null) return BLOCK_REJECTED;
-		Resource r = c.setPresence(p.getTypeIndex(), fromJid.getResource(), p.getPriority());
+		Resource r = c.setPresence(p.getTypeIndex(), fromJid.getResource(), p.getPriority(), p.getTimeStamp());
 		r.statusMessage = p.getChildBlockText("status");
 		
 		//2. update avatar if available

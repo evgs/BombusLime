@@ -153,18 +153,18 @@ public final class XmppMessage extends XmppObject
 
 	  Time t = new Time();
 
-	  try {
-		  //legacy timestamp
-		  StringBuilder tb = new StringBuilder();
-		  t.parse( findNamespace("x", "jabber:x:delay").getAttribute("stamp") );
-		  return t.toMillis(false);
-		  
-      } catch (Exception e) { }
       try {
     	  //ISO8601/RFC3339 timestamp
     	  t.parse3339( findNamespace("delay", "urn:xmpp:delay").getAttribute("stamp") );
           return t.toMillis(false);
           
+      } catch (Exception e) { }
+
+      try {
+		  //legacy timestamp
+		  t.parse( findNamespace("x", "jabber:x:delay").getAttribute("stamp") );
+		  return t.toMillis(false);
+		  
       } catch (Exception e) { }
       
       return System.currentTimeMillis();

@@ -26,6 +26,7 @@ public class Resource implements Comparable<Resource>{
 	public String statusMessage;
 	
 	public long seenTime;
+	public long timestamp;
 
 	public Resource() {}
 
