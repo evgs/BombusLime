@@ -19,6 +19,9 @@
 
 package org.bombusim.lime.activity;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 import org.bombusim.lime.Lime;
@@ -33,7 +36,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.format.Time;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -46,6 +51,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class LoggerActivity extends Activity {
     ListView logListView;
@@ -102,22 +108,85 @@ public class LoggerActivity extends Activity {
 				disableAutoScroll = isChecked;
 			}
 		});
-        
-        
-        ((Button) findViewById(R.id.loggerClear)).setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Lime.getInstance().getLog().clear();
-				updateLogSize();
-			}
-		});
-        
     }
-        
     
+	@Override
+	public boolean onCreateOptionsMenu(android.view.Menu menu) {
+		getMenuInflater().inflate(R.menu.logger_menu, menu);
+		return true;
+	};
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		
+		case R.id.logClear:   
+
+			Lime.getInstance().getLog().clear();
+			updateLogSize();
+
+			break;
+		
+		
+		case R.id.logExport:   saveLog(); break;
+		
+		default: return true; // on submenu
+		}
+		
+		return false;
+	}
     
-    private class LogListAdapter extends BaseAdapter {
+    private void saveLog() {
+    	
+    	String state = Environment.getExternalStorageState();
+
+    	if (! Environment.MEDIA_MOUNTED.equals(state)) {
+    		Toast.makeText(this, R.string.cantWriteStorage, Toast.LENGTH_LONG).show();
+    		return;
+    	}
+    	
+    	File externalRoot = Environment.getExternalStorageDirectory();
+    	
+    	Time tf = new Time(Time.getCurrentTimezone());
+    	tf.set(System.currentTimeMillis());
+    	
+    	//Should not use format3339 because of ":" separator 
+    	String fn = "BombusLime_"+tf.format2445()+".txt";
+    	
+    	File log = new File (externalRoot, fn);
+   	
+		ArrayList<LoggerEvent> events = Lime.getInstance().getLog().getLogRecords();
+
+		try {
+			PrintStream ps = new PrintStream(log);
+			
+			for (LoggerEvent event : events) {
+				
+				ps.print(event.eventTypeName());
+				ps.print(' ');
+				tf.set(event.timestamp);  ps.print(tf.format3339(false));
+				ps.print(' ');
+				ps.println(event.title);
+				
+				if (event.message!=null) {
+					ps.println(event.message);
+					ps.println();
+				}
+				
+			}
+			
+			ps.close();
+			
+		} catch (FileNotFoundException e) {
+    		Toast.makeText(this, R.string.cantWriteStorage, Toast.LENGTH_LONG).show();
+			e.printStackTrace();
+			
+			return;
+		}
+		Toast.makeText(this, "Log saved to "+externalRoot.getAbsolutePath()+'/'+fn, Toast.LENGTH_LONG).show();
+	}
+
+	private class LogListAdapter extends BaseAdapter {
     	
         public LogListAdapter(Context context)
         {

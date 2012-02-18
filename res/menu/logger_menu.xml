@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/logClear" android:icon="@android:drawable/ic_menu_delete" android:title="@string/logClear" android:orderInCategory="1"></item>
+    <item android:id="@+id/logExport" android:title="@string/logExport" android:icon="@android:drawable/ic_menu_save" android:orderInCategory="2"></item>
+    
+
+</menu>

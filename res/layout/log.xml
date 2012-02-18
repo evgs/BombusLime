@@ -23,13 +23,6 @@
             android:layout_weight="2"
             android:text="@string/logFreeze" />
 
-        <Button
-            android:id="@+id/loggerClear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/logClear" />
-
     </LinearLayout>
 
     <ListView

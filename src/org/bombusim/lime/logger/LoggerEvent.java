@@ -55,7 +55,7 @@ public class LoggerEvent {
 	private final static int WARNING_COLOR = Color.MAGENTA;
 	private final static int ERROR_COLOR = Color.RED;
 	
-	public int getEventColor() {
+	public final int getEventColor() {
 		switch (eventType) {
 		case XMLIN: return XMLIN_COLOR;
 		case XMLOUT: return XMLOUT_COLOR;
@@ -64,6 +64,18 @@ public class LoggerEvent {
 		case ERROR: return ERROR_COLOR;
 		case INFO:
 		default: return INFO_COLOR;
+		}
+	}
+	
+	public final char eventTypeName() {
+		switch (eventType) {
+		case XMLIN:   return 'i';
+		case XMLOUT:  return 'o';
+		case DEBUG:   return 'D';
+		case WARNING: return 'W';
+		case ERROR:   return 'E';
+		case INFO:    return 'I';
+		default:      return '?';
 		}
 	}
 }

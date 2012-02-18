@@ -21,10 +21,10 @@
     <string name="defaultResource">Lime</string>
     <string name="labelBareJid">Jabber ID</string>
     <string name="menuStatus">Status</string>
-    <string name="logEnable">Enable</string>
+    <string name="logEnable">Enable XML</string>
     <string name="logFreeze">Freeze</string>
     <string name="logClear">Clear</string>
-    <string name="loggerActivity">XML console</string>
+    <string name="loggerActivity">Debug Log</string>
     <string name="buttonLogout">Logout</string>
     <string name="buttonPreferences">Preferences</string>
     
@@ -141,5 +141,7 @@
     <string name="dropUnknownIncomingMessages">drop incoming messages</string>
     <string name="unknownContacts">Unknown contacts</string>
     <string name="autoServiceStartup">Login when phone is turned on</string>
+    <string name="logExport">Export log</string>
+    <string name="cantWriteStorage">Can\'t write to storage</string>
     
 </resources>
