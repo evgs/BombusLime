@@ -54,8 +54,8 @@ public final class XmppPresence extends XmppObject {
   public XmppPresence(int status, int priority, String message, String nick) {
     super( null, null );
     switch (status){
-        case PRESENCE_OFFLINE: setType(PRS_OFFLINE); break;
-        case PRESENCE_INVISIBLE: setType(PRS_INVISIBLE); break;
+        case PRESENCE_OFFLINE: setAttribute("type", PRS_OFFLINE); break;
+        case PRESENCE_INVISIBLE: setAttribute("type", PRS_INVISIBLE); break;
         case PRESENCE_CHAT: setShow(PRS_CHAT);break;
         case PRESENCE_AWAY: setShow(PRS_AWAY);break;
         case PRESENCE_XA: setShow(PRS_XA);break;
@@ -141,16 +141,7 @@ public final class XmppPresence extends XmppObject {
       
   }
 
-  /**
-   * Method to set the presence type
-   */
 
-  public void setType( String type ) {
-    setAttribute("type", type);
-  }
-  
-  public void setTo(String jid){
-      setAttribute("to", jid);
   }
 
   public int getPriority(){
