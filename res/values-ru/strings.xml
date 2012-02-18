@@ -20,10 +20,10 @@
     <string name="labelResource">Ресурс</string>
     <string name="labelBareJid">Jabber ID</string>
     <string name="menuStatus">Статус</string>
-    <string name="logEnable">Enable</string>
+    <string name="logEnable">XML-дамп</string>
     <string name="logFreeze">Freeze</string>
     <string name="logClear">Очистить</string>
-    <string name="loggerActivity">XML консоль</string>
+    <string name="loggerActivity">Консоль отладки</string>
     <string name="buttonLogout">Отключиться</string>
     <string name="buttonPreferences">Настройки</string>
     
