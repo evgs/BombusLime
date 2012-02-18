@@ -52,7 +52,7 @@ import org.bombusim.xmpp.handlers.IqVersionReply;
 import org.bombusim.xmpp.handlers.MessageDispatcher;
 import org.bombusim.xmpp.handlers.PresenceDispatcher;
 import org.bombusim.xmpp.stanza.Iq;
-import org.bombusim.xmpp.stanza.Presence;
+import org.bombusim.xmpp.stanza.XmppPresence;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.SRVRecord;
@@ -605,7 +605,7 @@ public class XmppStream extends XmppParser {
 
 	public void sendPresence() {
 		//TODO: nickname
-    	Presence online = new Presence(
+    	XmppPresence online = new XmppPresence(
     			status, 
     			(priority==XmppAccount.DEFAULT_PRIORITY_ACCOUNT) ? account.priority : priority,
     			statusMessage, 

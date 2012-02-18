@@ -34,7 +34,7 @@ import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.lime.widgets.ChatEditText;
 import org.bombusim.xmpp.handlers.ChatStates;
 import org.bombusim.xmpp.handlers.MessageDispatcher;
-import org.bombusim.xmpp.stanza.Presence;
+import org.bombusim.xmpp.stanza.XmppPresence;
 import org.bombusim.xmpp.stanza.XmppMessage;
 
 import android.app.Activity;
@@ -451,7 +451,7 @@ public class ChatActivity extends Activity {
 			//clear box after success sending
 			messageBox.setText("");
 
-			if (visavis.getPresence() == Presence.PRESENCE_OFFLINE) {
+			if (visavis.getPresence() == XmppPresence.PRESENCE_OFFLINE) {
 				Toast.makeText(this, R.string.chatSentOffline, Toast.LENGTH_LONG).show();
 			}
 		
@@ -476,7 +476,7 @@ public class ChatActivity extends Activity {
 		if (state.equals(ChatStates.PAUSED))
 			if (!ChatStates.COMPOSING.equals(sentChatState)) return;
 		
-		if ( visavis.getPresence() == Presence.PRESENCE_OFFLINE ) return;
+		if ( visavis.getPresence() == XmppPresence.PRESENCE_OFFLINE ) return;
 		
 		String to = visavis.getJid(); 
 

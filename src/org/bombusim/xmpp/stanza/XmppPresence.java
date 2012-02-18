@@ -24,7 +24,7 @@ import org.bombusim.xml.Attributes;
 import org.bombusim.xmpp.XmppError;
 import org.bombusim.xmpp.XmppObject;
 
-public final class Presence extends XmppObject {
+public final class XmppPresence extends XmppObject {
 	public final static String PRESENCE_SUBSCRIBE    = "subscribe";
 	public final static String PRESENCE_SUBSCRIBED   = "subscribed";
 	public final static String PRESENCE_UNSUBSCRIBE  = "unsubscribe";
@@ -36,7 +36,7 @@ public final class Presence extends XmppObject {
    * @param _attributes The list of element attributes
    */
 
-  public Presence( XmppObject parent, Attributes attributes ) {
+  public XmppPresence( XmppObject parent, Attributes attributes ) {
     super( parent, attributes );
   }
 
@@ -44,14 +44,14 @@ public final class Presence extends XmppObject {
    * Default constructor for outgoing presence messages.
    */
 
-  public Presence(String to, String type){
+  public XmppPresence(String to, String type){
       super(null,null);
       setAttribute("to",to);
       setAttribute("type",type);
   };
   
 
-  public Presence(int status, int priority, String message, String nick) {
+  public XmppPresence(int status, int priority, String message, String nick) {
     super( null, null );
     switch (status){
         case PRESENCE_OFFLINE: setType(PRS_OFFLINE); break;

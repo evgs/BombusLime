@@ -27,7 +27,7 @@ import org.bombusim.lime.logger.LoggerActivity;
 import org.bombusim.lime.service.XmppService;
 import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.xmpp.handlers.IqRoster;
-import org.bombusim.xmpp.stanza.Presence;
+import org.bombusim.xmpp.stanza.XmppPresence;
 
 import android.app.AlertDialog;
 import android.app.ExpandableListActivity;
@@ -127,7 +127,7 @@ public class RosterActivity extends ExpandableListActivity {
 
 		boolean isSecure = false; 
 		
-		int status = Presence.PRESENCE_OFFLINE;
+		int status = XmppPresence.PRESENCE_OFFLINE;
 		
 		try { 
 			isSecure = sb.getXmppStream(rJid).isSecured();
@@ -252,13 +252,13 @@ public class RosterActivity extends ExpandableListActivity {
 			return true;
 			
 		case R.id.cmdSubscrRequestFrom:
-			subscription(ctc, Presence.PRESENCE_SUBSCRIBE);
+			subscription(ctc, XmppPresence.PRESENCE_SUBSCRIBE);
 			return true;
 		case R.id.cmdSubscrSendTo:
-			subscription(ctc, Presence.PRESENCE_SUBSCRIBED);
+			subscription(ctc, XmppPresence.PRESENCE_SUBSCRIBED);
 			return true;
 		case R.id.cmdSubscrRemove:
-			subscription(ctc, Presence.PRESENCE_UNSUBSCRIBED);
+			subscription(ctc, XmppPresence.PRESENCE_UNSUBSCRIBED);
 			return true;
 			
 		default:

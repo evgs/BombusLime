@@ -32,7 +32,7 @@ import org.bombusim.xml.XMLException;
 import org.bombusim.xmpp.exception.XmppException;
 import org.bombusim.xmpp.stanza.Iq;
 import org.bombusim.xmpp.stanza.XmppMessage;
-import org.bombusim.xmpp.stanza.Presence;
+import org.bombusim.xmpp.stanza.XmppPresence;
 
 /**
  *
@@ -85,7 +85,7 @@ public abstract class XmppParser implements XMLEventListener {
         else    if (name.equals("iq") ) 
             currentBlock = new Iq(currentBlock, attributes); 
         else    if (name.equals("presence") ) 
-            currentBlock = new Presence(currentBlock, attributes); 
+            currentBlock = new XmppPresence(currentBlock, attributes); 
         else    if (name.equals("xml") )
             return false; 
         else

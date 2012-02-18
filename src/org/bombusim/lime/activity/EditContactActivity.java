@@ -31,7 +31,7 @@ import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.xmpp.XmppJid;
 import org.bombusim.xmpp.handlers.IqRoster;
-import org.bombusim.xmpp.stanza.Presence;
+import org.bombusim.xmpp.stanza.XmppPresence;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -222,7 +222,7 @@ public class EditContactActivity extends Activity {
 			if (isNewContact && askSubscription.isChecked()) {
 				IqRoster.setSubscription(
 						contact.getJid(), 
-						Presence.PRESENCE_SUBSCRIBE, 
+						XmppPresence.PRESENCE_SUBSCRIBE, 
 						serviceBinding.getXmppStream(rJid));
 			}
 		} catch (NullPointerException e) {

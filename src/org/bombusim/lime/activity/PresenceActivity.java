@@ -27,7 +27,7 @@ import org.bombusim.lime.service.XmppService;
 import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.xmpp.XmppAccount;
 import org.bombusim.xmpp.XmppStream;
-import org.bombusim.xmpp.stanza.Presence;
+import org.bombusim.xmpp.stanza.XmppPresence;
 
 import android.app.Activity;
 import android.content.Context;
@@ -147,7 +147,7 @@ public class PresenceActivity extends Activity {
 		PresenceStorage ps = new PresenceStorage(this);
 		ps.setPresence(status, message, priority);
 		
-		if (status == Presence.PRESENCE_OFFLINE) {
+		if (status == XmppPresence.PRESENCE_OFFLINE) {
 			sb.doDisconnect();
 			Lime.getInstance().vcardResolver.restartQueue();
 		} else {

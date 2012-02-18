@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.bombusim.lime.Lime;
-import org.bombusim.xmpp.stanza.Presence;
+import org.bombusim.xmpp.stanza.XmppPresence;
 
 import android.graphics.Bitmap;
 
@@ -271,7 +271,7 @@ public class Contact implements Comparable<Contact>{
 
 	public void setResourcesOffline() {
 		for (Resource r : resources) {
-			r.presence = Presence.PRESENCE_OFFLINE; 
+			r.presence = XmppPresence.PRESENCE_OFFLINE; 
 		}
 	}
 

@@ -33,7 +33,7 @@ import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppObjectListener;
 import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.stanza.Iq;
-import org.bombusim.xmpp.stanza.Presence;
+import org.bombusim.xmpp.stanza.XmppPresence;
 
 public class IqRoster extends XmppObjectListener{
 
@@ -153,7 +153,7 @@ public class IqRoster extends XmppObjectListener{
 	}
 	
 	public static void setSubscription(String toJid, String subscription, XmppStream stream) {
-		XmppObject q = new Presence(toJid, subscription);
+		XmppObject q = new XmppPresence(toJid, subscription);
 		
 		stream.send(q);
 	}

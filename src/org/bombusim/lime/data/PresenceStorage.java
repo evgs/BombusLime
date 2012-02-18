@@ -20,7 +20,7 @@
 package org.bombusim.lime.data;
 
 import org.bombusim.xmpp.XmppAccount;
-import org.bombusim.xmpp.stanza.Presence;
+import org.bombusim.xmpp.stanza.XmppPresence;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -38,7 +38,7 @@ public class PresenceStorage {
 		presence = context.getSharedPreferences(STORAGE_NAME, Context.MODE_PRIVATE );
 	}
 	
-	public int getStatus() { return presence.getInt(STATUS, Presence.PRESENCE_OFFLINE); }
+	public int getStatus() { return presence.getInt(STATUS, XmppPresence.PRESENCE_OFFLINE); }
 	
 	public String getMessage() {return presence.getString(MESSAGE, null);	}
 			

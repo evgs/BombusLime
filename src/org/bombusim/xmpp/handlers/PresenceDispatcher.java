@@ -30,7 +30,7 @@ import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppObjectListener;
 import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.exception.XmppException;
-import org.bombusim.xmpp.stanza.Presence;
+import org.bombusim.xmpp.stanza.XmppPresence;
 
 public class PresenceDispatcher extends XmppObjectListener{
 
@@ -38,8 +38,8 @@ public class PresenceDispatcher extends XmppObjectListener{
 	public int blockArrived(XmppObject data, XmppStream stream)
 			throws IOException, XmppException {
 		
-		if (!(data instanceof Presence)) return BLOCK_REJECTED;
-		Presence p=(Presence)data;
+		if (!(data instanceof XmppPresence)) return BLOCK_REJECTED;
+		XmppPresence p=(XmppPresence)data;
 		p.dispathch();
 		
 		//TODO: handle ask subscription
