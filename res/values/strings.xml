@@ -136,4 +136,10 @@
     <string name="presenceMessage">Message</string>
     <string name="priorityHint">default priority</string>
     
+    <string name="prefsPrivacy">Privacy</string>
+    <string name="allowUnknownContactsMessages">allow incoming messages</string>
+    <string name="dropUnknownIncomingMessages">drop incoming messages</string>
+    <string name="unknownContacts">Unknown contacts</string>
+    <string name="autoServiceStartup">Login when phone is turned on</string>
+    
 </resources>
