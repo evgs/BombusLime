@@ -58,7 +58,8 @@ public class MessageDispatcher extends XmppObjectListener{
 		
 		Message msg = new Message(Message.TYPE_MESSAGE_IN, from.getBareJid(), body);
 		msg.subj = m.getSubject();
-		//TODO: timestamp
+		
+		msg.timestamp = m.getTimeStamp();
 		
 		//TODO: resource magic - should switch active resource
 		try {

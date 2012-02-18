@@ -25,6 +25,8 @@ import org.bombusim.xml.Attributes;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppError;
 
+import android.text.format.Time;
+
 
 /**
  * Title:        Message.java
@@ -146,22 +148,27 @@ public final class XmppMessage extends XmppObject
       if (error==null) return body;
       return body+"Error\n"+XmppError.decodeStanzaError(error).toString();
   }
-  
-  /*
-  public long getMessageTime(){
-      try {
-          return Time.dateIso8601(
-                  findNamespace("x", "jabber:x:delay").getAttribute("stamp")
-                  );
+
+  public long getTimeStamp() {
+
+	  Time t = new Time();
+
+	  try {
+		  //legacy timestamp
+		  StringBuilder tb = new StringBuilder();
+		  t.parse( findNamespace("x", "jabber:x:delay").getAttribute("stamp") );
+		  return t.toMillis(false);
+		  
       } catch (Exception e) { }
       try {
-          return Time.dateIso8601(
-                  findNamespace("delay", "urn:xmpp:delay").getAttribute("stamp")
-                  );
+    	  //ISO8601/RFC3339 timestamp
+    	  t.parse3339( findNamespace("delay", "urn:xmpp:delay").getAttribute("stamp") );
+          return t.toMillis(false);
+          
       } catch (Exception e) { }
-      return 0; //0 means no timestamp
+      
+      return System.currentTimeMillis();
   }
-  */
 
   /**
    * Get the tag start marker
@@ -201,4 +208,5 @@ public final class XmppMessage extends XmppObject
     public String getFrom() {
         return getAttribute("from");
     }
+
 }
