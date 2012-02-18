@@ -216,6 +216,10 @@ public class XmppService extends Service implements Runnable {
     		networkAvailable = cm.getActiveNetworkInfo().isAvailable();
     		int networkType = cm.getActiveNetworkInfo().getType();
     		this.networkType = networkType;
+    		
+    		//TODO: change behavior after VcardResolver refactoring
+    		Lime.getInstance().vcardResolver.setOnMobile(networkType==ConnectivityManager.TYPE_MOBILE);
+    		
     	} catch (Exception e) {
     		networkAvailable = false;
     	}

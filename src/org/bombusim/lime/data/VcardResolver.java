@@ -41,6 +41,12 @@ public class VcardResolver {
 	private Contact pending;
 	private long timeout;
 	
+	private boolean onMobile;
+	
+	public void setOnMobile(boolean onMobile) {
+		this.onMobile = onMobile;
+	}
+	
 	public VcardResolver(Context context) {
 		resetQueue();
 	}
@@ -73,6 +79,11 @@ public class VcardResolver {
 	//TODO: parallel vcard fetching for different domains
 	
 	public synchronized void queryTop() {
+		
+		if (onMobile) {
+			if (! Lime.getInstance().prefs.loadAvatarsOverMobileConnections ) 
+				return;
+		}
 		
 		long current = System.currentTimeMillis();
 		if (pending != null) {

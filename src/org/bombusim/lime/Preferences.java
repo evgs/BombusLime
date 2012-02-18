@@ -33,6 +33,7 @@ public class Preferences {
 	public boolean ledNotifyMessage;
 	
 	public int keepAlivePeriodMinutes;
+	public boolean loadAvatarsOverMobileConnections;
 	
 	public Preferences(Context applicationContext) {
 		loadPreferences(applicationContext);
@@ -40,6 +41,9 @@ public class Preferences {
 
 	public void loadPreferences(Context context) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		
+		loadAvatarsOverMobileConnections = prefs.getBoolean("VCARD_OVER_GPRS", true);
+		
 		autoServiceStartup = prefs.getBoolean("AUTO_SERVICE_STARTUP", false);
 		adbXmlLog = prefs.getBoolean("ADB_XML_LOG", true);
 		
