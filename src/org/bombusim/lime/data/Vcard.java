@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Formatter.BigDecimalLayoutForm;
 
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.logger.LimeLog;
@@ -36,6 +37,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.Base64;
 
 public final class Vcard {
@@ -81,7 +84,30 @@ public final class Vcard {
 	
 		int sz = Lime.getInstance().avatarSize;
 		avatar = BitmapFactory.decodeByteArray(photobin, 0, photobin.length);
-		avatar = Bitmap.createScaledBitmap( avatar, sz, sz, true);
+		
+		int h=avatar.getHeight();
+		int w=avatar.getWidth();
+		
+		if (h==0 || w==0) {
+			photoHash = AVATAR_MISSING;
+			return;
+		}
+		
+		//keep proportions
+		if (h>w) {  w = (w*sz)/h; 	h=sz; 	} 
+		else     {  h = (h*sz)/w;   w=sz;   }
+
+		Bitmap scaled = Bitmap.createScaledBitmap( avatar, w, h, true);
+		
+		if (h==w) {
+			avatar = scaled;
+		} else {
+			avatar = Bitmap.createBitmap(sz, sz, Bitmap.Config.ARGB_8888);
+			Canvas c = new Canvas(avatar);
+			//TODO: color from theme
+			c.drawColor(Color.DKGRAY);
+			c.drawBitmap(scaled, (sz-w)/2, (sz-h)/2, null);
+		}
 		
 		try {
 			MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
