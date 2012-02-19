@@ -30,8 +30,9 @@ public class RosterDbAdapter  {
 
 	protected final static String DATABASE_TABLE = "contacts";
 	protected final static String DATABASE_NAME = "contacts.db";
-	protected final static int    DATABASE_VERSION = 2;
+	protected final static int    DATABASE_VERSION = 3;
 	//v2: just drop potentially buggy roster after v1
+	//V3: column "chat" added
 	
 	public final static String KEY_ID =       "_id";
 	public final static String KEY_RJID =     "rosterjid";
@@ -41,6 +42,7 @@ public class RosterDbAdapter  {
 	public final static String KEY_GROUP =    "groups";
 	public final static String KEY_SUBSCR =   "subscr";
 	public final static String KEY_AVATAR =   "avatar";
+	public final static String KEY_CHAT =   "chat";
 
 	private ContactDbHelper dbHelper;
 	private SQLiteDatabase db;
@@ -67,6 +69,7 @@ public class RosterDbAdapter  {
 		v.put(KEY_GROUP,    contact.getAllGroups());
 		v.put(KEY_SUBSCR,   contact.getSubscription());
 		v.put(KEY_AVATAR,   contact.getAvatarId());
+		v.put(KEY_CHAT,     contact.hasActiveChats());
 		
 		long id=-1;
 		if (position<0) {
@@ -135,6 +138,7 @@ public class RosterDbAdapter  {
 		c.setAllGroups(cursor.getString(cursor.getColumnIndex(KEY_GROUP)));
 		c.setSubscription(cursor.getInt(cursor.getColumnIndex(KEY_SUBSCR)));
 		c.setAvatar(null, cursor.getString(cursor.getColumnIndex(KEY_AVATAR)) );
+		c.setActiveChats(cursor.getInt(cursor.getColumnIndex(KEY_CHAT)) !=0 );
 		
 		c.setUpdate(Contact.UPDATE_NONE);
 
@@ -150,7 +154,8 @@ public class RosterDbAdapter  {
 				        + KEY_NAME +     " TEXT, " 
 				        + KEY_GROUP +    " TEXT, " 
 				        + KEY_AVATAR +   " TEXT, " 
-				        + KEY_SUBSCR +   " INTEGER);";
+				        + KEY_CHAT +     " INTEGER "
+						+ KEY_SUBSCR +   " INTEGER);";
 		
 		
 		public ContactDbHelper(Context context) {

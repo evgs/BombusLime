@@ -31,9 +31,9 @@ public class ChatFactory {
 		chats = new ArrayList<Chat>();
 	}
 	
-	public void closeAll() {
+	public void closeAllKeepActive() {
 		for (Chat chat : chats) {
-			chat.closeChat();
+			chat.closeChat(true);
 		}
 		
 		chats.clear();
@@ -61,8 +61,6 @@ public class ChatFactory {
 			chats.add(c);
 		}
 		
-		//5. raising "has active chat" flag for cintact
-		visavis.setActiveChats(true);
 		//TODO: raise unread counter
 		
 		//PROFIT!
@@ -71,7 +69,7 @@ public class ChatFactory {
 	
 	public void closeChat (Chat c) {
 		chats.remove(c);
-		c.closeChat();
+		c.closeChat(false);
 	}
 
 }

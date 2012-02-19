@@ -257,7 +257,6 @@ public class ChatActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.closeChat:
-			visavis.setActiveChats(false);
 			Lime.getInstance().getChatFactory().closeChat(chat);
 			finish();
 			break;

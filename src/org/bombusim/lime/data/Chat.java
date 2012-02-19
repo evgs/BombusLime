@@ -58,10 +58,23 @@ public class Chat {
 		readDbAdapter = new ChatHistoryDbAdapter(Lime.getInstance().getApplicationContext(), visavis.getRosterJid());
 		readDbAdapter.open(true);
 
+		updateActiveChatDb(true);
 	}
 	
-	public void closeChat() {
+	public void closeChat(boolean keepActive) {
 		readDbAdapter.close();
+		updateActiveChatDb(false);
+	}
+	
+	private void updateActiveChatDb(boolean active) {
+		if (visavis.hasActiveChats() == active) return;
+		
+		visavis.setActiveChats(active);
+		
+		RosterDbAdapter db = new RosterDbAdapter(Lime.getInstance().getApplicationContext());
+		db.open();
+		db.putContact(visavis, visavis.getId());
+		db.close();
 	}
 	
 	public Contact getVisavis() { return visavis; }
