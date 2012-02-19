@@ -69,7 +69,7 @@ public class RosterDbAdapter  {
 		v.put(KEY_GROUP,    contact.getAllGroups());
 		v.put(KEY_SUBSCR,   contact.getSubscription());
 		v.put(KEY_AVATAR,   contact.getAvatarId());
-		v.put(KEY_CHAT,     contact.hasActiveChats());
+		v.put(KEY_CHAT,     contact.hasActiveChats()? 1:0);
 		
 		long id=-1;
 		if (position<0) {
@@ -154,7 +154,7 @@ public class RosterDbAdapter  {
 				        + KEY_NAME +     " TEXT, " 
 				        + KEY_GROUP +    " TEXT, " 
 				        + KEY_AVATAR +   " TEXT, " 
-				        + KEY_CHAT +     " INTEGER "
+				        + KEY_CHAT +     " INTEGER, "
 						+ KEY_SUBSCR +   " INTEGER);";
 		
 		
