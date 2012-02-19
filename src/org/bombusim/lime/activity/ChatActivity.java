@@ -338,6 +338,7 @@ public class ChatActivity extends Activity {
 			
             String sender = (m.type == Message.TYPE_MESSAGE_OUT)? myNick : visavisNick ;  
             sv.setText(m.timestamp, sender, m.messageBody, m.type);
+            sv.setUnread(m.unread);
 
 		}
 
@@ -368,6 +369,9 @@ public class ChatActivity extends Activity {
             addView(mMessageBody, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         }
         
+        public void setUnread(boolean unread) {
+        	setBackgroundColor(Message.getBkColor(unread));
+        }
         
         public void setText(long time, String sender, String message, int messageType) {
 

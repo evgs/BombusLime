@@ -54,9 +54,13 @@ public class Message {
 	//view
 	public boolean expanded;
 
+	//TODO: redefine by theme
 	private final static int IN_COLOR  = Color.GREEN;
 	private final static int OUT_COLOR = Color.CYAN;
 	private final static int PRESENCE_COLOR = Color.GRAY;
+	
+	private final static int UNREAD_BK_COLOR = 0x00004020 | Color.BLACK;
+	private final static int DEFAULT_BK_COLOR = Color.BLACK;
 
 	public static int getColor(int type) {
 		switch (type) {
@@ -65,6 +69,10 @@ public class Message {
 		default: 
 		}
 		return PRESENCE_COLOR;
+	}
+	
+	public static int getBkColor(boolean unread) {
+		return (unread)? UNREAD_BK_COLOR : DEFAULT_BK_COLOR;
 	}
 
 	public void setId(long id) { 
