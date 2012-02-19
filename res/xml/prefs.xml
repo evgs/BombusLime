@@ -4,7 +4,7 @@
         android:key="AUTO_SERVICE_STARTUP" 
         android:defaultValue="false" 
         android:summaryOff="@string/cbDisabled" 
-        android:summaryOn="@string/cbEnabled" 
+        android:summaryOn="@string/cbEnableRebootStatus" 
         android:title="@string/autoServiceStartup" 
         android:order="1"
         />

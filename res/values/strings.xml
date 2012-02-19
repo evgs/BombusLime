@@ -140,8 +140,9 @@
     <string name="allowUnknownContactsMessages">allow incoming messages</string>
     <string name="dropUnknownIncomingMessages">drop incoming messages</string>
     <string name="unknownContacts">Unknown contacts</string>
-    <string name="autoServiceStartup">Login when phone is turned on</string>
     <string name="logExport">Export log</string>
     <string name="cantWriteStorage">Can\'t write to storage</string>
+    <string name="autoServiceStartup">Login when phone is turned on</string>
+    <string name="cbEnableRebootStatus">Restore last status after reboot</string>
     
 </resources>
