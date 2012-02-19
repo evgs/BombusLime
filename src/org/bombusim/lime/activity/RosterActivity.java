@@ -174,7 +174,15 @@ public class RosterActivity extends ExpandableListActivity {
 		case R.id.cmdAddContact: openEditContactActivity(null); break;
 		
 		case R.id.cmdAccount:  startActivityForResult(new Intent(getBaseContext(), AccountSettingsActivity.class), 0); break;
-		//case R.id.cmdChat:     startActivityForResult(new Intent(getBaseContext(), ChatActivity.class),            0); break;
+		
+		case R.id.cmdChat:  {
+			ActiveChats chats = new ActiveChats();
+			chats.setStatusIcons(statusIcons);
+			chats.showActiveChats(this, null);
+			
+			break;
+		}
+		
 		case R.id.cmdLog:      startActivityForResult(new Intent(getBaseContext(), LoggerActivity.class),          0); break;
 		case R.id.cmdSettings: startActivityForResult(new Intent(getBaseContext(), LimePrefs.class),               0); break;
 			
@@ -357,7 +365,7 @@ public class RosterActivity extends ExpandableListActivity {
 		super.onPause();
 	}
 	
-	private void openChatActivity(Contact c) {
+	public void openChatActivity(Contact c) {
 		Intent openChat =  new Intent(this, ChatActivity.class);
 		openChat.putExtra(ChatActivity.MY_JID, c.getRosterJid());
 		openChat.putExtra(ChatActivity.TO_JID,   c.getJid());

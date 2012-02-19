@@ -145,4 +145,8 @@
     <string name="autoServiceStartup">Login when phone is turned on</string>
     <string name="cbEnableRebootStatus">Restore last status after reboot</string>
     
+    <string name="activeChats">Active chats</string>
+	<string name="noActiveChats">No active chats available</string>
+    
+    
 </resources>

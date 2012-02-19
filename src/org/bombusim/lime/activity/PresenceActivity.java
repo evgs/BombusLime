@@ -21,7 +21,6 @@ package org.bombusim.lime.activity;
 
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
-import org.bombusim.lime.activity.RosterAdapter.ViewHolder;
 import org.bombusim.lime.data.PresenceStorage;
 import org.bombusim.lime.service.XmppService;
 import org.bombusim.lime.service.XmppServiceBinding;
