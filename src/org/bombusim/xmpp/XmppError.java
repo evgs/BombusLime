@@ -59,12 +59,14 @@ public final class XmppError {
     public final static int INVALID_MECHANISM=26;
     public final static int MECHANISM_TOO_WEAK=27;
     public final static int TEMPORARY_AUTH_FAILURE=28;
+    public final static int NOT_WELLL_FORMED_XML=29;
     
     public final static int TYPE_UNDEFINED=0; 
     public final static int TYPE_MODIFY=1; 
     public final static int TYPE_CANCEL=2; 
     public final static int TYPE_AUTH=3; 
     public final static int TYPE_WAIT=4; 
+    public final static int TYPE_STREAM=5; 
 
     /** Creates a new instance of XmppError */
     public XmppError(int condition, String text) {
@@ -182,6 +184,11 @@ public final class XmppError {
                 errorType=TYPE_CANCEL;
                 textCondition="temporary-auth-failure";
                 break;
+
+            case NOT_WELLL_FORMED_XML:
+                errorType=TYPE_STREAM;
+                textCondition="xml-not-well-formed";
+                break;
                 
         }
         errCondition=condition;
@@ -197,12 +204,17 @@ public final class XmppError {
             case TYPE_CANCEL:    type="cancel"; break;
             case TYPE_AUTH:      type="auth"; break;
             case TYPE_WAIT:      type="wait"; break;
-            default: /*case TYPE_UNDEFINED:*/ type="cancel"; break;
+            case TYPE_UNDEFINED: type="cancel"; break;
+            default:
         }
         error.setAttribute("type", type);
 
-        error.addChildNs(textCondition, "urn:ietf:params:xml:ns:xmpp-stanzas");
-        if (text!=null) error.addChildNs("text", "urn:ietf:params:xml:ns:xmpp-stanzas").setText(text);
+        if (errorType == TYPE_STREAM) {
+        	error.addChildNs(textCondition, "urn:ietf:params:xml:ns:xmpp-streams");
+        } else {
+        	error.addChildNs(textCondition, "urn:ietf:params:xml:ns:xmpp-stanzas");
+        	if (text!=null) error.addChildNs("text", "urn:ietf:params:xml:ns:xmpp-stanzas").setText(text);
+        }
         
         return error;
     }
@@ -273,8 +285,7 @@ public final class XmppError {
             //if (tag.equals("not-authorized"))          errCond=NOT_AUTHORIZED;
             if (tag.equals("temporary-auth-failure"))  errCond=TEMPORARY_AUTH_FAILURE;
             
-
-            
+            if (tag.equals("xml-not-well-formed"))     errCond=NOT_WELLL_FORMED_XML;
         }
         
         if (errCond==NONE) {
