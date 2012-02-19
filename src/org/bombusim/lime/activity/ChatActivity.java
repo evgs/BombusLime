@@ -216,7 +216,8 @@ public class ChatActivity extends Activity {
 			
 			@Override
 			public void afterTextChanged(Editable s) {
-				sendChatState(ChatStates.COMPOSING);
+				if (s.length()>0)
+					sendChatState(ChatStates.COMPOSING);
 			}
 		});
         
