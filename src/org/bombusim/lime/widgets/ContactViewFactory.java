@@ -6,6 +6,7 @@ import org.bombusim.lime.data.Contact;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -76,6 +77,13 @@ public class ContactViewFactory {
         Bitmap avatar = c.getLazyAvatar(false);
         if (avatar == null) avatar = mIconRobot;
         holder.photo.setImageBitmap(avatar);
+        
+        //TODO: fix icon ranges
+        int presenceIndex = c.getPresence();
+        if (presenceIndex < 0 || presenceIndex >= mIconStar.length) {
+        	Log.w("ASSERT", "index "+presenceIndex+" out of bounds: [0.." + mIconStar.length + "]");
+        }
+        
         holder.status.setImageBitmap(mIconStar[c.getPresence()]);
         holder.jid.setText(c.getScreenName());
         holder.presence.setText(c.getStatusMessage());
