@@ -45,7 +45,7 @@ public class ContactViewFactory {
         mIconStar = statusIcons;
     }
     
-	public View getContactView(View convertView, Contact c) {
+	public View getView(View convertView, Contact c) {
 		// A ViewHolder keeps references to children views to avoid unneccessary calls
         // to findViewById() on each row.
         ViewHolder holder;
