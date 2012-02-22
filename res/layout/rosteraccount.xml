@@ -1,33 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="32dip"
+    android:layout_height="40dip"
     android:background="@android:drawable/title_bar" >
 
     <ImageView
         android:id="@+id/expander"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="6dip"
         android:src="@drawable/exp_maximized" />
 
-    <TextView
-        android:id="@+id/count"
+    <ImageView
+        android:id="@+id/imageSSL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:text="Count"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:src="@drawable/ssl_yes" />
 
-    <TextView
-        android:id="@+id/grouplabel"
-        android:layout_width="137dp"
+    <ImageView
+        android:id="@+id/accountStatusIcon"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/expander"
         android:layout_centerVertical="true"
         android:paddingLeft="6dip"
-        android:text="Group"
+        android:layout_toRightOf="@+id/expander"
+        android:src="@drawable/status_online" />
+
+    <TextView
+        android:id="@+id/accountName"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/accountStatusIcon"
+        android:ellipsize="marquee"
+        android:paddingLeft="6dip"
+        android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>
