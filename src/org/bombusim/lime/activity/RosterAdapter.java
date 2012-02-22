@@ -25,7 +25,11 @@ import java.util.Collections;
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 import org.bombusim.lime.data.Contact;
+import org.bombusim.lime.data.RosterGroup;
+import org.bombusim.lime.widgets.AccountViewFactory;
 import org.bombusim.lime.widgets.ContactViewFactory;
+import org.bombusim.lime.widgets.GroupViewFactory;
+import org.bombusim.xmpp.XmppAccount;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -33,57 +37,98 @@ import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class RosterAdapter extends BaseExpandableListAdapter {
+public class RosterAdapter extends BaseAdapter {
+	
+	public final static int ITEM_ACCOUNT = 0;
+	public final static int ITEM_CONTACT = 1;
+	public final static int ITEM_GROUP = 2;
+	
+	public final static int ITEM_TYPECOUNT = 3;
 
-    private LayoutInflater mInflater;
+	private ArrayList rosterObjects;
+
+	private ContactViewFactory cvf;
+    private GroupViewFactory gvf;
+    private AccountViewFactory avf;
     
-    private ContactViewFactory cvf;
+	private ArrayList<RosterGroup> groups;
     
     public RosterAdapter(Context context, Bitmap[] statusIcons) {
-        // Cache the LayoutInflate to avoid asking for a new one each time.
-        mInflater = LayoutInflater.from(context);
 
         cvf = new ContactViewFactory(context, statusIcons);
+        gvf = new GroupViewFactory(context);
+        avf = new AccountViewFactory(context);
+
+        rosterObjects = new ArrayList();
         
-        groups = new ArrayList<RosterAdapter.RosterGroup>();
+        groups = new ArrayList<RosterGroup>();
     }
 	
-    //-------------------------------------------------------------------------------------------
-    private class RosterGroup implements Comparable<RosterGroup>{
-    	public String groupName;
-    	public ArrayList<Contact> contacts;
-    	public boolean collapsed;
-    	
-    	public RosterGroup(String name) {
-    		this.groupName = name;
-			contacts = new ArrayList<Contact>();
-		}
+	
+	@Override
+	public int getCount() { return rosterObjects.size(); }
 
-		@Override
-		public int compareTo(RosterGroup another) {
-			return groupName.compareToIgnoreCase(another.groupName);
-		}
-    }
-    
-    private ArrayList<RosterAdapter.RosterGroup> groups;
-    
+	@Override
+	public Object getItem(int position) { return rosterObjects.get(position); }
+
+	@Override
+	public long getItemId(int position) { return position; }
+
+	@Override
+	public boolean hasStableIds() { return true; 	}
+	
+	@Override
+	public int getViewTypeCount() { return ITEM_TYPECOUNT; }
+	
+	@Override
+	public int getItemViewType(int position) {
+		Object o = rosterObjects.get(position);
+		if (o instanceof XmppAccount) return ITEM_ACCOUNT;
+		if (o instanceof RosterGroup) return ITEM_GROUP;
+		if (o instanceof Contact)     return ITEM_CONTACT;
+		
+		return -1;
+	}
+	
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		// TODO Auto-generated method stub
+		Object o = rosterObjects.get(position);
+		
+		if (o instanceof Contact) return cvf.getView(convertView, (Contact)o);
+		if (o instanceof RosterGroup) return gvf.getView(convertView, (RosterGroup)o);
+		if (o instanceof XmppAccount) return avf.getView(convertView, (XmppAccount)o);
+		
+		return null;
+	}
+	
     @Override
     public void notifyDataSetChanged() {
-    	getContacts();
+    	populateRosterObjects();
     	super.notifyDataSetChanged();
     }
-    
-	public void getContacts() {
+
+	public void populateRosterObjects() {
 		//TODO: keep groups when RosterActivity is destroyed
+
+		rosterObjects.clear();
+		
+		//TODO: loop trough accounts
+		XmppAccount a = Lime.getInstance().getActiveAccount();
+		rosterObjects.add(a);
+		
+		//0. add account item
+		
 		
 		ArrayList<Contact> contacts = Lime.getInstance().getRoster().getContacts();
 		
-		//1. geset groups
+		//1. reset groups
 		for (RosterGroup group: groups) { 	group.contacts.clear(); }
 		
 		//2. populate groups with contacts
@@ -112,6 +157,20 @@ public class RosterAdapter extends BaseExpandableListAdapter {
 		
 		//4. sort groups
 		Collections.sort(groups);
+		
+		//5. add reoups to roster
+		//TODO 5.1 check if account collapsed
+		
+		for (RosterGroup group : groups) {
+			rosterObjects.add(group);
+			
+			//skip contacts if group collapsed
+			if (group.collapsed) continue;
+			
+			rosterObjects.addAll(group.contacts);
+		}
+		
+		//TODO: add MUC
 	}
 
     private void addContactToGroup(Contact contact, String groupName) {
@@ -126,98 +185,6 @@ public class RosterAdapter extends BaseExpandableListAdapter {
     	ng.contacts.add(contact);
     	groups.add(ng);
 	}
-
-	@Override
-	public Object getChild(int groupPosition, int childPosition) {
-		return groups.get(groupPosition)
-				.contacts.get(childPosition);
-	}
-
-	@Override
-	public long getChildId(int groupPosition, int childPosition) { 	return childPosition; }
-
-	@Override
-	public int getChildrenCount(int groupPosition) {
-		return groups.get(groupPosition).contacts.size();
-	}
-
-	@Override
-	public boolean isChildSelectable(int groupPosition, int childPosition) { return true; }
-
-	@Override
-	public Object getGroup(int groupPosition) {  return groups.get(groupPosition); 	}
-
-	@Override
-	public long getGroupId(int groupPosition) { return groupPosition; 	}
-
-	@Override
-	public int getGroupCount() {  return groups.size(); }
-
-	@Override
-	public void onGroupCollapsed(int groupPosition) { groups.get(groupPosition).collapsed = true; }
-	
-	@Override
-	public void onGroupExpanded(int groupPosition) { groups.get(groupPosition).collapsed = false; }
-
-	@Override
-	public View getChildView(int groupPosition, int childPosition,
-			boolean isLastChild, View convertView, ViewGroup parent) {
-
-
-        Contact c=(Contact)(getChild(groupPosition, childPosition));
-
-		return cvf.getContactView(convertView, c);
-    }
-
-
-	@Override
-	public View getGroupView(int groupPosition, boolean isExpanded,
-			View convertView, ViewGroup parent) {
-		// A ViewHolder keeps references to children views to avoid unneccessary calls
-        // to findViewById() on each row.
-        ViewGroupHolder holder;
-
-        // When convertView is not null, we can reuse it directly, there is no need
-        // to reinflate it. We only inflate a new View when the convertView supplied
-        // by ListView is null.
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.rostergroup, null);
-
-            // Creates a ViewHolder and store references to the two children views
-            // we want to bind data to.
-            holder = new ViewGroupHolder();
-            holder.groupLabel = (TextView) convertView.findViewById(R.id.grouplabel);
-
-            convertView.setTag(holder);
-        } else {
-            // Get the ViewHolder back to get fast access to the TextView
-            // and the ImageView.
-            holder = (ViewGroupHolder) convertView.getTag();
-        }
-
-        // Bind the data efficiently with the holder.
-        
-        RosterGroup g = (RosterGroup) getGroup(groupPosition);
-        holder.groupLabel.setText(g.groupName);
-
-        return convertView;
-	}
-
-    static class ViewGroupHolder {
-        TextView groupLabel;
-    }
-	
-	@Override
-	public boolean hasStableIds() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public void updateGroupExpandedState(ExpandableListView lv) {
-		int count = groups.size();
-		for (int i=0; i<count; i++) {
-			if (groups.get(i).collapsed) lv.collapseGroup(i);
-			else lv.expandGroup(i);
-		}
-	}
+    
 }
+
