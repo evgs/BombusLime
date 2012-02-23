@@ -200,6 +200,7 @@ public class RosterActivity extends ListActivity {
 		
 		case R.id.cmdLog:      startActivityForResult(new Intent(getBaseContext(), LoggerActivity.class),          0); break;
 		case R.id.cmdSettings: startActivityForResult(new Intent(getBaseContext(), LimePrefs.class),               0); break;
+		case R.id.cmdRosterSettings: startActivityForResult(new Intent(getBaseContext(), RosterLimePrefsActivity.class), 0); break;
 			
 		case R.id.cmdAbout: About.showAboutDialog(this); break;
 		default: return true; // on submenu
