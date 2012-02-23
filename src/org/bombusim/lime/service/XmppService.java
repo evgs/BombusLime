@@ -32,7 +32,9 @@ import org.bombusim.xml.XMLException;
 import org.bombusim.xmpp.XmppAccount;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppStream;
+import org.bombusim.xmpp.exception.XmppAuthException;
 import org.bombusim.xmpp.exception.XmppException;
+import org.bombusim.xmpp.exception.XmppTerminatedException;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.ResolverConfig;
 
@@ -167,13 +169,21 @@ public class XmppService extends Service implements Runnable {
 		    	if (!networkAvailable) running = false;
 		    	LimeLog.e("XmppStream", "IO Error", e.toString());
 		        showNotification(false);
-			} catch (XMLException e) {
-		    	LimeLog.e("XmppStream", "XML broken", e.toString());
-		        showNotification(false);
+			} catch (XmppAuthException e) {
+		    	LimeLog.e("XmppStream", "Authentication error", e.getMessage());
+				running = false;
+				e.printStackTrace();
+			} catch (XmppTerminatedException e) {
+		    	LimeLog.e("XmppStream", "Stream shutdown", e.getMessage());
+				running = false;
+				e.printStackTrace();
 			} catch (XmppException e) {
 		    	LimeLog.e("XmppStream", "Xmpp Error", e.getMessage());
 				running = false;
 				e.printStackTrace();
+			} catch (XMLException e) {
+		    	LimeLog.e("XmppStream", "XML broken", e.toString());
+		        showNotification(false);
 			}
 		   	
 	    	//TODO: check status (online/offline)
