@@ -18,7 +18,7 @@
         android:src="@drawable/ssl_yes" />
 
     <ImageView
-        android:id="@+id/accountStatusIcon"
+        android:id="@+id/statusIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -31,7 +31,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/accountStatusIcon"
+        android:layout_toRightOf="@+id/statusIcon"
         android:ellipsize="marquee"
         android:paddingLeft="6dip"
         android:text="Medium Text"
