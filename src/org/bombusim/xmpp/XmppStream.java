@@ -144,7 +144,9 @@ public class XmppStream extends XmppParser {
     }
     
     public void initiateStream() throws IOException {
-        
+        //reset parser stack
+    	resetXmppParser();
+    	
         //sendQueue=new Vector();
         
         StringBuilder header=new StringBuilder("<stream:stream to='" )
