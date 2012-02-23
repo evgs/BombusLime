@@ -67,9 +67,6 @@ public class VCardActivity extends ListActivity {
 						onBackPressed();
 					}
 				});
-        
-        String NPE=null;
-        Log.d("NPE", NPE.trim());
 	}
 	
 	@Override
