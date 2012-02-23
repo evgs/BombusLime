@@ -371,6 +371,7 @@ public class XmppStream extends XmppParser {
     
     public void close() {
     	account.runtimeStatus = XmppPresence.PRESENCE_OFFLINE;
+    	account.runtimeIsSecure = false;
     	
     	cancelKeepAliveTimer();
         //if (keepAlive!=null) keepAlive.destroyTask();
