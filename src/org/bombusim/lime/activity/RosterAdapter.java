@@ -30,6 +30,7 @@ import org.bombusim.lime.widgets.AccountViewFactory;
 import org.bombusim.lime.widgets.ContactViewFactory;
 import org.bombusim.lime.widgets.GroupViewFactory;
 import org.bombusim.xmpp.XmppAccount;
+import org.bombusim.xmpp.stanza.XmppPresence;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -115,6 +116,8 @@ public class RosterAdapter extends BaseAdapter {
     }
 
 	public void populateRosterObjects() {
+		boolean hideOfflines = Lime.getInstance().prefs.hideOfflines;
+		
 		//TODO: keep groups when RosterActivity is destroyed
 
 		rosterObjects.clear();
@@ -171,7 +174,13 @@ public class RosterAdapter extends BaseAdapter {
 			//skip contacts if group collapsed
 			if (group.collapsed) continue;
 			
-			rosterObjects.addAll(group.contacts);
+			for (Contact contact : group.contacts) {
+				// skip offlines
+				if (hideOfflines) if (contact.getPresence() == XmppPresence.PRESENCE_OFFLINE)
+					continue;
+				
+				rosterObjects.add(contact);
+			}
 		}
 		
 		//TODO: add MUC

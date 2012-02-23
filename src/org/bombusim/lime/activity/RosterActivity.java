@@ -290,14 +290,17 @@ public class RosterActivity extends ListActivity {
 		public void onReceive(Context context, Intent intent) {
 			String from = intent.getStringExtra("param");
 			
-			if (from !=null) {
-				for (Contact c: Lime.getInstance().getRoster().getContacts()) {
-					if (c.getJid().equals(from)) {
-						refreshSingleContact(c);
+			if (! Lime.getInstance().prefs.hideOfflines) {
+				//TODO: optimize if hide offlines
+				if (from !=null) {
+					for (Contact c: Lime.getInstance().getRoster().getContacts()) {
+						if (c.getJid().equals(from)) {
+							refreshSingleContact(c);
+						}
 					}
+					
+					return;
 				}
-				
-				return;
 			}
 			refreshVisualContent();
 		}
