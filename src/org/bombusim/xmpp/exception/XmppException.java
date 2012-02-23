@@ -22,7 +22,9 @@
 
 package org.bombusim.xmpp.exception;
 
-public class XmppException extends Exception {
+import org.bombusim.xml.XMLException;
+
+public class XmppException extends XMLException {
 
 	
 	/**
