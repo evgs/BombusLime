@@ -70,9 +70,24 @@ public class XmppAccount {
 		_id = -1;
 	};
 	
+	//temporary
+	boolean runtimeIsSecure;
+	int runtimeStatus;
+	
 	public XmppAccount(String userJid, String password) {
 		this();
 		this.userJid  = userJid;
 		this.password = password;
 	}
+
+	//TODO: own group holder class
+	public int getRuntimeStatus() { return runtimeStatus; }
+	public boolean connectionIsSecure() { return runtimeIsSecure; }
+	
+	public boolean collapsed = false;
+
+	public void toggleCollapsed() {
+		collapsed = !collapsed;
+	}
+
 }

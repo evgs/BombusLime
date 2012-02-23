@@ -156,7 +156,8 @@ public class RosterActivity extends ListActivity {
 			return;
 		}
 		if (item instanceof XmppAccount) {
-			//TODO: collapse/expand group
+			((XmppAccount)item).toggleCollapsed();
+			refreshVisualContent();
 			return;
 		}
 		if (item instanceof Contact) {

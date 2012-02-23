@@ -62,8 +62,8 @@ public class RosterAdapter extends BaseAdapter {
     public RosterAdapter(Context context, Bitmap[] statusIcons) {
 
         cvf = new ContactViewFactory(context, statusIcons);
+        avf = new AccountViewFactory(context, statusIcons);
         gvf = new GroupViewFactory(context);
-        avf = new AccountViewFactory(context);
 
         rosterObjects = new ArrayList();
         
@@ -123,6 +123,10 @@ public class RosterAdapter extends BaseAdapter {
 		XmppAccount a = Lime.getInstance().getActiveAccount();
 		rosterObjects.add(a);
 		
+		if (a.collapsed) {
+			//TODO: next account
+			return;
+		}
 		//0. add account item
 		
 		

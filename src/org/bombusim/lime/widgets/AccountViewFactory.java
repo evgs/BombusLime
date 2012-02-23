@@ -16,6 +16,8 @@ public class AccountViewFactory {
 
     private Bitmap mIconExpanded;
     private Bitmap mIconCollapsed;
+    
+    private Bitmap[] mIconStar;
 
     static class ViewHolder {
         ImageView expander;
@@ -25,13 +27,15 @@ public class AccountViewFactory {
     }
 
 	
-    public AccountViewFactory(Context context) {
+    public AccountViewFactory(Context context, Bitmap[] statusIcons) {
         // Cache the LayoutInflate to avoid asking for a new one each time.
         mInflater = LayoutInflater.from(context);
     	
         // Icons bound to the rows.
         mIconExpanded = BitmapFactory.decodeResource(context.getResources(), R.drawable.exp_maximized);
         mIconCollapsed = BitmapFactory.decodeResource(context.getResources(), R.drawable.exp_minimized);
+        
+        mIconStar = statusIcons;
         
     }
 
@@ -65,9 +69,9 @@ public class AccountViewFactory {
         // Bind the data efficiently with the holder.
         
         holder.account.setText(a.userJid);
-        holder.expander.setImageBitmap(mIconExpanded);
-        //TODO online
-        //TODO ssl
+        holder.expander.setImageBitmap( (a.collapsed)? mIconCollapsed : mIconExpanded);
+        holder.status.setImageBitmap(mIconStar[a.getRuntimeStatus()]);
+        holder.ssl.setVisibility( a.connectionIsSecure()? View.VISIBLE : View.GONE );
 
         return convertView;
 	}
