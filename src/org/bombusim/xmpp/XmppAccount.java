@@ -25,6 +25,10 @@ package org.bombusim.xmpp;
 
 public class XmppAccount {
 	
+	public long _id;
+
+	public boolean active = true;
+	
 	//////////////////// generic settings  //////////////////////
 	public String userJid;
 	public String password;
@@ -60,8 +64,6 @@ public class XmppAccount {
 	public int enablePlainAuth = PLAIN_AUTH_OVER_SSL;
 	
 	public boolean trafficCompression = true;
-	
-	public long _id;
 	
 	public XmppAccount() {
 		//TODO: resource initialization here

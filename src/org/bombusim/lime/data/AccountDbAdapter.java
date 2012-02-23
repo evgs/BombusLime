@@ -32,7 +32,7 @@ public class AccountDbAdapter  {
 
 	protected final static String DATABASE_TABLE = "accounts";
 	protected final static String DATABASE_NAME = "accounts.db";
-	protected final static int    DATABASE_VERSION = 2;
+	protected final static int    DATABASE_VERSION = 3;
 	
 	// v1
 	public final static String KEY_ID =       "_id";
@@ -49,6 +49,9 @@ public class AccountDbAdapter  {
 	// v2
 	public final static String KEY_PRIORITY = "priority";
 	public final static String KEY_AUTOLOGIN = "autologin";
+
+	// v3
+	public final static String KEY_ACTIVE =    "active";
 
 	private AccountDbHelper dbHelper;
 	private SQLiteDatabase db;
@@ -81,6 +84,7 @@ public class AccountDbAdapter  {
 		v.put(KEY_PLAINPWD, account.enablePlainAuth);
 		v.put(KEY_ZLIB, account.trafficCompression);
 		v.put(KEY_AUTOLOGIN, account.autoLogin? 1:0);
+		v.put(KEY_ACTIVE,   account.active? 1:0);
 		
 		if (position<0) {
 			return db.insert(DATABASE_TABLE, null, v);
@@ -135,6 +139,7 @@ public class AccountDbAdapter  {
 		a.enablePlainAuth    = cursor.getInt(cursor.getColumnIndex(KEY_PLAINPWD));
 		a.trafficCompression = cursor.getInt(cursor.getColumnIndex(KEY_ZLIB)) !=0;
 		a.autoLogin          = cursor.getInt(cursor.getColumnIndex(KEY_AUTOLOGIN)) !=0;
+		a.active             = cursor.getInt(cursor.getColumnIndex(KEY_ACTIVE)) !=0;
 
 		return a;
 	}
@@ -154,6 +159,7 @@ public class AccountDbAdapter  {
 				        + KEY_PLAINPWD + " INTEGER, " 
 				        + KEY_PWDSAVED + " INTEGER, " 
 	                    + KEY_AUTOLOGIN + " INTEGER, "
+	                    + KEY_ACTIVE   + " INTEGER, "
 				        + KEY_ZLIB     + " INTEGER);";
 		
 		
@@ -170,6 +176,15 @@ public class AccountDbAdapter  {
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			// until 0.5 we wouldn't do any specific upgrade, just table drop
+			
+			
+			// upgrade 2 to 3
+			if (oldVersion  == 2) {
+				db.execSQL("ALTER TABLE " + DATABASE_TABLE + " ADD COLUMN " + KEY_ACTIVE + " INTEGER");
+				return;
+			}
+			
+			
 			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE);
 			
 			onCreate(db);
