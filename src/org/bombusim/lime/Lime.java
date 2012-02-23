@@ -93,6 +93,8 @@ public class Lime extends Application {
 	public final void onCreate() {
 		ACRA.init(this);
 		
+		ErrorReporter.getInstance().putCustomData("GIT", gitVersion());
+		
 		super.onCreate();
 		
 		instance = this;
@@ -156,6 +158,13 @@ public class Lime extends Application {
 	//TODO: variable may be lost if application restarted :(
 	public long lastMessageId = -1;
 	
+	private String gitVersion() {
+		return 	getResources().getString(R.string.git_count) 
+				+ " ("
+				+ getResources().getString(R.string.git_short) 
+				+ ")" ;
+	}
+	
 	public String getVersion() {
 		if (version==null) {
 			try {
@@ -163,8 +172,7 @@ public class Lime extends Application {
 
 				//version = pinfo.versionName + " ("+ pinfo.versionCode + ")";
 				version = pinfo.versionName 
-						+ "." + getResources().getString(R.string.git_count)
-						+ " ("+ getResources().getString(R.string.git_short) + ")";
+						+ "." + gitVersion();
 			} catch (NameNotFoundException e) {
 				version = "unknown";
 			}
