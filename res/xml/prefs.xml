@@ -50,7 +50,14 @@
 	        android:summaryOn="Enabled" android:order="101"
 	        />
 	    <EditTextPreference android:title="Keep-Alive period" android:summary="How often empty packets will be sent to keep connection alive" android:key="KEEP_ALIVE_PERIOD" android:dialogMessage="Enter Keep-alive period in minutes" android:negativeButtonText="@string/cancel" android:dialogTitle="Keep-Alive period" android:positiveButtonText="@string/save" android:defaultValue="10"/>
-        
+
+		<CheckBoxPreference android:key="acra.enable"
+		    android:title="@string/pref_disable_acra"
+		    android:summaryOn="@string/pref_acra_enabled"
+		    android:summaryOff="@string/pref_acra_disabled"
+		    android:defaultValue="true"/>	    
+	    
+	    
     </PreferenceCategory>
     
     
