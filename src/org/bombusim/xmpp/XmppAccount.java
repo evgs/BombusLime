@@ -25,6 +25,10 @@ package org.bombusim.xmpp;
 
 public class XmppAccount {
 	
+	public long _id;
+
+	public boolean active = true;
+	
 	//////////////////// generic settings  //////////////////////
 	public String userJid;
 	public String password;
@@ -61,16 +65,29 @@ public class XmppAccount {
 	
 	public boolean trafficCompression = true;
 	
-	public long _id;
-	
 	public XmppAccount() {
 		//TODO: resource initialization here
 		_id = -1;
 	};
+	
+	//temporary
+	boolean runtimeIsSecure;
+	int runtimeStatus;
 	
 	public XmppAccount(String userJid, String password) {
 		this();
 		this.userJid  = userJid;
 		this.password = password;
 	}
+
+	//TODO: own group holder class
+	public int getRuntimeStatus() { return runtimeStatus; }
+	public boolean connectionIsSecure() { return runtimeIsSecure; }
+	
+	public boolean collapsed = false;
+
+	public void toggleCollapsed() {
+		collapsed = !collapsed;
+	}
+
 }

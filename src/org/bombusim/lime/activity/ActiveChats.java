@@ -61,7 +61,7 @@ public class ActiveChats {
 		
 		acl.setAdapter(new BaseAdapter() {
 	        public View getView(int position, View convertView, ViewGroup parent) {
-	        	return cvf.getContactView(convertView, activeContacts.get(position));
+	        	return cvf.getView(convertView, activeContacts.get(position));
 	        }
 
 

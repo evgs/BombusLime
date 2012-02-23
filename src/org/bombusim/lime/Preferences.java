@@ -35,6 +35,8 @@ public class Preferences {
 	public int keepAlivePeriodMinutes;
 	public boolean loadAvatarsOverMobileConnections;
 	
+	public boolean hideOfflines;
+	
 	public Preferences(Context applicationContext) {
 		loadPreferences(applicationContext);
 	}
@@ -62,6 +64,10 @@ public class Preferences {
 		} catch (Exception e) {
 			keepAlivePeriodMinutes = 10;
 		}
+		
+		//TODO: load from roster preferences
+		prefs = context.getSharedPreferences("rosterPrefs", Context.MODE_PRIVATE);
+		hideOfflines = prefs.getBoolean("HIDE_OFFLINES", false);
 	}
 	
 }

@@ -2,6 +2,7 @@ package org.bombusim.lime.widgets;
 
 import org.bombusim.lime.R;
 import org.bombusim.lime.data.Contact;
+import org.bombusim.xmpp.stanza.XmppPresence;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -45,7 +46,7 @@ public class ContactViewFactory {
         mIconStar = statusIcons;
     }
     
-	public View getContactView(View convertView, Contact c) {
+	public View getView(View convertView, Contact c) {
 		// A ViewHolder keeps references to children views to avoid unneccessary calls
         // to findViewById() on each row.
         ViewHolder holder;
@@ -82,6 +83,7 @@ public class ContactViewFactory {
         int presenceIndex = c.getPresence();
         if (presenceIndex < 0 || presenceIndex >= mIconStar.length) {
         	Log.w("ASSERT", "index "+presenceIndex+" out of bounds: [0.." + mIconStar.length + "]");
+        	presenceIndex = XmppPresence.PRESENCE_UNKNOWN;
         }
         
         holder.status.setImageBitmap(mIconStar[c.getPresence()]);

@@ -23,13 +23,16 @@ import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Roster;
+import org.bombusim.lime.data.RosterGroup;
 import org.bombusim.lime.service.XmppService;
 import org.bombusim.lime.service.XmppServiceBinding;
+import org.bombusim.xmpp.XmppAccount;
 import org.bombusim.xmpp.handlers.IqRoster;
 import org.bombusim.xmpp.stanza.XmppPresence;
 
 import android.app.AlertDialog;
 import android.app.ExpandableListActivity;
+import android.app.ListActivity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -47,14 +50,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.ExpandableListAdapter;
-import android.widget.ExpandableListView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ImageView;
-import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class RosterActivity extends ExpandableListActivity {
+public class RosterActivity extends ListActivity {
 	XmppServiceBinding sb;
 	
 	private Bitmap[] statusIcons;
@@ -77,11 +80,11 @@ public class RosterActivity extends ExpandableListActivity {
         		BitmapFactory.decodeResource(getResources(), R.drawable.status_invisible)
         		};
 
-		ExpandableListAdapter adapter=new RosterAdapter(this, statusIcons);
+		ListAdapter adapter=new RosterAdapter(this, statusIcons);
 		
 		setListAdapter(adapter);
 		
-		registerForContextMenu(getExpandableListView());
+		registerForContextMenu(getListView());
 
 		sb = new XmppServiceBinding(this);
 
@@ -104,6 +107,7 @@ public class RosterActivity extends ExpandableListActivity {
 		
 		((ImageView) findViewById(R.id.imageSSL)).setOnClickListener(sslShowCert);
 		((TextView) findViewById(R.id.activeJid)).setOnClickListener(sslShowCert);
+		
 	}
 
 	protected void showSslStatus(String certificateChain) {
@@ -141,16 +145,27 @@ public class RosterActivity extends ExpandableListActivity {
 	}
 
 	@Override
-	public boolean onChildClick(ExpandableListView parent, View v,
-			int groupPosition, int childPosition, long id) {
-
-		Contact c = (Contact) getExpandableListAdapter().getChild(groupPosition, childPosition);
-	
-		openChatActivity(c);
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		//TODO: collapse/expand account
 		
-		return true;
+		Object item = getListAdapter().getItem(position);
+		
+		if (item instanceof RosterGroup) {
+			((RosterGroup)item).toggleCollapsed();
+			refreshVisualContent();
+			return;
+		}
+		if (item instanceof XmppAccount) {
+			((XmppAccount)item).toggleCollapsed();
+			refreshVisualContent();
+			return;
+		}
+		if (item instanceof Contact) {
+			Contact c = (Contact) item;
+			openChatActivity(c);
+		}
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(android.view.Menu menu) {
 		getMenuInflater().inflate(R.menu.roster_menu, menu);
@@ -185,6 +200,7 @@ public class RosterActivity extends ExpandableListActivity {
 		
 		case R.id.cmdLog:      startActivityForResult(new Intent(getBaseContext(), LoggerActivity.class),          0); break;
 		case R.id.cmdSettings: startActivityForResult(new Intent(getBaseContext(), LimePrefs.class),               0); break;
+		case R.id.cmdRosterSettings: startActivityForResult(new Intent(getBaseContext(), RosterLimePrefsActivity.class), 0); break;
 			
 		case R.id.cmdAbout: About.showAboutDialog(this); break;
 		default: return true; // on submenu
@@ -193,85 +209,79 @@ public class RosterActivity extends ExpandableListActivity {
 		return false;
 	}
 	
-	public Contact getContextContact(long pos) {
-		int type=ExpandableListView.getPackedPositionType(pos);
-
-		if (type!=ExpandableListView.PACKED_POSITION_TYPE_CHILD) return null; 
-
-		int childPosition = ExpandableListView.getPackedPositionChild(pos);
-		int groupPosition = ExpandableListView.getPackedPositionGroup(pos);
-		
-		Contact c = (Contact) getExpandableListAdapter().getChild(groupPosition, childPosition);
-		return c;
-	}
-	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 
 		super.onCreateContextMenu(menu, v, menuInfo);
 		
-		ExpandableListContextMenuInfo cmi = (ExpandableListContextMenuInfo) menuInfo;
+		int pos = ((AdapterContextMenuInfo)menuInfo).position;
 		
-		long pos = cmi.packedPosition;
+		Object contextItem = getListAdapter().getItem(pos);
 		
-		Contact c = getContextContact(pos);
-		if (c==null) return; //TODO: context menu for group
+		if (contextItem instanceof RosterGroup) {
+			//TODO: context menu for group
+			return;
+		}
+		if (contextItem instanceof XmppAccount) {
+			//TODO: context menu for account
+			return;
+		}
 		
-		menu.setHeaderTitle(c.getScreenName());
-		
-		Drawable icon = new BitmapDrawable(c.getAvatar());
-		menu.setHeaderIcon(icon);
-		
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.contact_menu, menu);
-		
-		//enable items available only if logged in
-		menu.setGroupEnabled(R.id.groupLoggedIn, sb.isLoggedIn(c.getRosterJid()) );
-		
+		if (contextItem instanceof Contact) {
+		Contact c = (Contact) contextItem;
+			menu.setHeaderTitle(c.getScreenName());
+			
+			Drawable icon = new BitmapDrawable(c.getAvatar());
+			menu.setHeaderIcon(icon);
+			
+			MenuInflater inflater = getMenuInflater();
+			inflater.inflate(R.menu.contact_menu, menu);
+			
+			//enable items available only if logged in
+			menu.setGroupEnabled(R.id.groupLoggedIn, sb.isLoggedIn(c.getRosterJid()) );
+			return;
+		}
 	}
 
-	private long contextMenuItemPosition;
-	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		
-		ExpandableListContextMenuInfo cmi = (ExpandableListContextMenuInfo) item.getMenuInfo();
+		AdapterContextMenuInfo cmi = (AdapterContextMenuInfo) item.getMenuInfo();
 
-		// workaround for issue http://code.google.com/p/android/issues/detail?id=7139
-		// item.getMenuInfo() returns null for submenu items
-		long pos= (cmi!=null)? cmi.packedPosition : contextMenuItemPosition;
-		contextMenuItemPosition = pos;
+		Object contextItem = getListAdapter().getItem(cmi.position);
 
-		final Contact ctc = getContextContact(pos);
-
-		switch (item.getItemId()) {
-		case R.id.cmdChat: 
-			openChatActivity(ctc);
-			return true;
-		case R.id.cmdVcard:
-			openVCardActivity(ctc);
-			return true;
-		case R.id.cmdEdit:
-			openEditContactActivity(ctc);
-			return true;
-		case R.id.cmdDelete:
-			confirmDeleteContact(ctc);
-			return true;
-			
-		case R.id.cmdSubscrRequestFrom:
-			subscription(ctc, XmppPresence.PRESENCE_SUBSCRIBE);
-			return true;
-		case R.id.cmdSubscrSendTo:
-			subscription(ctc, XmppPresence.PRESENCE_SUBSCRIBED);
-			return true;
-		case R.id.cmdSubscrRemove:
-			subscription(ctc, XmppPresence.PRESENCE_UNSUBSCRIBED);
-			return true;
-			
-		default:
-			Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show();
+		if (contextItem instanceof Contact) {
+			final Contact ctc = (Contact) contextItem;
+	
+			switch (item.getItemId()) {
+			case R.id.cmdChat: 
+				openChatActivity(ctc);
+				return true;
+			case R.id.cmdVcard:
+				openVCardActivity(ctc);
+				return true;
+			case R.id.cmdEdit:
+				openEditContactActivity(ctc);
+				return true;
+			case R.id.cmdDelete:
+				confirmDeleteContact(ctc);
+				return true;
+				
+			case R.id.cmdSubscrRequestFrom:
+				subscription(ctc, XmppPresence.PRESENCE_SUBSCRIBE);
+				return true;
+			case R.id.cmdSubscrSendTo:
+				subscription(ctc, XmppPresence.PRESENCE_SUBSCRIBED);
+				return true;
+			case R.id.cmdSubscrRemove:
+				subscription(ctc, XmppPresence.PRESENCE_UNSUBSCRIBED);
+				return true;
+				
+			default:
+				Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show();
+			}
 		}
-
+		
 		return super.onContextItemSelected(item);
 	}
 
@@ -281,14 +291,17 @@ public class RosterActivity extends ExpandableListActivity {
 		public void onReceive(Context context, Intent intent) {
 			String from = intent.getStringExtra("param");
 			
-			if (from !=null) {
-				for (Contact c: Lime.getInstance().getRoster().getContacts()) {
-					if (c.getJid().equals(from)) {
-						refreshSingleContact(c);
+			if (! Lime.getInstance().prefs.hideOfflines) {
+				//TODO: optimize if hide offlines
+				if (from !=null) {
+					for (Contact c: Lime.getInstance().getRoster().getContacts()) {
+						if (c.getJid().equals(from)) {
+							refreshSingleContact(c);
+						}
 					}
+					
+					return;
 				}
-				
-				return;
 			}
 			refreshVisualContent();
 		}
@@ -296,7 +309,7 @@ public class RosterActivity extends ExpandableListActivity {
 	}
 	
 	void refreshSingleContact(Contact c) {
-		ExpandableListView lv = getExpandableListView();
+		ListView lv = getListView();
 
 		int firstVisible = lv.getFirstVisiblePosition();
 		int lastVisible = lv.getLastVisiblePosition();
@@ -329,12 +342,11 @@ public class RosterActivity extends ExpandableListActivity {
 		//TODO: fix update
 		updateRosterTitle();
 		
-		ExpandableListView lv = getExpandableListView(); 
+		ListView lv = getListView(); 
 		lv.setVisibility(View.GONE);
-		RosterAdapter ra = (RosterAdapter)getExpandableListAdapter();
+		RosterAdapter ra = (RosterAdapter)getListAdapter();
 		lv.invalidate();
 		ra.notifyDataSetChanged();
-		ra.updateGroupExpandedState(lv);
 	
 		lv.setVisibility(View.VISIBLE);
 	}
