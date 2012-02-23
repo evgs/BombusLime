@@ -42,7 +42,6 @@ public abstract class XmppParser implements XMLEventListener {
 	
     protected XmppObject currentBlock;
     
-    
     /**
      * The method called when a tag is ended in the stream comming from the
      * server.
@@ -113,4 +112,9 @@ public abstract class XmppParser implements XMLEventListener {
             currentBlock.setText( text );
         }
     }
+
+
+	protected void resetXmppParser() {
+		currentBlock = null;
+	}
 }

@@ -144,7 +144,9 @@ public class XmppStream extends XmppParser {
     }
     
     public void initiateStream() throws IOException {
-        
+        //reset parser stack
+    	resetXmppParser();
+    	
         //sendQueue=new Vector();
         
         StringBuilder header=new StringBuilder("<stream:stream to='" )
@@ -173,7 +175,6 @@ public class XmppStream extends XmppParser {
             if (!xmppV1) {
             	NonSASLAuth nsa = new NonSASLAuth();
                 addBlockListener(nsa);
-                addBlockListener(new AuthFallback());
                 nsa.jabberIqAuth(NonSASLAuth.AUTH_GET, this);
             }
             
@@ -188,7 +189,7 @@ public class XmppStream extends XmppParser {
         if (currentBlock == null) {
             if (name.equals( "stream:stream" ) ) {
                 //dataStream.closeConnection();
-                throw new XMLException("Normal stream shutdown");
+                throw new XmppTerminatedException("Normal stream shutdown");
             }
             return;
         }
