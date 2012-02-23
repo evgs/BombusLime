@@ -240,6 +240,8 @@ public class XmppStream extends XmppParser {
     }*/
     
     public void connect() throws UnknownHostException, IOException, XMLException, XmppException {
+    	account.runtimeIsSecure = false;
+    	
     	xmppV1 = true;
     	
         loggedIn = false;
@@ -368,6 +370,7 @@ public class XmppStream extends XmppParser {
      */
     
     public void close() {
+    	account.runtimeStatus = XmppPresence.PRESENCE_OFFLINE;
     	
     	cancelKeepAliveTimer();
         //if (keepAlive!=null) keepAlive.destroyTask();
@@ -448,6 +451,8 @@ public class XmppStream extends XmppParser {
     	this.status = status;
     	this.statusMessage = statusMessage;
     	this.priority = priority;
+    	
+    	account.runtimeStatus = status;
     }
     
     
@@ -559,6 +564,7 @@ public class XmppStream extends XmppParser {
     }
     public void setTLS() throws IOException {
         ((NetworkSocketDataStream)dataStream).setTLS();
+        account.runtimeIsSecure = true;
     }
     
     public boolean isSecured() {
@@ -566,6 +572,7 @@ public class XmppStream extends XmppParser {
     }
 
     void loginSuccess() {
+    	account.runtimeStatus = status;
     	
     	//remove all auth listeners
     	dispatcherQueue.clear();
