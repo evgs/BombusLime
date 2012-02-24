@@ -49,6 +49,7 @@ public class IqFallback extends XmppObjectListener {
 			f.setAttribute("to", from);
 			f.setAttribute("from", null);
 			f.setAttribute("type", "error");
+			f.setAttribute("xml:lang", null);
 			
 			f.addChild(err.construct());
 
