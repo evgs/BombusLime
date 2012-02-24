@@ -286,7 +286,8 @@ public class XmppStream extends XmppParser {
 			
 			switch (l.getResult()) {
 			case Lookup.HOST_NOT_FOUND:
-				throw new UnknownHostException("Host not found: "+server);
+				//this case should be handled like TYPE_NOT_FOUND for certain servers
+				//throw new UnknownHostException("Host not found: "+server);
 				
 			case Lookup.TYPE_NOT_FOUND:
 				LimeLog.i("SRV", server + " has no SRV record", null);
