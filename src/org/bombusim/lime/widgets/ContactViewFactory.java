@@ -86,7 +86,7 @@ public class ContactViewFactory {
         	presenceIndex = XmppPresence.PRESENCE_UNKNOWN;
         }
         
-        holder.status.setImageBitmap(mIconStar[c.getPresence()]);
+        holder.status.setImageBitmap(mIconStar[presenceIndex]);
         holder.jid.setText(c.getScreenName());
         holder.presence.setText(c.getStatusMessage());
         
