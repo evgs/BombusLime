@@ -63,6 +63,14 @@ public final class strconv {
         return b.toString();
     }
     
+    /**
+     * This method is deprecated - not safe for UTF-8
+     * 
+     * use toBase64( byte source[], int len) instead
+     * @param source
+     * @return
+     */
+    @Deprecated
     public final static String toBase64( String source) {
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
         
@@ -91,6 +99,10 @@ public final class strconv {
             out[index+0] = alphabet.charAt(val & 0x3F);
         }
         return new String(out);
+    }
+    
+    public final static String toBase64( byte source[]) {
+    	return toBase64(source, source.length);
     }
     
     public final static String toBase64( byte source[], int len) {
@@ -204,6 +216,10 @@ public final class strconv {
         bo=util.strconv.fromBase64(b64);
     */
     
+    /**
+     * Should be used String.getBytes(String encoding) instead to avoid double-encoding cases 
+     */
+    @Deprecated
     public static String unicodeToUTF(String src) {
         return toUTFSb(new StringBuilder(src)).toString();
     }
