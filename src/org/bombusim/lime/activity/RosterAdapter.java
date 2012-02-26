@@ -137,23 +137,27 @@ public class RosterAdapter extends BaseAdapter {
 		
 		//1. reset groups
 		for (RosterGroup group: groups) { 	group.contacts.clear(); }
-		
-		//2. populate groups with contacts
-		//TODO: collate by roster jid
-		for (Contact contact: contacts) {
-			String allGroups = contact.getAllGroups();
-			if (allGroups == null) {
-				//TODO: group sorting indexes
-				addContactToGroup(contact, "- No group");
-				continue;
-			}
+
+		synchronized (contacts) {
 			
-			String cgroups[] = allGroups.split("\t");
-			for (String cg : cgroups) {
-				addContactToGroup(contact, cg);
+			//2. populate groups with contacts
+			//TODO: collate by roster jid
+			for (Contact contact: contacts) {
+				String allGroups = contact.getAllGroups();
+				if (allGroups == null) {
+					//TODO: group sorting indexes
+					addContactToGroup(contact, "- No group");
+					continue;
+				}
+				
+				String cgroups[] = allGroups.split("\t");
+				for (String cg : cgroups) {
+					addContactToGroup(contact, cg);
+				}
 			}
-		}
 		
+		}
+
 		//3. remove empty groups
 		int i=0;
 		while (i<groups.size()) {

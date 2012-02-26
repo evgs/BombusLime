@@ -44,42 +44,45 @@ public class Roster {
 	public ArrayList<Contact> getContacts() { return contacts; }
 
 	public void replaceRoster(ArrayList<Contact> updates, String rosterJid, boolean replaced) {
-		//finalize all pending updates
-		updateDB();  
-
-		//1. mark all for drop
-		
-		if (replaced)
-		for (Contact c : contacts) {
-			if (c.getRosterJid().equals(rosterJid))
-			c.setUpdate(Contact.UPDATE_DROP);
-		}
-		
-		//2. import or update r
-		for (Contact upd : updates) {
-			int i = contacts.indexOf(upd);
-			if (i<0) {
-				contacts.add(upd);
-				upd.setUpdate(Contact.UPDATE_SAVE);
-			} else {
-				Contact o = contacts.get(i);
-				o.setUpdate(Contact.UPDATE_NONE);
-				o.update(upd);
+		synchronized (contacts) {
+				
+			//finalize all pending updates
+			updateDB();  
+	
+			//1. mark all for drop
+			
+			if (replaced)
+			for (Contact c : contacts) {
+				if (c.getRosterJid().equals(rosterJid))
+				c.setUpdate(Contact.UPDATE_DROP);
 			}
+			
+			//2. import or update r
+			for (Contact upd : updates) {
+				int i = contacts.indexOf(upd);
+				if (i<0) {
+					contacts.add(upd);
+					upd.setUpdate(Contact.UPDATE_SAVE);
+				} else {
+					Contact o = contacts.get(i);
+					o.setUpdate(Contact.UPDATE_NONE);
+					o.update(upd);
+				}
+			}
+			
+			//3. finalize transaction
+			updateDB();
+			
+			//4. check all avatars
+			
+			//massive avatar request
+			//for (int index = 0; index < contacts.size(); index++) {
+			//	contacts.get(index).getLazyAvatar(false);
+			//}
+			
+			Collections.sort(contacts);
+	
 		}
-		
-		//3. finalize transaction
-		updateDB();
-		
-		//4. check all avatars
-		
-		//massive avatar request
-		//for (int index = 0; index < contacts.size(); index++) {
-		//	contacts.get(index).getLazyAvatar(false);
-		//}
-		
-		Collections.sort(contacts);
-		
 	}
 	
 	private void loadDB(String rosterJid) {
