@@ -24,6 +24,7 @@
 package org.bombusim.xmpp;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
@@ -113,12 +114,14 @@ public class SASLAuth extends XmppObjectListener{
             		
                     auth.setAttribute("mechanism", "PLAIN");
                     String plain=
-                            strconv.unicodeToUTF(bareJid)
-                            +(char)0x00
-                            +strconv.unicodeToUTF(username)
-                            +(char)0x00
-                            +strconv.unicodeToUTF(password);
-                    auth.setText(strconv.toBase64(plain));
+                            bareJid + (char)0x00 + username + (char)0x00 + password;
+                    
+                    try {
+                    	auth.setText(strconv.toBase64(plain.getBytes("UTF-8")));
+                    } catch (UnsupportedEncodingException e) {
+                    	e.printStackTrace();
+                    	return BLOCK_REJECTED;
+                    }
                     
                     stream.send(auth);
                     //listener.loginMessage(SR.MS_AUTH);
@@ -169,8 +172,8 @@ public class SASLAuth extends XmppObjectListener{
         		String password = stream.account.password;
                 
                 resp.setText(responseMd5Digest(
-                        strconv.unicodeToUTF(username),
-                        strconv.unicodeToUTF(password),
+                        username,
+                        password,
                         server,
                         "xmpp/"+server,
                         nonce,
@@ -268,11 +271,19 @@ public class SASLAuth extends XmppObjectListener{
 			md5 = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) { e.printStackTrace(); return null; }
 		
-        md5.update(user.getBytes());
-        md5.update((byte)':');
-        md5.update(realm.getBytes());
-        md5.update((byte)':');
-        md5.update(pass.getBytes());
+        try {
+        	
+			md5.update(user.getBytes("UTF-8"));
+	        md5.update((byte)':');
+	        md5.update(realm.getBytes("UTF-8"));
+	        md5.update((byte)':');
+	        md5.update(pass.getBytes("UTF-8"));
+
+        } catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return null;
+		}
+        
         byte[] hUserRealmPass = md5.digest();
         
         md5.update(hUserRealmPass);
@@ -303,10 +314,14 @@ public class SASLAuth extends XmppObjectListener{
                 "nonce=\""+nonce+"\",nc="+nc+",cnonce=\""+cnonce+"\"," +
                 "qop=auth,digest-uri=\""+digestUri+"\"," +
                 "response=\""+hResp+"\",charset=utf-8";
-        String resp = strconv.toBase64(out);
-        //System.out.println(decodeBase64(resp));
+		try {
+			return strconv.toBase64(out.getBytes("UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
         
-        return resp;
     }
 
 	public final static int PRIORITY_SASLAUTH = PRIORITY_AUTH;

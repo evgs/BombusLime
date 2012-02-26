@@ -23,6 +23,7 @@
 
 package org.bombusim.xmpp;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -72,7 +73,13 @@ public class NonSASLAuth extends XmppObjectListener{
 				} catch (NoSuchAlgorithmException e) { e.printStackTrace(); return; }
 				
                 sha1.update(stream.getSessionId().getBytes());
-                sha1.update((strconv.unicodeToUTF(password)).getBytes() );
+                
+                try {
+                	sha1.update(password.getBytes("UTF-8") );
+                } catch (UnsupportedEncodingException e) { 
+                	e.printStackTrace();
+                }
+                
                 String digestHex = strconv.byteArrayToHexString(sha1.digest());
                 query.addChild("digest", digestHex );
 
