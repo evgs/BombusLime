@@ -54,8 +54,15 @@ public class SASLAuth extends XmppObjectListener{
             if (mech!=null) {
                 // first stream - step 1. selecting authentication mechanism
                 
-                //trying DIGEST-MD5 if enabled
+                //trying secure authentication if enabled
                 if (stream.account.enablePlainAuth != XmppAccount.PLAIN_AUTH_ALWAYS)  {
+                	// SCRAM-SHA-1 mechanism
+                	if (mech.getChildBlockByText("SCRAM-SHA-1")!=null) {
+                		new SASL_ScramSha1().start(stream);
+                		
+	                    return XmppObjectListener.BLOCK_PROCESSED;
+	                }
+
                 	// DIGEST-MD5 mechanism
                 	if (mech.getChildBlockByText("DIGEST-MD5")!=null) {
                 		new SASL_DigestMD5().start(stream);
