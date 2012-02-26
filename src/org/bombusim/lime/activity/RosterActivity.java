@@ -209,6 +209,8 @@ public class RosterActivity extends ListActivity {
 		return false;
 	}
 	
+	Object contextItem;
+	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
@@ -217,7 +219,7 @@ public class RosterActivity extends ListActivity {
 		
 		int pos = ((AdapterContextMenuInfo)menuInfo).position;
 		
-		Object contextItem = getListAdapter().getItem(pos);
+		contextItem = getListAdapter().getItem(pos);
 		
 		if (contextItem instanceof RosterGroup) {
 			//TODO: context menu for group
@@ -248,7 +250,7 @@ public class RosterActivity extends ListActivity {
 		
 		AdapterContextMenuInfo cmi = (AdapterContextMenuInfo) item.getMenuInfo();
 
-		Object contextItem = getListAdapter().getItem(cmi.position);
+		//contextItem = getListAdapter().getItem(cmi.position);
 
 		if (contextItem instanceof Contact) {
 			final Contact ctc = (Contact) contextItem;
