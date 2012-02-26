@@ -53,21 +53,13 @@ public class SASLAuth extends XmppObjectListener{
         	XmppObject mech=data.getChildBlock("mechanisms");
             if (mech!=null) {
                 // first stream - step 1. selecting authentication mechanism
-                //common body
-                XmppObject auth=new XmppObject("auth", null,null);
-                auth.setNameSpace("urn:ietf:params:xml:ns:xmpp-sasl");
                 
                 //trying DIGEST-MD5 if enabled
-                if (stream.account.enablePlainAuth != XmppAccount.PLAIN_AUTH_ALWAYS) 
-                {
-                		// DIGEST-MD5 mechanism
-	                	if (mech.getChildBlockByText("DIGEST-MD5")!=null) {
-	                	
-	            		LimeLog.i("SASL", "Authentication: DIGEST-MD5", null);
-	                	
-	                    auth.setAttribute("mechanism", "DIGEST-MD5");
-	                    
-	                    stream.send(auth);
+                if (stream.account.enablePlainAuth != XmppAccount.PLAIN_AUTH_ALWAYS)  {
+                	// DIGEST-MD5 mechanism
+                	if (mech.getChildBlockByText("DIGEST-MD5")!=null) {
+                		new SASL_DigestMD5().start(stream);
+                		
 	                    return XmppObjectListener.BLOCK_PROCESSED;
 	                }
                 }
@@ -112,6 +104,9 @@ public class SASLAuth extends XmppObjectListener{
             		String username = jid.getUser();
             		String password = stream.account.password;
             		
+                    XmppObject auth=new XmppObject("auth", null,null);
+                    auth.setNameSpace("urn:ietf:params:xml:ns:xmpp-sasl");
+            		
                     auth.setAttribute("mechanism", "PLAIN");
                     String plain=
                             bareJid + (char)0x00 + username + (char)0x00 + password;
@@ -148,45 +143,7 @@ public class SASLAuth extends XmppObjectListener{
             
             return BLOCK_REJECTED;
             
-        } else if (data.getTagName().equals("challenge")) {
-            // first stream - step 2,3. reaction to challenges
-            
-            String challenge=decodeBase64(data.getText());
-            //System.out.println(challenge);
-            
-            XmppObject resp=new XmppObject("response", null, null);
-            resp.setNameSpace("urn:ietf:params:xml:ns:xmpp-sasl");
-            
-            int nonceIndex=challenge.indexOf("nonce=");
-                // first stream - step 2. generating DIGEST-MD5 response due to challenge
-            if (nonceIndex>=0) {
-                nonceIndex+=7;
-                String nonce=challenge.substring(nonceIndex, challenge.indexOf('\"', nonceIndex));
-                
-                Random rnd = new Random(System.currentTimeMillis());
-                String cnonce="Lime" + rnd.nextLong();
-                
-            	XmppJid jid = new XmppJid(stream.account.userJid);
-        		String username = jid.getUser();
-        		String server = jid.getServer();
-        		String password = stream.account.password;
-                
-                resp.setText(responseMd5Digest(
-                        username,
-                        password,
-                        server,
-                        "xmpp/"+server,
-                        nonce,
-                        cnonce ));
-            }
-                // first stream - step 3. sending second empty response due to second challenge
-            //if (challenge.startsWith("rspauth")) {}
-                
-            stream.send(resp);
-            return XmppObjectListener.BLOCK_PROCESSED;
-        }
-  
-        else if ( data.getTagName().equals("failure")) {
+        } else if ( data.getTagName().equals("failure")) {
             // first stream - step 4a. not authorized
         	throw new XmppAuthException(XmppError.decodeSaslError(data).toString());
         	
@@ -228,101 +185,7 @@ public class SASLAuth extends XmppObjectListener{
         return XmppObjectListener.BLOCK_REJECTED;
     }
     
-    private String decodeBase64(String src)  {
-        int len=0;
-        int ibuf=1;
-        StringBuilder out=new StringBuilder();
-        
-        for (int i=0; i<src.length(); i++) {
-            int nextChar = src.charAt(i);
-            int base64=-1;
-            if (nextChar>'A'-1 && nextChar<'Z'+1) base64=nextChar-'A';
-            else if (nextChar>'a'-1 && nextChar<'z'+1) base64=nextChar+26-'a';
-            else if (nextChar>'0'-1 && nextChar<'9'+1) base64=nextChar+52-'0';
-            else if (nextChar=='+') base64=62;
-            else if (nextChar=='/') base64=63;
-            else if (nextChar=='=') {base64=0; len++;} else if (nextChar=='<') break;
-            if (base64>=0) ibuf=(ibuf<<6)+base64;
-            if (ibuf>=0x01000000){
-                out.append( (char)((ibuf>>16) &0xff) );
-                if (len<2) out.append( (char)((ibuf>>8) &0xff) );
-                if (len==0) out.append( (char)(ibuf &0xff) );
-                //len+=3;
-                ibuf=1;
-            }
-        }
-        return out.toString();
-    }
 
-    /**
-     * This routine generates MD5-DIGEST response via SASL specification
-     * @param user
-     * @param pass
-     * @param realm
-     * @param digest_uri
-     * @param nonce
-     * @param cnonce
-     * @return
-     */
-    private String responseMd5Digest(String user, String pass, String realm, String digestUri, String nonce, String cnonce) {
-
-    	MessageDigest md5;
-		try {
-			md5 = MessageDigest.getInstance("MD5");
-		} catch (NoSuchAlgorithmException e) { e.printStackTrace(); return null; }
-		
-        try {
-        	
-			md5.update(user.getBytes("UTF-8"));
-	        md5.update((byte)':');
-	        md5.update(realm.getBytes("UTF-8"));
-	        md5.update((byte)':');
-	        md5.update(pass.getBytes("UTF-8"));
-
-        } catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			return null;
-		}
-        
-        byte[] hUserRealmPass = md5.digest();
-        
-        md5.update(hUserRealmPass);
-        md5.update((byte)':');
-        md5.update(nonce.getBytes());
-        md5.update((byte)':');
-        md5.update(cnonce.getBytes());
-        String hA1 = strconv.byteArrayToHexString( md5.digest() );
-        
-        md5.update("AUTHENTICATE:".getBytes());
-        md5.update(digestUri.getBytes());
-        String hA2 = strconv.byteArrayToHexString( md5.digest() );
-        
-        String nc="00000001";
-        
-        md5.update(hA1.getBytes());
-        md5.update((byte)':');
-        md5.update(nonce.getBytes());
-        md5.update((byte)':');
-        md5.update(nc.getBytes());
-        md5.update((byte)':');
-        md5.update(cnonce.getBytes());
-        md5.update(":auth:".getBytes());
-        md5.update(hA2.getBytes());
-        String hResp = strconv.byteArrayToHexString( md5.digest() );
-        
-        String out = "username=\""+user +"\",realm=\""+realm+"\"," +
-                "nonce=\""+nonce+"\",nc="+nc+",cnonce=\""+cnonce+"\"," +
-                "qop=auth,digest-uri=\""+digestUri+"\"," +
-                "response=\""+hResp+"\",charset=utf-8";
-		try {
-			return strconv.toBase64(out.getBytes("UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-        
-    }
 
 	public final static int PRIORITY_SASLAUTH = PRIORITY_AUTH;
 	@Override

@@ -159,6 +159,33 @@ public final class strconv {
     }
     
     
+    public static String decodeBase64(String src)  {
+        int len=0;
+        int ibuf=1;
+        StringBuilder out=new StringBuilder();
+        
+        for (int i=0; i<src.length(); i++) {
+            int nextChar = src.charAt(i);
+            int base64=-1;
+            if (nextChar>'A'-1 && nextChar<'Z'+1) base64=nextChar-'A';
+            else if (nextChar>'a'-1 && nextChar<'z'+1) base64=nextChar+26-'a';
+            else if (nextChar>'0'-1 && nextChar<'9'+1) base64=nextChar+52-'0';
+            else if (nextChar=='+') base64=62;
+            else if (nextChar=='/') base64=63;
+            else if (nextChar=='=') {base64=0; len++;} else if (nextChar=='<') break;
+            if (base64>=0) ibuf=(ibuf<<6)+base64;
+            if (ibuf>=0x01000000){
+                out.append( (char)((ibuf>>16) &0xff) );
+                if (len<2) out.append( (char)((ibuf>>8) &0xff) );
+                if (len==0) out.append( (char)(ibuf &0xff) );
+                //len+=3;
+                ibuf=1;
+            }
+        }
+        return out.toString();
+    }
+    
+    
     public static byte[] fromBase64(String s) {
         return baosFromBase64(s).toByteArray();
                 
