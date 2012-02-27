@@ -507,18 +507,8 @@ public class XmppStream extends XmppParser {
     
     public boolean send( XmppObject block )  {
     	
-    	StringBuilder data=new StringBuilder(4096);
-    	block.constructXML(data);
-    	
-   		ByteArrayOutputStream baos = new ByteArrayOutputStream(4096);
-   		int dp=0;
-    		
-   		while (dp<data.length()) {
-    		baos.write((byte)data.charAt(dp++));
-    	}
-    		
-   		byte[] bytes = baos.toByteArray();
-   		int length = baos.size();
+   		byte[] bytes = block.getBytes();
+   		int length = bytes.length;
     		
     	try {
     		send(bytes, length);

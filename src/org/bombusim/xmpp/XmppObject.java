@@ -147,13 +147,11 @@ public class XmppObject
    * Method to return the data as a byte stream ready to send over
    * the wire
    *
-   * @return The data to send as a byte array
+   * @return UTF-8 encoded data to send as a byte array
    */
 
-  public byte[] getBytes()
-  {
-    String data = toString();
-    return data.getBytes();
+  public byte[] getBytes()  {
+	  return toString().getBytes(); //TODO: Default android encoding=UTF-8
   }
 
   /**
@@ -296,11 +294,10 @@ public class XmppObject
    * @return The element as an XML string
    */
 
-  public String toString()
-  {
-    StringBuilder data = new StringBuilder();
-    constructXML(data);
-    return data.toString();
+  public String toString() {
+	  StringBuilder data = new StringBuilder(4096);
+	  constructXML(data);
+	  return data.toString();
   }
 
   public void constructXML(StringBuilder data) {

@@ -101,15 +101,15 @@ public final class XMLUtils {
                 case '>':   dest.append("&gt;"); continue;
                 case '\'':  dest.append("&apos;"); continue;
                 case 0:     continue; //cutout any zeroes
-                default: 
+                default:    dest.append(ch); continue;  
+                	/* UTF-8 encoding was moved out
                 	//UTF-8 encoding
-                    //TODO: ескэйпить коды <0x20
                 	if (ch<=0x7f) { 
                 		dest.append(ch); 
                 		continue; 
                 	}
                 	
-                    if (((ch >= 0x80) && (ch <= 0x7ff)) /*TODO: WTF?  || (ch==0)) */ ) {
+                    if (((ch >= 0x80) && (ch <= 0x7ff))  ) {
                         dest.append((char)(0xc0 | (0x1f & (ch >> 6))))
                             .append((char)(0x80 | (0x3f & ch)));
                     }
@@ -118,6 +118,7 @@ public final class XMLUtils {
                             .append( (char)(0x80 | (0x3f & (ch >>  6))) )
                             .append( (char)(0x80 | (0x3f & (ch)      )) );
                     }
+                    */
             }
         }
     }
