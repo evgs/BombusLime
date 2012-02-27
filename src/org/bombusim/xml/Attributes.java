@@ -92,9 +92,9 @@ public final class Attributes {
 		while (index<values.size()) {
 			sb.append(' ');
 			sb.append( values.get(index) )
-			  .append("='")
-			  .append( values.get(index+1) )
-			  .append("'");
+			  .append("='");
+			XMLUtils.appendPlainText(sb, values.get(index+1) );
+			sb.append("'");
 			index+=2;
 		}
 	}
