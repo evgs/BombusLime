@@ -30,6 +30,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 import org.bombusim.lime.logger.LimeLog;
+import org.bombusim.sasl.SASL_DigestMD5;
+import org.bombusim.sasl.SASL_Plain;
+import org.bombusim.sasl.SASL_ScramSha1;
+import org.bombusim.sasl.SaslAuthMethod;
 import org.bombusim.util.strconv;
 import org.bombusim.xmpp.exception.XmppAuthException;
 import org.bombusim.xmpp.exception.XmppException;
@@ -44,7 +48,15 @@ public class SASLAuth extends XmppObjectListener{
     /** Creates a new instance of SASLAuth */
     //public SASLAuth(Account account, LoginListener listener, JabberStream stream) {
 	
-    public SASLAuth() {  }
+    public SASLAuth() { }
+    
+    private SaslAuthMethod[] saslMethods = {
+    		new SASL_ScramSha1(),
+    		new SASL_DigestMD5(),
+    		new SASL_Plain()
+    };
+    
+    private SaslAuthMethod saslMethod;
     
     public int blockArrived(XmppObject data, XmppStream stream) throws XmppException, IOException {
         //System.out.println(data.toString());
@@ -54,86 +66,47 @@ public class SASLAuth extends XmppObjectListener{
             if (mech!=null) {
                 // first stream - step 1. selecting authentication mechanism
                 
-                //trying secure authentication if enabled
-                if (stream.account.enablePlainAuth != XmppAccount.PLAIN_AUTH_ALWAYS)  {
-                	// SCRAM-SHA-1 mechanism
-                	if (mech.getChildBlockByText("SCRAM-SHA-1")!=null) {
-                		new SASL_ScramSha1().start(stream);
+            	for (SaslAuthMethod method : saslMethods) {
+            		if (mech.getChildBlockByText(method.getMethodName()) != null) {
+            			
+            			if (method.isSecure()) {
+            				//check if secure auth is not disabled
+            				if (stream.account.enablePlainAuth == XmppAccount.PLAIN_AUTH_ALWAYS) continue;
+            			} else {
+            				//check if we can use unsecured auth
+                        	if (stream.account.enablePlainAuth == XmppAccount.PLAIN_AUTH_NEVER) {
+                        		throw new XmppAuthException("Plain authentication disabled");
+                        	}
+
+                        	if (!stream.isSecured()) {
+            					if (stream.account.enablePlainAuth != XmppAccount.PLAIN_AUTH_ALWAYS) {
+            						throw new XmppAuthException("Plain authentication disabled over non-secured connection");
+            					} else {
+                        			LimeLog.w("SASL", "UNSECURE PLAIN auth", null);
+            					}
+                        	}
+            			}
+            			
+            			saslMethod = method;
+            			
+            			String authText = saslMethod.init(new XmppJid(stream.account.userJid), stream.account.password);
+            			
+                        XmppObject auth=new XmppObject("auth", null,null);
+                        auth.setNameSpace("urn:ietf:params:xml:ns:xmpp-sasl");
                 		
-	                    return XmppObjectListener.BLOCK_PROCESSED;
-	                }
+                        auth.setAttribute("mechanism", method.getMethodName());
 
-                	// DIGEST-MD5 mechanism
-                	if (mech.getChildBlockByText("DIGEST-MD5")!=null) {
-                		new SASL_DigestMD5().start(stream);
-                		
-	                    return XmppObjectListener.BLOCK_PROCESSED;
-	                }
-                }
-                
-//#if SASL_XGOOGLETOKEN
-                // X-GOOGLE-TOKEN mechanism
-/*                if (mech.getChildBlockByText("X-GOOGLE-TOKEN")!=null  && token!=null) {
-                    auth.setAttribute("mechanism", "X-GOOGLE-TOKEN");
-                    auth.setText(token);
-                    
-                    //System.out.println(auth.toString());
-                    
-                    stream.send(auth);
-                    listener.loginMessage(SR.MS_AUTH);
-                    return JabberBlockListener.BLOCK_PROCESSED;
-                    
-                }
-//#endif
- * 
- */
-
-                if (mech.getChildBlockByText("PLAIN")!=null) {
-                	
-                	//in normal case PLAIN auth may be secured only over SSL/TLS connection
-                	
-                	if (!stream.isSecured() && stream.account.enablePlainAuth != XmppAccount.PLAIN_AUTH_ALWAYS) {
-                		throw new XmppAuthException("Plain authentication disabled over non-secured connection");
-                	}
-                	if (stream.account.enablePlainAuth == XmppAccount.PLAIN_AUTH_NEVER) {
-                		throw new XmppAuthException("Plain authentication disabled");
-                	}
-
-
-            		if (stream.isSecured()) {
-            			LimeLog.i("SASL", "PLAIN auth over secured stream", null);
-            		} else {
-            			LimeLog.w("SASL", "UNSECURE PLAIN auth", null);
+                       	auth.setText(strconv.toBase64(authText.getBytes())); // TODO: (Android-default UTF8)
+                        
+                        stream.send(auth);
+                        //listener.loginMessage(SR.MS_AUTH);
+                        return XmppObjectListener.BLOCK_PROCESSED;
             		}
-                	
-                	XmppJid jid = new XmppJid(stream.account.userJid);
-            		String bareJid = jid.getBareJid();
-            		String username = jid.getUser();
-            		String password = stream.account.password;
-            		
-                    XmppObject auth=new XmppObject("auth", null,null);
-                    auth.setNameSpace("urn:ietf:params:xml:ns:xmpp-sasl");
-            		
-                    auth.setAttribute("mechanism", "PLAIN");
-                    String plain=
-                            bareJid + (char)0x00 + username + (char)0x00 + password;
-                    
-                    try {
-                    	auth.setText(strconv.toBase64(plain.getBytes("UTF-8")));
-                    } catch (UnsupportedEncodingException e) {
-                    	e.printStackTrace();
-                    	return BLOCK_REJECTED;
-                    }
-                    
-                    stream.send(auth);
-                    //listener.loginMessage(SR.MS_AUTH);
-                    return XmppObjectListener.BLOCK_PROCESSED;
-                }
-                // no more method found
-                return BLOCK_REJECTED;
-                
-            } //SASL mechanisms
-            
+            	} //for methods
+            	
+            	throw new XmppAuthException("No known SASL auth methods found");
+            	
+            } //mech
             // second stream - step 1. binding resource
             else if (data.getChildBlock("bind")!=null) {
         		LimeLog.i("XMPP", "Binding resource", null);
@@ -150,11 +123,31 @@ public class SASLAuth extends XmppObjectListener{
             
             return BLOCK_REJECTED;
             
+        } else if (data.getTagName().equals("challenge")) {
+        	
+            String challenge = strconv.decodeBase64(data.getText());
+        	
+            String response = saslMethod.response(challenge);
+
+            XmppObject resp=new XmppObject("response", null, null);
+            resp.setNameSpace("urn:ietf:params:xml:ns:xmpp-sasl");
+ 
+            resp.setText(strconv.toBase64(response.getBytes()));
+
+            stream.send(resp);
+            
+            return BLOCK_PROCESSED;
+            
         } else if ( data.getTagName().equals("failure")) {
             // first stream - step 4a. not authorized
         	throw new XmppAuthException(XmppError.decodeSaslError(data).toString());
         	
         } else if ( data.getTagName().equals("success")) {
+        	String serverResponse = strconv.decodeBase64(data.getText());
+        	
+        	if (!saslMethod.success(serverResponse)) 
+        		throw new XmppAuthException("Can not verify server identity proof");
+        	
             // first stream - step 4b. success.
             try {
                 stream.initiateStream();

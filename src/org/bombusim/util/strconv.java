@@ -108,6 +108,8 @@ public final class strconv {
     public final static String toBase64( byte source[], int len) {
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
         
+        if (len==0) return null;
+        
         if (len<0) len=source.length;
         char[] out = new char[((len+2)/3)*4];
         for (int i=0, index=0; i<len; i+=3, index +=4) {

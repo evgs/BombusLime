@@ -1,8 +1,6 @@
-package org.bombusim.xmpp;
+package org.bombusim.sasl;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
@@ -12,17 +10,54 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.util.strconv;
-import org.bombusim.xmpp.exception.XmppException;
+import org.bombusim.xmpp.XmppJid;
 
 import android.util.Log;
 
-public class SASL_ScramSha1 extends XmppObjectListener {
-	
+public class SASL_ScramSha1 implements SaslAuthMethod {
+
+	private XmppJid jid;
+	String pass;
 	String cnonce;
 	String clientFirstMessageBare;
-	String pass;
 
 	Mac hmac;
+	
+
+	
+	@Override
+	public String getMethodName() { return "SCRAM-SHA-1"; }
+
+	@Override
+	public String init(XmppJid jid, String password) {
+		this.jid = jid;
+		this.pass = password;
+		
+		LimeLog.i("SASL", "Authentication: SCRAM-SHA-1", null);
+
+        calculateClientFirstMessage();
+        
+        return "n,,"+clientFirstMessageBare;
+		
+	}
+
+	@Override
+	public String response(String challenge) {
+        String serverFirstMessage = challenge;
+        
+        String clientFinalMessage = processServerMessage(serverFirstMessage);
+        
+        return clientFinalMessage;
+	}
+
+	@Override
+	public boolean success(String success) {
+		//TODO: verify server response
+		return true;
+	}
+	
+	@Override
+	public boolean isSecure() { return true; }
 	
 	public SASL_ScramSha1() {
 		try {
@@ -33,35 +68,7 @@ public class SASL_ScramSha1 extends XmppObjectListener {
 		}
 	}
 	
-	@Override
-	public int priority() { return SASLAuth.PRIORITY_SASLAUTH; }
 	
-	@Override
-	public int blockArrived(XmppObject data, XmppStream stream)
-			throws IOException, XmppException {
-		
-		if (data.getTagName().equals("challenge")) {
-            // first stream - step 2,3. reaction to challenges
-            
-            String serverFirstMessage = strconv.decodeBase64(data.getText());
-            
-            String clientFinalMessage = processServerMessage(serverFirstMessage);
-            
-            XmppObject resp=new XmppObject("response", null, null);
-            resp.setNameSpace("urn:ietf:params:xml:ns:xmpp-sasl");
-
-            resp.setText(strconv.toBase64(clientFinalMessage.getBytes()));
-            
-            stream.send(resp);
-            
-            //TODO: verify server response
-            
-            return NO_MORE_BLOCKS; 
-		}
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	private void xorB(byte[] dest, byte[] source) {
 		int l = dest.length;
 
@@ -119,35 +126,12 @@ public class SASL_ScramSha1 extends XmppObjectListener {
 		
 		return clientFinalMessageWithoutProof + ",p=" + strconv.toBase64(clientProof);
 		
-		
-		
 	}
 
-	public void start(XmppStream stream) {
-		stream.addBlockListener(this);
-		
-		LimeLog.i("SASL", "Authentication: SCRAM-SHA-1", null);
-    	
-        XmppObject auth=new XmppObject("auth", null,null);
-        auth.setNameSpace("urn:ietf:params:xml:ns:xmpp-sasl");
-		
-        auth.setAttribute("mechanism", "SCRAM-SHA-1");
-        
-        calculateClientFirstMessage(stream);
-        
-        pass = stream.account.password;
-        
-        auth.setText(strconv.toBase64(("n,,"+clientFirstMessageBare).getBytes()));
-        
-        stream.send(auth);
-		
-	}
-
-	protected void calculateClientFirstMessage(XmppStream stream) {
+	protected void calculateClientFirstMessage() {
 		Random rnd = new Random(System.currentTimeMillis());
         cnonce="Lime" + rnd.nextLong();
 
-        XmppJid jid = new XmppJid(stream.account.userJid);
 		String username = jid.getUser();
        
         clientFirstMessageBare = "n="+username + ",r=" + cnonce;
@@ -202,4 +186,5 @@ public class SASL_ScramSha1 extends XmppObjectListener {
 		String clientFinalMessage = processServerMessage("r=fyko+d2lbbFgONRv9qkxdawL3rfcNHYJY1ZVvWVs7j,s=QSXCR+Q6sek8bf92,i=4096");
 		Log.d("SCRAM-SHA1", clientFinalMessage);
 	}
+
 }
