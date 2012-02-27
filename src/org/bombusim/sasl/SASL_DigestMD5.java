@@ -19,6 +19,10 @@ public class SASL_DigestMD5 implements SaslAuthMechanism {
 
 	private String password;
 	private XmppJid jid;
+	
+	private String resp3;
+	
+	boolean serverAuthenticated = false;
 
 	@Override
 	public String getName() { return "DIGEST-MD5"; }
@@ -61,11 +65,13 @@ public class SASL_DigestMD5 implements SaslAuthMechanism {
         
         //TODO: verify server identity in 2nd challenge
         
+        if (challenge.contains(resp3)) serverAuthenticated = true;
+        
 	    return "";
 	}
 
 	@Override
-	public boolean success(String success) { return true; }
+	public boolean success(String success) { return serverAuthenticated; }
 
 
 
@@ -81,6 +87,8 @@ public class SASL_DigestMD5 implements SaslAuthMechanism {
      */
     private String responseMd5Digest(String user, String pass, String realm, String digestUri, String nonce, String cnonce) {
 
+        String nc="00000001";
+    	
     	MessageDigest md5;
 		try {
 			md5 = MessageDigest.getInstance("MD5");
@@ -108,11 +116,24 @@ public class SASL_DigestMD5 implements SaslAuthMechanism {
         md5.update(cnonce.getBytes());
         String hA1 = strconv.byteArrayToHexString( md5.digest() );
         
-        md5.update("AUTHENTICATE:".getBytes());
+
+        String hResp = hRespCalc("AUTHENTICATE:", digestUri, nonce, cnonce, nc, md5, hA1);
+        
+        resp3 = hRespCalc(":", digestUri, nonce, cnonce, nc, md5, hA1);
+        
+        return "username=\""+user +"\",realm=\""+realm+"\"," +
+                "nonce=\""+nonce+"\",nc="+nc+",cnonce=\""+cnonce+"\"," +
+                "qop=auth,digest-uri=\""+digestUri+"\"," +
+                "response=\""+hResp+"\",charset=utf-8";
+        
+    }
+
+	protected String hRespCalc(String a2s, String digestUri, String nonce, String cnonce,
+			String nc, MessageDigest md5, String hA1) {
+		md5.update(a2s.getBytes());
         md5.update(digestUri.getBytes());
         String hA2 = strconv.byteArrayToHexString( md5.digest() );
         
-        String nc="00000001";
         
         md5.update(hA1.getBytes());
         md5.update((byte)':');
@@ -124,12 +145,7 @@ public class SASL_DigestMD5 implements SaslAuthMechanism {
         md5.update(":auth:".getBytes());
         md5.update(hA2.getBytes());
         String hResp = strconv.byteArrayToHexString( md5.digest() );
-        
-        return "username=\""+user +"\",realm=\""+realm+"\"," +
-                "nonce=\""+nonce+"\",nc="+nc+",cnonce=\""+cnonce+"\"," +
-                "qop=auth,digest-uri=\""+digestUri+"\"," +
-                "response=\""+hResp+"\",charset=utf-8";
-        
-    }
+		return hResp;
+	}
 
 }
