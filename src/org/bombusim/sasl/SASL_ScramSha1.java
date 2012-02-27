@@ -14,7 +14,7 @@ import org.bombusim.xmpp.XmppJid;
 
 import android.util.Log;
 
-public class SASL_ScramSha1 implements SaslAuthMethod {
+public class SASL_ScramSha1 implements SaslAuthMechanism {
 
 	private XmppJid jid;
 	String pass;
@@ -26,7 +26,7 @@ public class SASL_ScramSha1 implements SaslAuthMethod {
 
 	
 	@Override
-	public String getMethodName() { return "SCRAM-SHA-1"; }
+	public String getName() { return "SCRAM-SHA-1"; }
 
 	@Override
 	public String init(XmppJid jid, String password) {

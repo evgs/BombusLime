@@ -2,8 +2,8 @@ package org.bombusim.sasl;
 
 import org.bombusim.xmpp.XmppJid;
 
-public interface SaslAuthMethod {
-	public String getMethodName();
+public interface SaslAuthMechanism {
+	public String getName();
 	public boolean isSecure();
 	public String init(XmppJid jid, String password);
 	public String response(String challenge);

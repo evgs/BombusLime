@@ -7,10 +7,10 @@ import org.bombusim.util.strconv;
 import org.bombusim.xmpp.XmppJid;
 import org.bombusim.xmpp.XmppObject;
 
-public class SASL_Plain implements SaslAuthMethod {
+public class SASL_Plain implements SaslAuthMechanism {
 
 	@Override
-	public String getMethodName() { return "PLAIN"; }
+	public String getName() { return "PLAIN"; }
 
 	@Override
 	public String init(XmppJid jid, String password) {

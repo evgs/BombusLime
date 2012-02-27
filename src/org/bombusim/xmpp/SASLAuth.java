@@ -33,7 +33,7 @@ import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.sasl.SASL_DigestMD5;
 import org.bombusim.sasl.SASL_Plain;
 import org.bombusim.sasl.SASL_ScramSha1;
-import org.bombusim.sasl.SaslAuthMethod;
+import org.bombusim.sasl.SaslAuthMechanism;
 import org.bombusim.util.strconv;
 import org.bombusim.xmpp.exception.XmppAuthException;
 import org.bombusim.xmpp.exception.XmppException;
@@ -50,13 +50,13 @@ public class SASLAuth extends XmppObjectListener{
 	
     public SASLAuth() { }
     
-    private SaslAuthMethod[] saslMethods = {
+    private SaslAuthMechanism[] saslMechanisms = {
     		new SASL_ScramSha1(),
     		new SASL_DigestMD5(),
     		new SASL_Plain()
     };
     
-    private SaslAuthMethod saslMethod;
+    private SaslAuthMechanism selectedMechanism;
     
     public int blockArrived(XmppObject data, XmppStream stream) throws XmppException, IOException {
         //System.out.println(data.toString());
@@ -66,10 +66,10 @@ public class SASLAuth extends XmppObjectListener{
             if (mech!=null) {
                 // first stream - step 1. selecting authentication mechanism
                 
-            	for (SaslAuthMethod method : saslMethods) {
-            		if (mech.getChildBlockByText(method.getMethodName()) != null) {
+            	for (SaslAuthMechanism m : saslMechanisms) {
+            		if (mech.getChildBlockByText(m.getName()) != null) {
             			
-            			if (method.isSecure()) {
+            			if (m.isSecure()) {
             				//check if secure auth is not disabled
             				if (stream.account.enablePlainAuth == XmppAccount.PLAIN_AUTH_ALWAYS) continue;
             			} else {
@@ -87,14 +87,14 @@ public class SASLAuth extends XmppObjectListener{
                         	}
             			}
             			
-            			saslMethod = method;
+            			selectedMechanism = m;
             			
-            			String authText = saslMethod.init(new XmppJid(stream.account.userJid), stream.account.password);
+            			String authText = selectedMechanism.init(new XmppJid(stream.account.userJid), stream.account.password);
             			
                         XmppObject auth=new XmppObject("auth", null,null);
                         auth.setNameSpace("urn:ietf:params:xml:ns:xmpp-sasl");
                 		
-                        auth.setAttribute("mechanism", method.getMethodName());
+                        auth.setAttribute("mechanism", selectedMechanism.getName());
 
                        	auth.setText(strconv.toBase64(authText.getBytes())); // TODO: (Android-default UTF8)
                         
@@ -104,7 +104,7 @@ public class SASLAuth extends XmppObjectListener{
             		}
             	} //for methods
             	
-            	throw new XmppAuthException("No known SASL auth methods found");
+            	throw new XmppAuthException("No known SASL auth mechanisms found");
             	
             } //mech
             // second stream - step 1. binding resource
@@ -127,7 +127,7 @@ public class SASLAuth extends XmppObjectListener{
         	
             String challenge = strconv.decodeBase64(data.getText());
         	
-            String response = saslMethod.response(challenge);
+            String response = selectedMechanism.response(challenge);
 
             XmppObject resp=new XmppObject("response", null, null);
             resp.setNameSpace("urn:ietf:params:xml:ns:xmpp-sasl");
@@ -145,7 +145,7 @@ public class SASLAuth extends XmppObjectListener{
         } else if ( data.getTagName().equals("success")) {
         	String serverResponse = strconv.decodeBase64(data.getText());
         	
-        	if (!saslMethod.success(serverResponse)) 
+        	if (!selectedMechanism.success(serverResponse)) 
         		throw new XmppAuthException("Can not verify server identity proof");
         	
             // first stream - step 4b. success.

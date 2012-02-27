@@ -15,13 +15,13 @@ import org.bombusim.xmpp.XmppObjectListener;
 import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.exception.XmppException;
 
-public class SASL_DigestMD5 implements SaslAuthMethod {
+public class SASL_DigestMD5 implements SaslAuthMechanism {
 
 	private String password;
 	private XmppJid jid;
 
 	@Override
-	public String getMethodName() { return "DIGEST-MD5"; }
+	public String getName() { return "DIGEST-MD5"; }
 
 	@Override
 	public boolean isSecure() { return true; }
