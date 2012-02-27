@@ -20,6 +20,8 @@ public class SASL_ScramSha1 implements SaslAuthMechanism {
 	String pass;
 	String cnonce;
 	String clientFirstMessageBare;
+	
+	String lServerSignature;
 
 	Mac hmac;
 	
@@ -52,8 +54,7 @@ public class SASL_ScramSha1 implements SaslAuthMechanism {
 
 	@Override
 	public boolean success(String success) {
-		//TODO: verify server response
-		return true;
+		return lServerSignature.equals(success);
 	}
 	
 	@Override
@@ -124,6 +125,12 @@ public class SASL_ScramSha1 implements SaslAuthMechanism {
 		byte[] clientProof = clientKey.clone();
 		xorB(clientProof, clientSignature);
 		
+		byte[] serverKey = getHMAC(saltedPassword).doFinal("Server Key".getBytes());
+		
+		byte[] serverSignature = getHMAC(serverKey).doFinal(authMessage.getBytes());
+		
+		lServerSignature = "v="+strconv.toBase64(serverSignature);
+		
 		return clientFinalMessageWithoutProof + ",p=" + strconv.toBase64(clientProof);
 		
 	}
@@ -185,6 +192,7 @@ public class SASL_ScramSha1 implements SaslAuthMechanism {
 		clientFirstMessageBare="n=user,r=fyko+d2lbbFgONRv9qkxdawL";
 		String clientFinalMessage = processServerMessage("r=fyko+d2lbbFgONRv9qkxdawL3rfcNHYJY1ZVvWVs7j,s=QSXCR+Q6sek8bf92,i=4096");
 		Log.d("SCRAM-SHA1", clientFinalMessage);
+		Log.d("SCRAM-SHA1", lServerSignature);
 	}
 
 }
