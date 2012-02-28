@@ -60,6 +60,7 @@ import org.xbill.DNS.Type;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 
 /**
  * The stream to a jabber server.
@@ -110,7 +111,7 @@ public class XmppStream extends XmppParser {
 	private ArrayList<XmppObject> incomingQueue;
 
 	
-	private Timer keepAliveTimer;
+	private Handler handler = new Handler();
 	
 	private EntityCaps caps;
 
@@ -404,37 +405,33 @@ public class XmppStream extends XmppParser {
         broadcastTerminatedConnection(new XmppTerminatedException("Connection closed"));
     }
 
+    private Runnable keepAliveTask = new Runnable() {
+		@Override
+		public void run() {
+			try {
+				sendKeepAlive(keepAliveType);
+				LimeLog.i("KeepAlive", "sent", null);
+				
+			} catch (IOException e) {
+				cancelKeepAliveTimer();
+				LimeLog.e("KeepAlive", "IOException", e.toString());
+			}
+			
+			long period = Lime.getInstance().prefs.keepAlivePeriodMinutes * KEEPALIVE_PERIOD_MINUTE;
+			handler.postDelayed(this, period);
+		}
+	};
+    
 	private void cancelKeepAliveTimer() {
-		if (keepAliveTimer != null) {
-    		keepAliveTimer.cancel();
-    		keepAliveTimer = null;
-    	}
+		handler.removeCallbacks(keepAliveTask);
 	}
     
 	private void startKeepAliveTimer() {
 		//cancel old timer
 		cancelKeepAliveTimer();
+
 		//start new timer
-		keepAliveTimer = new Timer();
-		
-		//TODO: reload keep-alive option every period 
-		//TODO: or describe option affects only after reconnect 
-		long period = Lime.getInstance().prefs.keepAlivePeriodMinutes * KEEPALIVE_PERIOD_MINUTE;
-		
-		keepAliveTimer.scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				try {
-					sendKeepAlive(keepAliveType);
-					LimeLog.i("KeepAlive", "sent", null);
-					
-				} catch (IOException e) {
-					cancel();
-					LimeLog.e("KeepAlive", "IOException", e.toString());
-				}
-				
-			}
-		}, period, period);
+		keepAliveTask.run();
 	}
 	
     private void broadcastTerminatedConnection(Exception exception) {
