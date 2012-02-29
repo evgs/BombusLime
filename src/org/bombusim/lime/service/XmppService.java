@@ -49,6 +49,9 @@ import android.os.IBinder;
 
 public class XmppService extends Service implements Runnable {
 
+    public static final String ON_KEEP_ALIVE = "onKeepAlive";
+    public static final String ON_BOOT       = "onBoot";
+    public static final String ON_STATUS     = "onStatusChange";
     private BroadcastReceiver br;
 
 	private XmppStream s;

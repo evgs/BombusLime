@@ -34,7 +34,7 @@ public class AutoRunOnBootCompleted extends BroadcastReceiver{
 		boolean autorun = PreferenceManager.getDefaultSharedPreferences(context)
 				            .getBoolean("AUTO_SERVICE_STARTUP", false); 
 		if (autorun)
-			context.startService(new Intent("onBoot", null, context, XmppService.class));
+			context.startService(new Intent(XmppService.ON_BOOT, null, context, XmppService.class));
 	}
 	
 }

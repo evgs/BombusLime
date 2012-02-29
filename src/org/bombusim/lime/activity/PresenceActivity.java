@@ -150,7 +150,7 @@ public class PresenceActivity extends Activity {
 			sb.doDisconnect();
 			Lime.getInstance().vcardResolver.restartQueue();
 		} else {
-			startService(new Intent(getBaseContext(), XmppService.class));
+			startService(new Intent(XmppService.ON_STATUS, null, getBaseContext(), XmppService.class));
 		}
 	}
 
