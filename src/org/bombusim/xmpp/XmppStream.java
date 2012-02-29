@@ -400,6 +400,7 @@ public class XmppStream extends XmppParser {
 
 
 	public void keepAlive() {
+		if (!loggedIn) return;
 		try {
 			sendKeepAlive(keepAliveType);
 			LimeLog.i("KeepAlive", "sent", null);
