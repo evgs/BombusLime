@@ -68,8 +68,6 @@ import android.os.Handler;
 
 public class XmppStream extends XmppParser {
     
-    private static final long KEEPALIVE_PERIOD_MINUTE = 60*1000; //1 minute
-
 	public static final int KEEP_ALIVE_TYPE_PING = 3;
 	public static final int KEEP_ALIVE_TYPE_IQ   = 2;
 	public static final int KEEP_ALIVE_TYPE_CHAR = 1;
@@ -110,8 +108,6 @@ public class XmppStream extends XmppParser {
 
 	private ArrayList<XmppObject> incomingQueue;
 
-	
-	private Handler handler = new Handler();
 	
 	private EntityCaps caps;
 
@@ -375,15 +371,12 @@ public class XmppStream extends XmppParser {
     	account.runtimeStatus = XmppPresence.PRESENCE_OFFLINE;
     	account.runtimeIsSecure = false;
     	
-    	cancelKeepAliveTimer();
         //if (keepAlive!=null) keepAlive.destroyTask();
         
     	//cancelling all XmppObjectListeners
         dispatcherQueue.clear();
         
         loggedIn = false;
-        
-        cancelKeepAliveTimer();
         
         try {
             send( "</stream:stream>" );
@@ -405,35 +398,18 @@ public class XmppStream extends XmppParser {
         broadcastTerminatedConnection(new XmppTerminatedException("Connection closed"));
     }
 
-    private Runnable keepAliveTask = new Runnable() {
-		@Override
-		public void run() {
-			try {
-				sendKeepAlive(keepAliveType);
-				LimeLog.i("KeepAlive", "sent", null);
-				
-			} catch (IOException e) {
-				cancelKeepAliveTimer();
-				LimeLog.e("KeepAlive", "IOException", e.toString());
-			}
-			
-			long period = Lime.getInstance().prefs.keepAlivePeriodMinutes * KEEPALIVE_PERIOD_MINUTE;
-			handler.postDelayed(this, period);
-		}
-	};
-    
-	private void cancelKeepAliveTimer() {
-		handler.removeCallbacks(keepAliveTask);
-	}
-    
-	private void startKeepAliveTimer() {
-		//cancel old timer
-		cancelKeepAliveTimer();
 
-		//start new timer
-		keepAliveTask.run();
+	public void keepAlive() {
+		try {
+			sendKeepAlive(keepAliveType);
+			LimeLog.i("KeepAlive", "sent", null);
+			
+		} catch (IOException e) {
+			LimeLog.e("KeepAlive", "IOException", e.toString());
+		}
+		
 	}
-	
+    
     private void broadcastTerminatedConnection(Exception exception) {
 		// TODO Auto-generated method stub
     	System.out.println("Broadcasted exception <Close>");
@@ -460,7 +436,7 @@ public class XmppStream extends XmppParser {
      *
      * @param The data to send to the server.
      */
-    public void sendKeepAlive(int type) throws IOException {
+    private void sendKeepAlive(int type) throws IOException {
         switch (type){
             case KEEP_ALIVE_TYPE_PING:
                 ping();
@@ -595,8 +571,6 @@ public class XmppStream extends XmppParser {
     	iqroster.queryRoster(this);
 
     	sendPresence();
-    	
-    	startKeepAliveTimer();
 
     }
 
