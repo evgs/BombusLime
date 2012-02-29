@@ -38,6 +38,8 @@ import org.bombusim.xmpp.exception.XmppTerminatedException;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.ResolverConfig;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -46,13 +48,16 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.util.Log;
 
 public class XmppService extends Service implements Runnable {
 
     public static final String ON_KEEP_ALIVE = "onKeepAlive";
     public static final String ON_BOOT       = "onBoot";
     public static final String ON_STATUS     = "onStatusChange";
-    private BroadcastReceiver br;
+
+	private BroadcastReceiver br;
 
 	private XmppStream s;
 
@@ -85,6 +90,13 @@ public class XmppService extends Service implements Runnable {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		
+		if (ON_KEEP_ALIVE.equals(intent.getAction())) {
+			keepAlive();
+			ka.releaseWakeLock();
+			
+			return START_STICKY;
+		}
         //LimeLog.i("XmppService", "Received start id " + startId, intent.toString());
 		
 		XmppAccount activeAccount = Lime.getInstance().getActiveAccount();
@@ -111,6 +123,7 @@ public class XmppService extends Service implements Runnable {
 	   	if (running) {
 	   		if (s.loggedIn)
 	   			s.sendPresence();
+	   		
 	   	} else {
 	   		doConnect();
 	   	}
@@ -152,6 +165,9 @@ public class XmppService extends Service implements Runnable {
 			   	s.setLocaleLang(lang);
 
 		        showNotification(true);
+		        
+		        ka.setAlarm(this);
+		        
 			   	s.connect();
 			   	
 			} catch (UnknownHostException e) {
@@ -192,6 +208,8 @@ public class XmppService extends Service implements Runnable {
 		   	
 	    	//TODO: check status (online/offline)
 		   	if (!networkAvailable) running = false;
+		   	
+		   	ka.cancelAlarm(this);
 		   	
 		   	s.close();
 		   	
@@ -276,4 +294,12 @@ public class XmppService extends Service implements Runnable {
         
         stopSelf();
 	}
+	
+	private KeepAliveAlarm ka = new KeepAliveAlarm();
+
+	public void keepAlive() {
+		//TODO: keep alive all connections
+		s.keepAlive();
+	}
+	
 }
