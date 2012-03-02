@@ -37,6 +37,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.Base64;
@@ -80,13 +81,42 @@ public final class Vcard {
 	}
 
 	private void decodeAvatar() {
+	    //TODO: split by two methods: decodeLargeAvatar (for VCard viewer) and scaleRosterAvatar 
+	    
+	    Bitmap avatarTmp;
+	    
+	    int h; int w;
+	    
 		byte[] photobin = Base64.decode(base64Photo, Base64.DEFAULT);
 	
-		int sz = Lime.getInstance().avatarSize;
-		avatar = BitmapFactory.decodeByteArray(photobin, 0, photobin.length);
+		//1. decode image size
+		BitmapFactory.Options opts = new BitmapFactory.Options();
+		opts.inJustDecodeBounds = true; 
+		BitmapFactory.decodeByteArray(photobin, 0, photobin.length, opts);
 		
-		int h=avatar.getHeight();
-		int w=avatar.getWidth();
+		h = opts.outHeight;
+		w = opts.outWidth;
+
+		//2. calculate scale factor
+		int scaleFactor=1;
+		int sz = Lime.getInstance().avatarSize;
+		
+		int szt=sz*2; // temporary size
+		
+		while (h>szt && w>szt) {
+		    w/=2; h/=2;
+		    scaleFactor*=2;
+		}
+		
+		//3. decoding scaled down image
+		
+		opts = new BitmapFactory.Options();
+		opts.inSampleSize = scaleFactor;
+		
+		avatarTmp = BitmapFactory.decodeByteArray(photobin, 0, photobin.length, opts);
+		
+		h=avatarTmp.getHeight();
+		w=avatarTmp.getWidth();
 		
 		if (h==0 || w==0) {
 			photoHash = AVATAR_MISSING;
@@ -97,7 +127,9 @@ public final class Vcard {
 		if (h>w) {  w = (w*sz)/h; 	h=sz; 	} 
 		else     {  h = (h*sz)/w;   w=sz;   }
 
-		Bitmap scaled = Bitmap.createScaledBitmap( avatar, w, h, true);
+		Bitmap scaled = Bitmap.createScaledBitmap( avatarTmp, w, h, true);
+		
+		avatarTmp.recycle();
 		
 		if (h==w) {
 			avatar = scaled;
