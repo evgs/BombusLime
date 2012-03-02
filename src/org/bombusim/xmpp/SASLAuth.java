@@ -57,6 +57,8 @@ public class SASLAuth extends XmppObjectListener{
     };
     
     private SaslAuthMechanism selectedMechanism;
+
+    boolean needSessionEstablish;
     
     public int blockArrived(XmppObject data, XmppStream stream) throws XmppException, IOException {
         //System.out.println(data.toString());
@@ -116,6 +118,8 @@ public class SASLAuth extends XmppObjectListener{
                 bind.addChild("resource", stream.account.resource);
                 stream.send(bindIq);
 
+                needSessionEstablish = (data.getChildBlock("session") != null);
+
                 //listener.loginMessage(SR.MS_RESOURCE_BINDING);
                 
                 return XmppObjectListener.BLOCK_PROCESSED;
@@ -162,8 +166,18 @@ public class SASLAuth extends XmppObjectListener{
 
                 	stream.jidSession = data.getChildBlock("bind").getChildBlockText("jid");
                     
-            		LimeLog.i("XMPP", "Starting session", null);
+                    if (!needSessionEstablish) {
+
+                	LimeLog.i("XMPP", "Signed in successfully", null);
+                	
+                	stream.loginSuccess();
+                	
+                        return XmppObjectListener.NO_MORE_BLOCKS;
+                    }
+
+            	    LimeLog.i("XMPP", "Starting session", null);
                     
+                        
                     XmppObject session=new Iq(null, Iq.TYPE_SET, "sess");
                     session.addChildNs("session", "urn:ietf:params:xml:ns:xmpp-session");
                     stream.send(session);
