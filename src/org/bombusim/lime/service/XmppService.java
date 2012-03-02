@@ -299,7 +299,9 @@ public class XmppService extends Service implements Runnable {
 
 	public void keepAlive() {
 		//TODO: keep alive all connections
-		s.keepAlive();
+	    if (s!=null) 
+	        s.keepAlive();
+	    //TODO: check how keepAlive may be active with s==null
 	}
 	
 }
