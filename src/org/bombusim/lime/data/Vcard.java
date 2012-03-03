@@ -47,6 +47,8 @@ public final class Vcard {
 	private Bitmap avatar;
 	private String jid;
 	private String photoHash;
+	
+	private XmppObject vcard;
 
 	public static final String AVATAR_PENDING = "pending";
 	public static final String AVATAR_MISSING = "default";
@@ -63,6 +65,8 @@ public final class Vcard {
 		this.jid = jid;
 		
 		if (vcard == null) return;
+		
+		this.vcard = vcard;
 		
 		try {
 			XmppObject photo = vcard.getChildBlock("PHOTO");
@@ -190,4 +194,19 @@ public final class Vcard {
 	public String getJid() { return jid; }
 
 	public String getAvatarId() { return photoHash; }
+	
+	
+	public String getField(String field) {
+        if (vcard == null) return null;
+
+        String[] fields = field.split("/");
+	    XmppObject node = vcard;
+	    
+	    for (String name : fields) {
+	        node = node.getChildBlock(name);
+	        if (node == null) return null;
+	    }
+	    
+	    return node.getText();
+	}
 }

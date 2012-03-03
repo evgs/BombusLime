@@ -39,9 +39,12 @@ public class IqVcard extends XmppObjectListener {
     private String jid;
     
     public interface VCardListener {
-        public void onVcardArrived(Vcard result);
-        
-        public void onVcardTimeout(String from);
+        /**
+         *  Notifies vcard arrived. Resulting VCard may be null if error encountered
+         * @param from contact's Jid vcard pulled from
+         * @param result pulled Vcard. may be null if no VCard available
+         */
+        public void onVcardArrived(String from, Vcard result);
     }
 
     private VCardListener mVcardListener;
@@ -63,7 +66,7 @@ public class IqVcard extends XmppObjectListener {
             }
             
             if (!isInterrupted() && mVcardListener != null) {
-                mVcardListener.onVcardTimeout(jid);
+                mVcardListener.onVcardArrived(jid, null);
             }
         }
     };
@@ -71,7 +74,7 @@ public class IqVcard extends XmppObjectListener {
 	@Override
 	public int blockArrived(XmppObject data, XmppStream stream)
 			throws IOException, XmppException {
-		
+		//TODO: handle VCard iq errors
 		if (!(data instanceof Iq)) return BLOCK_REJECTED;
 		
 		if (data.getTypeAttribute().equals("error")) return BLOCK_REJECTED;
@@ -88,7 +91,7 @@ public class IqVcard extends XmppObjectListener {
 		
 		if (mVcardListener != null) {
 		    timeoutThread.interrupt();
-		    mVcardListener.onVcardArrived(result);
+		    mVcardListener.onVcardArrived(jid, result);
 		}
 		
 		return NO_MORE_BLOCKS;

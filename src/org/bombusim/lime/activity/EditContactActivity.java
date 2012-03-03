@@ -28,9 +28,11 @@ import java.util.TreeMap;
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 import org.bombusim.lime.data.Contact;
+import org.bombusim.lime.data.Vcard;
 import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.xmpp.XmppJid;
 import org.bombusim.xmpp.handlers.IqRoster;
+import org.bombusim.xmpp.handlers.IqVcard;
 import org.bombusim.xmpp.stanza.XmppPresence;
 
 import android.app.Activity;
@@ -39,6 +41,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -162,8 +165,7 @@ public class EditContactActivity extends Activity {
         buttonResolveFromVCard.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//disable until VCard arrived
-				buttonResolveFromVCard.setEnabled(false);
+				resolveNickName();
 			}
 		});
         
@@ -189,15 +191,58 @@ public class EditContactActivity extends Activity {
         updateGroups();
 	}
 	
-	protected boolean saveChanges() {
+	private Handler mHandler = new Handler();
+	
+	protected void resolveNickName() {
+        String jid = getEditJid();
+        if (jid == null) return;
+
+        //disable until VCard arrived
+        buttonResolveFromVCard.setEnabled(false);
+        
+        IqVcard vq = new IqVcard();
+        
+        vq.setVcardListener(new IqVcard.VCardListener() {
+            
+            @Override
+            public void onVcardArrived(String from, Vcard result) {
+                final String nick = (result == null)? null : result.getField("NICKNAME");
+                
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        buttonResolveFromVCard.setEnabled(true);
+
+                        if (nick == null || nick.length() == 0) {
+                            Toast.makeText(getBaseContext(), R.string.cantQueryNickname, Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        
+                        editNick.setText(nick);
+                    }
+                });
+            }
+        });
+        
+        vq.vcardRequest(jid, serviceBinding.getXmppStream(rJid));
+        
+    }
+
+    private String getEditJid() {
+        XmppJid jid = new XmppJid(editJid.getText().toString());
+        if (!jid.isValid()) {
+            Toast.makeText(this, R.string.invalidJid, Toast.LENGTH_LONG).show();
+            return null;
+        }
+        return jid.getBareJid();
+    }
+
+    protected boolean saveChanges() {
 		// 1. updating jid
-		XmppJid jid = new XmppJid(editJid.getText().toString());
-		if (!jid.isValid()) {
-			Toast.makeText(this, R.string.invalidJid, Toast.LENGTH_LONG).show();
-			return false;
-		}
+		String jid = getEditJid();
+		if (jid == null) return false;
 		
-		if (isNewContact) contact = new Contact(jid.getBareJid(), null);
+		if (isNewContact) contact = new Contact(jid, null);
 		
 		// 2. updating nickname
 		String name = editNick.getText().toString();

@@ -147,6 +147,7 @@
     
     <string name="activeChats">Active chats</string>
 	<string name="noActiveChats">No active chats available</string>
-    
+	
+	<string name="cantQueryNickname">No nickname found for this contact</string>
     
 </resources>

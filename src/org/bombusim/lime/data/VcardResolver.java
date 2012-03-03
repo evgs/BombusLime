@@ -122,19 +122,13 @@ public class VcardResolver {
         vq.setVcardListener(new IqVcard.VCardListener() {
             
             @Override
-            public void onVcardTimeout(String from) {
+            public void onVcardArrived(String from, Vcard result) {
+                if (result != null) {
+                    Lime.getInstance().getRoster().notifyVcard(result);
+                    s.sendBroadcast(Roster.UPDATE_CONTACT, from);
+                }
+                
                 removeFromQueue(from);
-                queryTop();
-            }
-            
-            @Override
-            public void onVcardArrived(Vcard result) {
-                // TODO Auto-generated method stub
-                Lime.getInstance().getRoster().notifyVcard(result);
-                
-                s.sendBroadcast(Roster.UPDATE_CONTACT, result.getJid());
-                
-                removeFromQueue(result.getJid());
                 queryTop();
             }
         });
