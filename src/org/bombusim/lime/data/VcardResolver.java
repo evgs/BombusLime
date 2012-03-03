@@ -26,6 +26,7 @@ import java.util.TimerTask;
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.lime.service.XmppServiceBinding;
+import org.bombusim.xmpp.XmppJid;
 import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.handlers.IqVcard;
 
@@ -33,14 +34,10 @@ import android.content.Context;
 
 public class VcardResolver {
 
-	private final static int VCARD_TIMEOUT_S = 30; 
-	private final static int VCARD_TIMER_S = 3; 
-	
 	private ArrayList<Contact> queue;
 	
 	private Contact pending;
-	private long timeout;
-	
+
 	private boolean onMobile;
 	
 	public void setOnMobile(boolean onMobile) {
@@ -58,13 +55,6 @@ public class VcardResolver {
 	
 	public void restartQueue() {
 		pending = null;
-	}
-	
-	public void vcardNotify(Contact c) {
-		queue.remove(c);
-		if (pending == c)
-		pending = null;
-		queryTop();
 	}
 	
 	public void queryVcard(Contact c) {
@@ -85,15 +75,7 @@ public class VcardResolver {
 				return;
 		}
 		
-		long current = System.currentTimeMillis();
-		if (pending != null) {
-			if (current < timeout) {
-				setQueryTimer(); //next polling event
-				return; 
-			}
-			queue.remove(pending);
-			//pending.setAvatar(null, null);
-		}
+		if (pending != null) return; 
 
 		//TODO: move resolver into RosterActivity's context
 		//XmppServiceBinding sb = new XmppServiceBinding(context);
@@ -104,8 +86,6 @@ public class VcardResolver {
 		try {
 			sb.getXmppStream(pending.getRosterJid()).cancelBlockListenerByClass(IqVcard.class);
 		} catch (Exception e) {}
-		
-		timeout = current + VCARD_TIMEOUT_S * 1000;
 		
 		
 		if (!queue.isEmpty()) {
@@ -119,13 +99,13 @@ public class VcardResolver {
 					pending = null;
 				} else { 
 				
-					LimeLog.i("VcardResolver", "Query "+pending.getJid(), null);
-					new IqVcard().vcardRequest( pending.getJid(), s	);
-					
-					setQueryTimer(); 
+				    String from = pending.getJid();
+				    
+					queryVCard(from, s);
 				}
 				
 			} catch (Exception e) {
+			    e.printStackTrace();
 				pending = null;
 			}
 		}
@@ -134,19 +114,36 @@ public class VcardResolver {
 		
 	}
 
-	Timer timer;
-	
-	private void setQueryTimer() {
-		if (timer != null) timer.cancel();
-		
-		timer = new Timer();
-		
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				queryTop();
-			}
-		}, VCARD_TIMER_S * 1000);
-	}
-	
+    private void queryVCard(String from, final XmppStream s) {
+        LimeLog.i("VcardResolver", "Query "+from, null);
+        
+        IqVcard vq = new IqVcard();
+        
+        vq.setVcardListener(new IqVcard.VCardListener() {
+            
+            @Override
+            public void onVcardTimeout(String from) {
+                removeFromQueue(from);
+                queryTop();
+            }
+            
+            @Override
+            public void onVcardArrived(Vcard result) {
+                // TODO Auto-generated method stub
+                Lime.getInstance().getRoster().notifyVcard(result);
+                
+                s.sendBroadcast(Roster.UPDATE_CONTACT, result.getJid());
+                
+                removeFromQueue(result.getJid());
+                queryTop();
+            }
+        });
+        
+        vq.vcardRequest( from, s	);
+    }
+
+    protected void removeFromQueue(String from) {
+        queue.remove(pending);
+        pending = null;
+    }
 }

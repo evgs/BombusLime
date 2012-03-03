@@ -141,7 +141,6 @@ public class Roster {
 			Contact c = contacts.get(index);
 			if (c.getJid().equals(vcard.getJid())) { 
 				c.setAvatar(vcard.getAvatar(), vcard.getAvatarId());
-				Lime.getInstance().vcardResolver.vcardNotify(c);
 			}
 		}
 		

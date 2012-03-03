@@ -29,9 +29,44 @@ import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppObjectListener;
 import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.exception.XmppException;
+import org.bombusim.xmpp.handlers.IqVcard.VCardListener;
 import org.bombusim.xmpp.stanza.Iq;
 
+import android.os.Handler;
+
 public class IqVcard extends XmppObjectListener {
+
+    private String jid;
+    
+    public interface VCardListener {
+        public void onVcardArrived(Vcard result);
+        
+        public void onVcardTimeout(String from);
+    }
+
+    private VCardListener mVcardListener;
+    
+    public void setVcardListener(VCardListener listener) {
+        mVcardListener = listener;
+    }
+    
+    private static final int VCARD_TIMEOUT = 30;
+
+    private Thread timeoutThread = new Thread() {
+        @Override
+        public void run() {
+            
+            try {
+                sleep(VCARD_TIMEOUT *1000);
+            } catch (InterruptedException e) {
+                return; // no need to timeout callback
+            }
+            
+            if (!isInterrupted() && mVcardListener != null) {
+                mVcardListener.onVcardTimeout(jid);
+            }
+        }
+    };
 
 	@Override
 	public int blockArrived(XmppObject data, XmppStream stream)
@@ -41,6 +76,8 @@ public class IqVcard extends XmppObjectListener {
 		
 		if (data.getTypeAttribute().equals("error")) return BLOCK_REJECTED;
 		
+		if (!data.getAttribute("from").equals(jid) ) return BLOCK_REJECTED;
+		
 		XmppObject vcard = data.findNamespace("vCard", "vcard-temp");
 		
 		if (vcard == null) return BLOCK_REJECTED;
@@ -49,9 +86,10 @@ public class IqVcard extends XmppObjectListener {
 		
 		Vcard result = new Vcard(from, vcard);
 		
-		Lime.getInstance().getRoster().notifyVcard(result);
-		
-		stream.sendBroadcast(Roster.UPDATE_CONTACT, new XmppJid(from).getBareJid());
+		if (mVcardListener != null) {
+		    timeoutThread.interrupt();
+		    mVcardListener.onVcardArrived(result);
+		}
 		
 		return NO_MORE_BLOCKS;
 	}
@@ -64,8 +102,12 @@ public class IqVcard extends XmppObjectListener {
 		Iq request = new Iq(jid, Iq.TYPE_GET, "getVc");
 		request.addChildNs("vCard", "vcard-temp");
 		
+		this.jid = jid;
+		
 		stream.addBlockListener(this);
 		stream.send(request);
+		
+		timeoutThread.start();
 	}
 
 }
