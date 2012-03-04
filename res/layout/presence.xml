@@ -8,12 +8,12 @@
     android:id="@+id/scrollView1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_above="@+id/linearLayout3"
+    android:layout_above="@+id/okCancel"
     android:layout_centerHorizontal="true" >
     
 <LinearLayout 
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -58,7 +58,7 @@
 
         <EditText
             android:id="@+id/presenceMessage"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1" >
 
@@ -87,7 +87,7 @@
 
         <EditText
             android:id="@+id/priority"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="0.23"
             android:hint="@string/priorityHint"
@@ -98,29 +98,19 @@
 </LinearLayout>
 </ScrollView>
 
-   	<LinearLayout
-	    android:id="@+id/linearLayout3"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_alignParentBottom="true"
+    <org.bombusim.lime.widgets.OkCancelBar
+        xmlns:okcancelbar= "http://schemas.android.com/apk/res/org.bombusim.lime"
+        android:id="@+id/okCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        
+		android:layout_alignParentBottom="true"
 	    android:layout_alignParentLeft="true"
-	    android:background="@android:drawable/bottom_bar" >
-	
-	    <Button
-	        android:id="@+id/buttonOk"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center_vertical"
-	        android:layout_weight="1"
-	        android:text="@string/set" />
-	
-	    <Button
-	        android:id="@+id/buttonCancel"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center_vertical"
-	        android:layout_weight="1"
-	        android:text="@string/cancel" />
-	</LinearLayout>
+        
+        okcancelbar:positive="@string/set"
+        okcancelbar:negative="@string/cancel"
+        
+        >
+    </org.bombusim.lime.widgets.OkCancelBar>
 
 </RelativeLayout>

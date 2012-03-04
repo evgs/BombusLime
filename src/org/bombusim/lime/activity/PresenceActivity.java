@@ -24,6 +24,7 @@ import org.bombusim.lime.R;
 import org.bombusim.lime.data.PresenceStorage;
 import org.bombusim.lime.service.XmppService;
 import org.bombusim.lime.service.XmppServiceBinding;
+import org.bombusim.lime.widgets.OkCancelBar;
 import org.bombusim.xmpp.XmppAccount;
 import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.stanza.XmppPresence;
@@ -53,9 +54,8 @@ public class PresenceActivity extends Activity {
 	Spinner spStatus;
 	EditText editMessage;
 	Button buttonRecent;
-	
-	Button buttonOk;
-	Button buttonCancel;
+
+	OkCancelBar mOkCancel;
 	
 	private XmppServiceBinding sb;
 	
@@ -78,8 +78,7 @@ public class PresenceActivity extends Activity {
 		editMessage    = (EditText) findViewById(R.id.presenceMessage);
 		spStatus       = (Spinner)  findViewById(R.id.presenceStatus);
 		buttonRecent   = (Button)   findViewById(R.id.recentPresences);
-		buttonOk       = (Button)   findViewById(R.id.buttonOk);
-		buttonCancel   = (Button)   findViewById(R.id.buttonCancel);
+		mOkCancel      = (OkCancelBar) findViewById(R.id.okCancel);
 		
 		if (to !=null) {
 			presenceDirect.setVisibility(View.VISIBLE);
@@ -87,19 +86,18 @@ public class PresenceActivity extends Activity {
 			editPresenceTo.setText(to);
 		}
 		
-		buttonOk.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) { 
-				doSetStatus();
-				finish(); 
-			}
-		});
+		mOkCancel.setOnButtonActionListener(new OkCancelBar.OnButtonActionListener() {
+            
+            @Override
+            public void onPositive() {
+                doSetStatus();
+                finish(); 
+            }
+            
+            @Override
+            public void onNegatiove() { finish(); }
+        });
 		
-		buttonCancel.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) { finish(); }
-		});
-
 		
 		spStatus.setAdapter(new StatusSpinnerAdapter(this));
 		
