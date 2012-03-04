@@ -31,6 +31,7 @@ import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.service.XmppService;
 import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.lime.widgets.ChatEditText;
+import org.bombusim.lime.widgets.ContactBar;
 import org.bombusim.xmpp.handlers.ChatStates;
 import org.bombusim.xmpp.handlers.MessageDispatcher;
 import org.bombusim.xmpp.stanza.XmppPresence;
@@ -94,7 +95,7 @@ public class ChatActivity extends Activity {
 	
 	private ListView chatListView;
 	
-	private View contactHead;
+	private ContactBar contactBar;
 	
 	private XmppServiceBinding serviceBinding;
 	
@@ -132,35 +133,13 @@ public class ChatActivity extends Activity {
 
         updateContactBar();
         
-        contactHead.requestFocus(); //stealing focus from messageBox
+        contactBar.requestFocus(); //stealing focus from messageBox
 	}
 
 	private void updateContactBar() {
+	    
+	    contactBar.bindContact(visavis, chat.isComposing());
 		
-        ImageView vAvatar = (ImageView) findViewById(R.id.rit_photo);        
-		
-		Bitmap avatar = visavis.getLazyAvatar(true);
-		if (avatar != null) {
-			vAvatar.setImageBitmap(avatar);
-		} else {
-			vAvatar.setImageResource(R.drawable.ic_contact_picture);
-		}
-		
-		((TextView) findViewById(R.id.rit_jid))
-        			.setText(visavis.getScreenName());
-		
-        ((TextView) findViewById(R.id.rit_presence))
-                    .setText(visavis.getStatusMessage());
-        
-        TypedArray si = getResources().obtainTypedArray(R.array.statusIcons);
-        Drawable std = si.getDrawable(visavis.getPresence());
-        
-        ((ImageView) findViewById(R.id.rit_statusIcon))
-        			.setImageDrawable(std);
-        
-        ((ImageView) findViewById(R.id.composing))
-        			.setVisibility( (chat.isComposing()) ? View.VISIBLE : View.GONE );
-
 	}
 	
 	@Override
@@ -174,7 +153,7 @@ public class ChatActivity extends Activity {
         
         serviceBinding = new XmppServiceBinding(this);
   
-        contactHead = findViewById(R.id.contact_head);
+        contactBar = (ContactBar) findViewById(R.id.contact_head);
 
         messageBox = (ChatEditText) findViewById(R.id.messageBox);
         sendButton = (ImageButton) findViewById(R.id.sendButton);
