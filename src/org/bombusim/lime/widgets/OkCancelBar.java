@@ -53,4 +53,8 @@ public class OkCancelBar extends LinearLayout{
     }
 
     public void setOnButtonActionListener(OnButtonActionListener listener) { this.mOnButtonAction = listener; }
+
+    public void setPositiveButtonText(int resId) { mButtonOk.setText(resId); }
+    public void setPositiveButtonText(CharSequence text) { mButtonOk.setText(text); }
+    
 }

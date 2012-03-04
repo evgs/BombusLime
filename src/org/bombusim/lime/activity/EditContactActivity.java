@@ -30,6 +30,7 @@ import org.bombusim.lime.R;
 import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Vcard;
 import org.bombusim.lime.service.XmppServiceBinding;
+import org.bombusim.lime.widgets.OkCancelBar;
 import org.bombusim.xmpp.XmppJid;
 import org.bombusim.xmpp.handlers.IqRoster;
 import org.bombusim.xmpp.handlers.IqVcard;
@@ -73,8 +74,7 @@ public class EditContactActivity extends Activity {
 	Button buttonAddGroup;
 	Button buttonResolveFromVCard;
 
-	Button buttonSave;
-	Button buttonCancel;
+	OkCancelBar mOkCancelBar;
 	
 	LinearLayout groupLayout;
 	
@@ -103,8 +103,7 @@ public class EditContactActivity extends Activity {
         buttonResolveFromVCard = (Button) findViewById(R.id.buttonResolveFromVCard);
         buttonAddGroup =         (Button) findViewById(R.id.buttonAddGroup);
         
-        buttonSave =             (Button) findViewById(R.id.buttonSave);
-        buttonCancel =           (Button) findViewById(R.id.buttonCancel);
+        mOkCancelBar = (OkCancelBar) findViewById(R.id.okCancel);
         
         askSubscription =        (CheckBox) findViewById(R.id.askSubscr);
         
@@ -136,7 +135,7 @@ public class EditContactActivity extends Activity {
         	
         	askSubscription.setVisibility(View.GONE);
         } else {
-        	buttonSave.setText(R.string.add);
+        	mOkCancelBar.setPositiveButtonText(R.string.add);
         }
         
         groups = new TreeMap<String, CheckBox>();
@@ -176,17 +175,14 @@ public class EditContactActivity extends Activity {
 			}
 		});
         
-        buttonCancel.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) { finish(); }
-		});
-        
-        buttonSave.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (saveChanges()) finish();
-			}
-		});
+        mOkCancelBar.setOnButtonActionListener(new OkCancelBar.OnButtonActionListener() {
+            
+            @Override
+            public void onPositive() { if (saveChanges()) finish(); }
+            
+            @Override
+            public void onNegatiove() { finish(); }
+        });
         
         updateGroups();
 	}

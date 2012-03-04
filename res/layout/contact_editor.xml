@@ -102,31 +102,17 @@
 
 	</ScrollView>
 	
-   	<LinearLayout
-	    android:id="@+id/linearLayout3"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_alignParentBottom="true"
-	    android:layout_alignParentLeft="true"
-	    android:background="@android:drawable/bottom_bar" >
-	
-	    <Button
-	        android:id="@+id/buttonSave"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center_vertical"
-	        android:layout_weight="1"
-	        android:text="@string/save" />
-	
-	    <Button
-	        android:id="@+id/buttonCancel"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center_vertical"
-	        android:layout_weight="1"
-	        android:text="@string/cancel" />
-	</LinearLayout>
-
+    <org.bombusim.lime.widgets.OkCancelBar
+        xmlns:okcancelbar= "http://schemas.android.com/apk/res/org.bombusim.lime"
+        android:id="@+id/okCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        
+        okcancelbar:positive="@string/save"
+        okcancelbar:negative="@string/cancel"
+        
+        >
+    </org.bombusim.lime.widgets.OkCancelBar>
    
 </RelativeLayout>
 
