@@ -85,42 +85,16 @@ public final class Vcard {
 	}
 
 	private void decodeAvatar() {
-	    //TODO: split by two methods: decodeLargeAvatar (for VCard viewer) and scaleRosterAvatar 
-	    
-	    Bitmap avatarTmp;
-	    
-	    int h; int w;
-	    
-		byte[] photobin = Base64.decode(base64Photo, Base64.DEFAULT);
-	
-		//1. decode image size
-		BitmapFactory.Options opts = new BitmapFactory.Options();
-		opts.inJustDecodeBounds = true; 
-		BitmapFactory.decodeByteArray(photobin, 0, photobin.length, opts);
-		
-		h = opts.outHeight;
-		w = opts.outWidth;
+        int sz = Lime.getInstance().avatarSize;
+        
+        int szt=sz*2; // temporary size
 
-		//2. calculate scale factor
-		int scaleFactor=1;
-		int sz = Lime.getInstance().avatarSize;
+        byte[] photobin = Base64.decode(base64Photo, Base64.DEFAULT);
+        
+        Bitmap avatarTmp = decodeBitmap(szt, photobin);
 		
-		int szt=sz*2; // temporary size
-		
-		while (h>szt && w>szt) {
-		    w/=2; h/=2;
-		    scaleFactor*=2;
-		}
-		
-		//3. decoding scaled down image
-		
-		opts = new BitmapFactory.Options();
-		opts.inSampleSize = scaleFactor;
-		
-		avatarTmp = BitmapFactory.decodeByteArray(photobin, 0, photobin.length, opts);
-		
-		h=avatarTmp.getHeight();
-		w=avatarTmp.getWidth();
+		int h=avatarTmp.getHeight();
+		int w=avatarTmp.getWidth();
 		
 		if (h==0 || w==0) {
 			photoHash = AVATAR_MISSING;
@@ -154,6 +128,37 @@ public final class Vcard {
 		}
 		
 	}
+
+    protected Bitmap decodeBitmap(int maxSize, byte[] photobin) {
+        Bitmap tmp;
+	    
+
+        int h; int w;
+	    
+		//1. decode image size
+		BitmapFactory.Options opts = new BitmapFactory.Options();
+		opts.inJustDecodeBounds = true; 
+		BitmapFactory.decodeByteArray(photobin, 0, photobin.length, opts);
+		
+		h = opts.outHeight;
+		w = opts.outWidth;
+
+		//2. calculate scale factor
+		int scaleFactor=1;
+		
+		while (h>maxSize && w>maxSize) {
+		    w/=2; h/=2;
+		    scaleFactor*=2;
+		}
+		
+		//3. decoding scaled down image
+		
+		opts = new BitmapFactory.Options();
+		opts.inSampleSize = scaleFactor;
+		
+		tmp = BitmapFactory.decodeByteArray(photobin, 0, photobin.length, opts);
+        return tmp;
+    }
 	
 	
 	private void saveAvatar() {
@@ -209,4 +214,11 @@ public final class Vcard {
 	    
 	    return node.getText();
 	}
+
+    public Bitmap getBigAvatar(int maxSize) {
+        if (base64Photo == null) return null;
+        byte[] photobin = Base64.decode(base64Photo, Base64.DEFAULT);
+        
+        return decodeBitmap(maxSize, photobin);
+    }
 }

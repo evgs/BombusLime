@@ -56,6 +56,26 @@
      
     <string name="streamCompression">Сжатие траффика</string>
     
+    <string-array name="vcardLabels">
+        <item>Полное имя</item>
+        <item>Ник</item>
+        <item>Дата рождения</item>
+        <item>Адрес</item>
+        <item>Адрес</item>
+        <item>Город</item>
+        <item>Область</item>
+        <item>Почтовый индекс</item>
+        <item>Страна</item>
+        <item>Тел. домашний</item>
+        <item>Телефон</item>
+        <item>E-mail</item>
+        <item>Должность</item>
+        <item>Организация</item>
+        <item>Отдел</item>
+        <item>WWW</item>
+        <item>О себе</item>
+    </string-array>
+    
     <string name="resourcePriority">Приоритет</string>
     <string name="accountAutoLogin">Подключаться при старте</string>
     <string name="chatNotify">Уведомление о новом сообщении</string>
