@@ -90,7 +90,8 @@ public class XmppStream extends XmppParser {
     public boolean pingSent;
     
     //TODO: state machine:{offline, connecting, logged in} 
-    public boolean loggedIn;
+    public boolean resourceConnected;
+    public boolean resourceAvailable;
 
 	protected int keepAliveType = KEEP_ALIVE_TYPE_PING;
     
@@ -241,7 +242,8 @@ public class XmppStream extends XmppParser {
     	
     	xmppV1 = true;
     	
-        loggedIn = false;
+        resourceConnected = false;
+        resourceAvailable = false;
 
 		addBlockListener( new StartTLS() );
 		addBlockListener( new StreamCompression() );
@@ -376,7 +378,8 @@ public class XmppStream extends XmppParser {
     	//cancelling all XmppObjectListeners
         dispatcherQueue.clear();
         
-        loggedIn = false;
+        resourceConnected = false;
+        resourceAvailable = false;
         
         try {
             send( "</stream:stream>" );
@@ -400,7 +403,7 @@ public class XmppStream extends XmppParser {
 
 
 	public void keepAlive() {
-		if (!loggedIn) return;
+		if (!resourceConnected) return;
 		try {
 			sendKeepAlive(keepAliveType);
 			LimeLog.i("KeepAlive", "sent", null);
@@ -543,7 +546,7 @@ public class XmppStream extends XmppParser {
     	//remove all auth listeners
     	dispatcherQueue.clear();
     	
-    	loggedIn=true;
+    	resourceConnected=true;
     	
     	caps = new EntityCaps();
     	
@@ -571,7 +574,8 @@ public class XmppStream extends XmppParser {
     	
     	iqroster.queryRoster(this);
 
-    	sendPresence();
+    	//initial presence will be sent after roster arrived
+    	//sendPresence();
 
     }
 
@@ -583,6 +587,8 @@ public class XmppStream extends XmppParser {
     			statusMessage, 
     			null /* nick */);
     	online.addChild(caps.getresenceCaps());
+    	
+    	resourceAvailable = true;
     	//offline messages will be delivered after this presence
     	send(online);
 	}

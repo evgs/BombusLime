@@ -39,6 +39,10 @@ public class PresenceDispatcher extends XmppObjectListener{
 			throws IOException, XmppException {
 		
 		if (!(data instanceof XmppPresence)) return BLOCK_REJECTED;
+		
+		// drop any presence until we are available - workaround for bug in Prosody XMPP server
+		if (!stream.resourceAvailable) return BLOCK_REJECTED;
+		
 		XmppPresence p=(XmppPresence)data;
 		p.dispathch();
 		

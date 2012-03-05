@@ -121,7 +121,7 @@ public class XmppService extends Service implements Runnable {
 	   	s.setPresence(ps.getStatus(), ps.getMessage(), ps.getPriority());
 	   	
 	   	if (running) {
-	   		if (s.loggedIn)
+	   		if (s.resourceAvailable)
 	   			s.sendPresence();
 	   		
 	   	} else {

@@ -118,6 +118,9 @@ public class IqRoster extends XmppObjectListener{
 			//Global roster update
 			stream.sendBroadcast(Roster.UPDATE_CONTACT);
 			
+			//sending initial presence
+			stream.sendPresence();
+			
 			return BLOCK_PROCESSED;
 			
 		} catch (Exception e) { /* normal case */ }

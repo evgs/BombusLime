@@ -74,7 +74,7 @@ public class XmppServiceBinding {
 	public XmppStream getXmppStream(String rosterJid) {
 		XmppStream s = xmppService.getXmppStream(rosterJid);
 		if (s == null) return null;
-		if (!s.loggedIn) return null;
+		if (!s.resourceConnected) return null;
 		
 		return s;
 	}
