@@ -191,7 +191,7 @@ public class VCardActivity extends Activity {
                 });
 
         mVcardQuery = new IqVcard();
-        vq.setVcardListener(new IqVcard.VCardListener() {
+        mVcardQuery.setVcardListener(new IqVcard.VCardListener() {
             
             @Override
             public void onVcardArrived(String from, Vcard result) {
