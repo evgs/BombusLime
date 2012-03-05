@@ -50,7 +50,7 @@ public class AccountSettingsActivity extends Activity {
 	EditText editXmppHost;
 	EditText editXmppPort;
 	
-	CheckBox checkSspecificHostPort;
+	CheckBox checkSpecificHostPort;
 	CheckBox checkZlib;
 	CheckBox checkAutologin;
 	
@@ -58,6 +58,8 @@ public class AccountSettingsActivity extends Activity {
 	Spinner spinPlainPassword;
 	
 	OkCancelBar mOkCancel;
+	
+	boolean mAdvancedSettings = false;
 	
 	private XmppServiceBinding sb;
 	
@@ -74,19 +76,26 @@ public class AccountSettingsActivity extends Activity {
 		checkAutologin = ((CheckBox)findViewById(R.id.autoLogin));
 		editXmppHost = ((EditText)findViewById(R.id.xmpphost));
 		editXmppPort = ((EditText)findViewById(R.id.xmppport));
-		checkSspecificHostPort = ((CheckBox)findViewById(R.id.specificHostPort));
+		checkSpecificHostPort = ((CheckBox)findViewById(R.id.specificHostPort));
 		spinSecurity = ((Spinner)findViewById(R.id.ssl));
 		spinPlainPassword = ((Spinner)findViewById(R.id.plainpassword));
+        checkZlib = ((CheckBox)findViewById(R.id.zlib));
 
 		mOkCancel = (OkCancelBar) findViewById(R.id.okCancel);
-		loadActiveAccount();
+
+        showAdvancedSettings(false);
+
+        if (savedInstanceState!=null) {
+		    loadInstanceState(savedInstanceState);
+		} else {
+		    loadActiveAccount();
+		}
 
 		
 		findViewById(R.id.advancedSettings).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				findViewById(R.id.advancedSettings).setVisibility(View.GONE);
-				findViewById(R.id.layoutAdvancedSettings).setVisibility(View.VISIBLE);
+			    showAdvancedSettings(true); 
 			}
 		});
 		
@@ -113,8 +122,6 @@ public class AccountSettingsActivity extends Activity {
 			}
 		});
 
-        findViewById(R.id.layoutAdvancedSettings).setVisibility(View.GONE);
-        
 		mOkCancel.setOnButtonActionListener(new OkCancelBar.OnButtonActionListener() {
             
             @Override
@@ -138,6 +145,13 @@ public class AccountSettingsActivity extends Activity {
 		sb=new XmppServiceBinding(this);
 	}
 
+	private void showAdvancedSettings(boolean show) {
+	    mAdvancedSettings = show;
+	    
+        findViewById(R.id.advancedSettings).setVisibility((show)? View.GONE : View.VISIBLE);
+        findViewById(R.id.layoutAdvancedSettings).setVisibility((show)? View.VISIBLE : View.GONE);
+	}
+	
 	private void loadActiveAccount() {
 		//TODO: account selector
 		XmppAccount account = Lime.getInstance().getActiveAccount();
@@ -149,23 +163,14 @@ public class AccountSettingsActivity extends Activity {
 		//pass.setHint("••••••••");
 		
 		editResource.setText(account.resource);
-		
 		editPriority.setText(String.valueOf(account.priority));
-
 		checkAutologin.setChecked(account.autoLogin);
-
 		editXmppHost.setText(account.xmppHost);
-
 		editXmppPort.setText(String.valueOf(account.xmppPort));
-		
-		checkSspecificHostPort.setChecked(account.specificHostPort);
-		
-		checkZlib = ((CheckBox)findViewById(R.id.zlib));
+		checkSpecificHostPort.setChecked(account.specificHostPort);
 		checkZlib.setChecked(account.trafficCompression);
-		
 		//TODO: populate in runtime to ensure correct order;
 		spinSecurity.setSelection(account.secureConnection);
-		
 		//TODO: populate in runtime to ensure correct order;
 		spinPlainPassword.setSelection(account.enablePlainAuth);
 	}
@@ -187,8 +192,6 @@ public class AccountSettingsActivity extends Activity {
 	@Override
 	protected void onPause() {
         super.onPause();
-		
-		
 		sb.doUnbindService();
 	}
 	
@@ -198,6 +201,41 @@ public class AccountSettingsActivity extends Activity {
             Lime.getInstance().deleteActiveAccount();
         finish(); 
 	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+	    super.onSaveInstanceState(outState);
+	    outState.putString("jid",        editJid.getText().toString());
+	    outState.putString("password",   editPass.getText().toString());
+        outState.putString("resource",   editResource.getText().toString());
+        outState.putString("priority",   editPriority.getText().toString());
+        outState.putString("host",       editXmppHost.getText().toString());
+        outState.putString("port",       editXmppPort.getText().toString());
+        outState.putBoolean("autologin", checkAutologin.isChecked());
+        outState.putBoolean("hostport",  checkSpecificHostPort.isChecked());
+        outState.putBoolean("zlib",      checkZlib.isChecked());
+        outState.putInt("ssl",           spinSecurity.getSelectedItemPosition());
+        outState.putInt("plain",         spinPlainPassword.getSelectedItemPosition());
+        
+        outState.putBoolean("adv", mAdvancedSettings);
+	}
+
+    private void loadInstanceState(Bundle inState) {
+        editJid              .setText(inState.getString("jid"));
+        editPass             .setText(inState.getString("password"));
+        editResource         .setText(inState.getString("resource"));
+        editPriority         .setText(inState.getString("priority"));
+        editXmppHost         .setText(inState.getString("host"));
+        editXmppPort         .setText(inState.getString("port"));
+        checkAutologin       .setChecked(inState.getBoolean("autologin"));
+        checkSpecificHostPort.setChecked(inState.getBoolean("hostport"));
+        checkZlib            .setChecked(inState.getBoolean("zlib"));
+        spinSecurity         .setSelection(inState.getInt("ssl"));
+        spinPlainPassword    .setSelection(inState.getInt("plain"));
+        
+        showAdvancedSettings( inState.getBoolean("adv") );
+    }
+	
 	boolean saveAccount() {
 		XmppAccount account = Lime.getInstance().getActiveAccount();
 
@@ -227,7 +265,7 @@ public class AccountSettingsActivity extends Activity {
 			account.xmppPort = XmppAccount.DEFAULT_XMPP_PORT;
 		}
 		
-		account.specificHostPort = checkSspecificHostPort.isChecked();
+		account.specificHostPort = checkSpecificHostPort.isChecked();
 		
 		account.trafficCompression = checkZlib.isChecked();
 		
@@ -257,6 +295,8 @@ public class AccountSettingsActivity extends Activity {
 		case R.id.cmdAdd:    {
 			sb.doDisconnect();
 			
+			showAdvancedSettings(false);
+			
 			saveAccount();
 			Lime.getInstance().addNewAccount();
 			loadActiveAccount();
@@ -283,6 +323,9 @@ public class AccountSettingsActivity extends Activity {
 					// TODO Auto-generated method stub
 					
 					Lime.getInstance().setActiveAccountIndex(which);
+					
+	                Lime.getInstance().loadAccounts();
+
 					loadActiveAccount();
 					
 					dialog.dismiss();
