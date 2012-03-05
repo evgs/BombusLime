@@ -24,6 +24,7 @@ import org.bombusim.lime.R;
 import org.bombusim.lime.data.AccountsFactory;
 import org.bombusim.lime.service.XmppService;
 import org.bombusim.lime.service.XmppServiceBinding;
+import org.bombusim.lime.widgets.OkCancelBar;
 import org.bombusim.xmpp.XmppAccount;
 import org.bombusim.xmpp.XmppJid;
 
@@ -56,6 +57,8 @@ public class AccountSettingsActivity extends Activity {
 	Spinner spinSecurity;
 	Spinner spinPlainPassword;
 	
+	OkCancelBar mOkCancel;
+	
 	private XmppServiceBinding sb;
 	
 	@Override
@@ -75,6 +78,7 @@ public class AccountSettingsActivity extends Activity {
 		spinSecurity = ((Spinner)findViewById(R.id.ssl));
 		spinPlainPassword = ((Spinner)findViewById(R.id.plainpassword));
 
+		mOkCancel = (OkCancelBar) findViewById(R.id.okCancel);
 		loadActiveAccount();
 
 		
@@ -109,8 +113,25 @@ public class AccountSettingsActivity extends Activity {
 			}
 		});
 
-		
-		findViewById(R.id.layoutAdvancedSettings).setVisibility(View.GONE);
+        findViewById(R.id.layoutAdvancedSettings).setVisibility(View.GONE);
+        
+		mOkCancel.setOnButtonActionListener(new OkCancelBar.OnButtonActionListener() {
+            
+            @Override
+            public void onPositive() {
+                sb.doDisconnect();
+                
+                if (!saveAccount()) return;
+                
+                //TODO: invalidate roster
+                Lime.getInstance().loadAccounts();
+                
+                finish();
+            }
+            
+            @Override
+            public void onNegative() { onBackPressed(); }
+        });
 		
 		updateHostState();
 		
@@ -158,25 +179,25 @@ public class AccountSettingsActivity extends Activity {
 	protected void onResume() {
 		sb.doBindService();
 		
+		mOkCancel.requestFocus(); // hide keyboard
+		
 		super.onResume();
 	}
 	
 	@Override
 	protected void onPause() {
-		// TODO add save/cancel buttons into form
-		// TODO check saveAccount() result
-		sb.doDisconnect();
+        super.onPause();
 		
-		saveAccount();
 		
-		//TODO: invalidate roster
-		Lime.getInstance().loadAccounts();
-
-		super.onPause();
-
 		sb.doUnbindService();
 	}
 	
+	@Override
+	public void onBackPressed() {
+        if (Lime.getInstance().getActiveAccount()._id == -1)
+            Lime.getInstance().deleteActiveAccount();
+        finish(); 
+	}
 	boolean saveAccount() {
 		XmppAccount account = Lime.getInstance().getActiveAccount();
 

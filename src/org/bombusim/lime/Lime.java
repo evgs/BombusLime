@@ -214,7 +214,6 @@ public class Lime extends Application {
 
 	public void addNewAccount() {
 		int active=AccountsFactory.addNew(accounts);
-		AccountsFactory.saveAccount(getApplicationContext(), accounts.get(active));
 		setActiveAccountIndex(active);
 	}
 
@@ -224,7 +223,10 @@ public class Lime extends Application {
 	}
 
 	public void deleteActiveAccount() {
-		AccountsFactory.removeAccount(getApplicationContext(), getActiveAccount());
+	    if (getActiveAccount()._id >= 0) {
+	        //remove account stored in database
+	        AccountsFactory.removeAccount(getApplicationContext(), getActiveAccount());
+	    }
 		accounts.remove(getActiveAccount());
 		setActiveAccountIndex(accounts.size()-1);
 	}
