@@ -69,6 +69,8 @@ public class VCardActivity extends Activity {
     private LinearLayout mVcardLayout;
     private LayoutInflater mInflater;
 
+    private IqVcard mVcardQuery;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -101,6 +103,7 @@ public class VCardActivity extends Activity {
             @Override
             public void onNegatiove() { finish(); }
         });
+        
 	}
 	
     @Override
@@ -123,6 +126,12 @@ public class VCardActivity extends Activity {
 	protected void onPause() {
 		mSb.doUnbindService();
 		super.onPause();
+	}
+	
+	@Override
+	protected void onStop() {
+	    super.onStop();
+	    mVcardQuery.setVcardListener(null);
 	}
 
 	private Handler mHandler = new Handler();
@@ -181,7 +190,7 @@ public class VCardActivity extends Activity {
                     }
                 });
 
-        IqVcard vq = new IqVcard();
+        mVcardQuery = new IqVcard();
         vq.setVcardListener(new IqVcard.VCardListener() {
             
             @Override
@@ -199,7 +208,7 @@ public class VCardActivity extends Activity {
         
         XmppStream s = mSb.getXmppStream(mRJid);
         
-        vq.vcardRequest(mJid, s);
+        mVcardQuery.vcardRequest(mJid, s);
     }
 
 }
