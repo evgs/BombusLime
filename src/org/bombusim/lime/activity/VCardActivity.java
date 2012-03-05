@@ -101,7 +101,7 @@ public class VCardActivity extends Activity {
             }
             
             @Override
-            public void onNegatiove() { finish(); }
+            public void onNegative() { finish(); }
         });
         
 	}

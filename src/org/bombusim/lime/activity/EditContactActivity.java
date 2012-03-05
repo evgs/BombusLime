@@ -181,7 +181,7 @@ public class EditContactActivity extends Activity {
             public void onPositive() { if (saveChanges()) finish(); }
             
             @Override
-            public void onNegatiove() { finish(); }
+            public void onNegative() { finish(); }
         });
         
         updateGroups();

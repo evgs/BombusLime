@@ -19,7 +19,7 @@ public class OkCancelBar extends LinearLayout{
     
     public interface OnButtonActionListener {
         public void onPositive();
-        public void onNegatiove();
+        public void onNegative();
     }
     
     OnClickListener mOnClickListener = new OnClickListener() {
@@ -30,7 +30,7 @@ public class OkCancelBar extends LinearLayout{
             
             if (v == mButtonOk)     { mOnButtonAction.onPositive();  } 
             
-            if (v == mButtonCancel) { mOnButtonAction.onNegatiove(); }
+            if (v == mButtonCancel) { mOnButtonAction.onNegative(); }
             
         }
     };
