@@ -152,6 +152,9 @@ public class SASLAuth extends XmppObjectListener{
         	if (!selectedMechanism.success(serverResponse)) 
         		throw new XmppAuthException("Can not verify server identity proof");
         	
+        	// okay, we are logged in, so removing AuthFallback
+        	stream.cancelBlockListenerByClass(AuthFallback.class);
+        	
             // first stream - step 4b. success.
             try {
                 stream.initiateStream();
