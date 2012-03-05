@@ -111,12 +111,14 @@ public class VCardActivity extends Activity {
         mContactBar.bindContact(mContact, false);
         
         //TODO: show for our vcard
+        //mOkCancelBar.requestFocus(); // hide keyboard
         mOkCancelBar.setVisibility(View.GONE);
         
         mSb.setBindListener(new XmppServiceBinding.BindListener() {
             @Override
             public void onBindService(XmppService service) { queryVCard(); }
         });
+
         
 		mSb.doBindService();
 		super.onResume();

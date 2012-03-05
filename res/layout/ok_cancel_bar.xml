@@ -4,6 +4,9 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal" 
     
+	android:focusable="true"
+    android:focusableInTouchMode="true"
+    
     android:background="@android:drawable/bottom_bar" 
     
     >

@@ -332,6 +332,9 @@ public class EditContactActivity extends Activity {
 	protected void onResume() {
 		serviceBinding.doBindService();
 		super.onResume();
+
+        mOkCancelBar.requestFocus(); // hide keyboard
+        
 	}
 	
 	@Override

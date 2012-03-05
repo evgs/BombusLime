@@ -183,9 +183,6 @@
 	    android:layout_alignParentBottom="true"
 	    android:layout_alignParentLeft="true"
         
-		android:focusable="true"
-	    android:focusableInTouchMode="true"
-	            
         okcancelbar:positive="@string/save"
         okcancelbar:negative="@string/cancel"
         

@@ -155,6 +155,8 @@ public class PresenceActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+
+        mOkCancel.requestFocus(); // hide keyboard
 		
 		sb.doBindService();
 	}
