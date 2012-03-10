@@ -90,13 +90,18 @@ public class XmppService extends Service implements Runnable {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		
-		if (ON_KEEP_ALIVE.equals(intent.getAction())) {
-			keepAlive();
-			ka.releaseWakeLock();
-			
-			return START_STICKY;
-		}
+	    
+        // ATENTION! intent is null if service recreated by system after being killed
+        // see http://developer.android.com/reference/android/app/Service.html#START_STICKY for details
+	    
+        if (intent!=null) {
+            if (ON_KEEP_ALIVE.equals(intent.getAction())) {
+                keepAlive();
+                ka.releaseWakeLock();
+                
+                return START_STICKY;
+            }
+        }
         //LimeLog.i("XmppService", "Received start id " + startId, intent.toString());
 		
 		XmppAccount activeAccount = Lime.getInstance().getActiveAccount();
