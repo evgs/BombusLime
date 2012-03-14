@@ -25,6 +25,7 @@ import org.bombusim.lime.Lime;
 import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Resource;
 import org.bombusim.lime.data.Roster;
+import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.xmpp.XmppJid;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppObjectListener;
@@ -47,6 +48,12 @@ public class PresenceDispatcher extends XmppObjectListener{
 		p.dispathch();
 		
 		//TODO: handle ask subscription
+		
+		//TODO: verify usecase "presence without "from" attribute
+		if (p.getFrom() == null) {
+		    LimeLog.w("Presence", "Received without \'from\' attribute", p.toString());
+		    return BLOCK_REJECTED;
+		}
 		
 		//0. get barejid and resource
 		XmppJid fromJid = new XmppJid( p.getFrom() );
