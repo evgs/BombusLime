@@ -132,8 +132,6 @@ public class ChatActivity extends Activity {
         chat = Lime.getInstance().getChatFactory().getChat(jid, rJid);
 
         updateContactBar();
-        
-        contactBar.requestFocus(); //stealing focus from messageBox
 	}
 
 	private void updateContactBar() {

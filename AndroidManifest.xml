@@ -19,6 +19,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" 
         android:name=".Lime" >
+        
         <activity
             android:name=".activity.RosterActivity"
             android:label="@string/app_name" android:launchMode="singleTask">
@@ -28,18 +29,36 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity android:name=".activity.LoggerActivity" android:label="@string/loggerActivity"></activity>
-        <service android:name=".service.XmppService" android:description="@string/xmppServiceDescription"></service>
-        <activity android:name=".activity.AccountSettingsActivity"></activity>
+        
+        <activity android:name=".activity.AccountSettingsActivity" 
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            ></activity>
+        
         <activity android:name=".activity.ChatActivity" 
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:launchMode="singleTop" 
           ></activity>
+        
         <activity android:name=".activity.LimePrefs"></activity>
+        
         <activity android:name=".activity.RosterLimePrefsActivity"></activity>
-        <activity android:name=".activity.VCardActivity"></activity>
-        <activity android:name=".activity.PresenceActivity"></activity>
-        <activity android:name=".activity.EditContactActivity"></activity>
+        
+        <activity android:name=".activity.VCardActivity" 
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            ></activity>
+        
+        <activity android:name=".activity.PresenceActivity" 
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            ></activity>
+        
+        <activity android:name=".activity.EditContactActivity" 
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            ></activity>
 
+        <service android:name=".service.XmppService" android:description="@string/xmppServiceDescription"></service>
+        
         <receiver android:name=".AutoRunOnBootCompleted" android:enabled="true" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>

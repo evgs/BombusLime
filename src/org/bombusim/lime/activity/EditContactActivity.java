@@ -128,7 +128,6 @@ public class EditContactActivity extends Activity {
         	editJid.setText(contact.getJid());
         	editJid.setEnabled(false);
         	editNick.setText(contact.getName());
-        	//editNick.requestFocus();
         	
         	Bitmap avatar = contact.getAvatar();
         	if (avatar !=null) photo.setImageBitmap(avatar);
@@ -332,9 +331,6 @@ public class EditContactActivity extends Activity {
 	protected void onResume() {
 		serviceBinding.doBindService();
 		super.onResume();
-
-        mOkCancelBar.requestFocus(); // hide keyboard
-        
 	}
 	
 	@Override

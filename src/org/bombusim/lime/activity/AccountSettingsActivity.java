@@ -183,9 +183,6 @@ public class AccountSettingsActivity extends Activity {
 	@Override
 	protected void onResume() {
 		sb.doBindService();
-		
-		mOkCancel.requestFocus(); // hide keyboard
-		
 		super.onResume();
 	}
 	

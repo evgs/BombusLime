@@ -7,9 +7,7 @@
         android:id="@+id/contact_head"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-	    android:focusable="true"
-	    android:focusableInTouchMode="true">
+        android:layout_alignParentTop="true">
     </org.bombusim.lime.widgets.ContactBar>
     
 	<LinearLayout 
@@ -28,10 +26,6 @@
 	        android:layout_weight="1"
 	        >
 		    
-		    <!-- 
-			android:nextFocusUp="@id/messageBox" 
-			android:nextFocusLeft="@id/messageBox" -->
-	        
 	    </org.bombusim.lime.widgets.ChatEditText>
 
 	    <ImageButton
