@@ -99,7 +99,9 @@ public class ActiveChats {
 				
 				Contact c = activeContacts.get(position);
 				
-				((RosterActivity) hostActivity).openChatActivity(c);
+				
+				//TODO: fix active chats
+				//((RosterActivity) hostActivity).openChatActivity(c);
 				
 			}
 
