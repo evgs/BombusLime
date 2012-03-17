@@ -31,6 +31,8 @@ public class ChatActivity extends FragmentActivity{
     public static final String MY_JID = "fromJid";
     public static final String TO_JID = "toJid";
 
+    private String mJid;
+    private String mRJid;
     
     /*
      * called when android:launchMode="singleTop"
@@ -46,9 +48,8 @@ public class ChatActivity extends FragmentActivity{
     }
 
     private void attachToChat(Intent intent) {
-        // TODO Auto-generated method stub
-        ((ChatFragment)getSupportFragmentManager().findFragmentById(R.id.chatFragment))
-         .attachToChat(intent);
+        mJid = intent.getStringExtra(TO_JID);
+        mRJid = intent.getStringExtra(MY_JID);
     }
 
     @Override
@@ -64,8 +65,17 @@ public class ChatActivity extends FragmentActivity{
     
     @Override
     protected void onResume() {
-        attachToChat(getIntent());
         super.onResume();
+        
+        ((ChatFragment)getSupportFragmentManager().findFragmentById(R.id.chatFragment))
+        .attachToChat(mJid, mRJid);
+    }
+    
+    @Override
+    protected void onPause() {
+        super.onPause();
+        
+        //((ChatFragment)getSupportFragmentManager().findFragmentById(R.id.chatFragment)) .suspendChat();
     }
 }
 

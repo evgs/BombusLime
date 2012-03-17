@@ -14,4 +14,13 @@
         <!-- Preview: layout=@layout/rosteritem2 -->
     </fragment>
 
+    <fragment android:name="org.bombusim.lime.fragments.ChatFragment"
+        android:id="@+id/chatFragment"
+        android:layout_weight="2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        >
+        <!-- Preview: layout=@layout/chat -->
+    </fragment>
+    
 </LinearLayout>

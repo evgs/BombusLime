@@ -29,6 +29,7 @@ import org.bombusim.lime.activity.EditContactActivity;
 import org.bombusim.lime.activity.LimePrefs;
 import org.bombusim.lime.activity.LoggerActivity;
 import org.bombusim.lime.activity.PresenceActivity;
+import org.bombusim.lime.activity.RosterActivity;
 import org.bombusim.lime.activity.RosterAdapter;
 import org.bombusim.lime.activity.RosterLimePrefsActivity;
 import org.bombusim.lime.activity.VCardActivity;
@@ -350,10 +351,7 @@ public class RosterFragment extends ListFragment {
     
     //todo: move logic out of fragment
     public void openChatActivity(Contact c) {
-        Intent openChat =  new Intent(getActivity(), ChatActivity.class);
-        openChat.putExtra(ChatActivity.MY_JID, c.getRosterJid());
-        openChat.putExtra(ChatActivity.TO_JID,   c.getJid());
-        startActivity(openChat);
+        ((RosterActivity) getActivity()).openChat(c.getJid(), c.getRosterJid());
     }
 
     //todo: move logic out of fragment

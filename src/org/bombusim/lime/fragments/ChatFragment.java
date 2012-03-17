@@ -86,9 +86,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 public class ChatFragment extends Fragment {
-	public static final String MY_JID = "fromJid";
-	public static final String TO_JID = "toJid";
-
 	private String jid;
 	private String rJid;
 	
@@ -187,12 +184,14 @@ public class ChatFragment extends Fragment {
 
 	    return v;
 	}
-	
-	public void attachToChat(Intent intent){
-        jid = intent.getStringExtra(TO_JID);
-        rJid = intent.getStringExtra(MY_JID);
+
+    public void attachToChat(String jid, String rJid) {
         
-        if (jid == null || rJid ==null) throw new InvalidParameterException("No parameters specified for ChatActivity");
+        this.jid=jid;
+        this.rJid=rJid;
+        
+        if (jid == null || rJid ==null) return; 
+        //throw new InvalidParameterException("No parameters specified for ChatActivity");
 
         //TODO: move into ChatFactory
         visavis = Lime.getInstance().getRoster().findContact(jid, rJid);
@@ -200,6 +199,22 @@ public class ChatFragment extends Fragment {
         chat = Lime.getInstance().getChatFactory().getChat(jid, rJid);
 
         updateContactBar();
+        
+        visavisNick = visavis.getScreenName();
+        //TODO: get my nick
+        myNick = "Me"; //serviceBinding.getXmppStream(visavis.getRosterJid()).jid; 
+
+        refreshVisualContent();
+        
+        BaseAdapter ca = (BaseAdapter) (chatListView.getAdapter());
+        chatListView.setSelection(ca.getCount()-1);
+        
+        String s = chat.getSuspendedText();
+        if (s!=null) {
+            messageBox.setText(s);
+        }
+        
+        messageBox.setDialogHostActivity(getActivity());
 	}
 
 	private void updateContactBar() {
@@ -496,36 +511,21 @@ public class ChatFragment extends Fragment {
 	
 	@Override
     public void onResume() {
+        super.onResume();
+        
 		//TODO: refresh message list, focus to last unread
 		serviceBinding.doBindService();
 
-        visavisNick = visavis.getScreenName();
-        //TODO: get my nick
-        myNick = "Me"; //serviceBinding.getXmppStream(visavis.getRosterJid()).jid; 
+        bcUpdateChat = new ChatBroadcastReceiver();
+        //TODO: presence receiver
+        getActivity().registerReceiver(bcUpdateChat, new IntentFilter(Chat.UPDATE_CHAT));
 
-		refreshVisualContent();
-		
-		BaseAdapter ca = (BaseAdapter) (chatListView.getAdapter());
-        chatListView.setSelection(ca.getCount()-1);
+        bcDelivered = new DeliveredReceiver();
+        getActivity().registerReceiver(bcDelivered, new IntentFilter(Chat.DELIVERED));
+        
+        bcPresence = new PresenceReceiver();
+        getActivity().registerReceiver(bcPresence, new IntentFilter(Roster.UPDATE_CONTACT));
 
-		bcUpdateChat = new ChatBroadcastReceiver();
-		//TODO: presence receiver
-		getActivity().registerReceiver(bcUpdateChat, new IntentFilter(Chat.UPDATE_CHAT));
-
-		bcDelivered = new DeliveredReceiver();
-		getActivity().registerReceiver(bcDelivered, new IntentFilter(Chat.DELIVERED));
-		
-		bcPresence = new PresenceReceiver();
-		getActivity().registerReceiver(bcPresence, new IntentFilter(Roster.UPDATE_CONTACT));
-		
-		String s = chat.getSuspendedText();
-		if (s!=null) {
-			messageBox.setText(s);
-		}
-		
-		messageBox.setDialogHostActivity(getActivity());
-		
-		super.onResume();
 	}
 	
 	public void refreshVisualContent() {
@@ -559,21 +559,17 @@ public class ChatFragment extends Fragment {
 	
 	@Override
     public void onPause() {
-		chat.saveSuspendedText(messageBox.getText().toString());
-		
-		sendChatState(ChatStates.PAUSED);
+        super.onPause();
+        
+        //avoid memory leak
+        messageBox.setDialogHostActivity(null);
 		
 		serviceBinding.doUnbindService();
 		getActivity().unregisterReceiver(bcUpdateChat);
 		getActivity().unregisterReceiver(bcDelivered);
 		getActivity().unregisterReceiver(bcPresence);
 		
-		markAllRead();
-		
-		//avoid memory leak
-		messageBox.setDialogHostActivity(null);
-
-		super.onPause();
+		suspendChat();
 	}
 
 	private void markAllRead() {
@@ -596,4 +592,14 @@ public class ChatFragment extends Fragment {
 			} while ( (unreadCount != 0) && cursor.moveToPrevious());
 		}
 	}
+
+    public void suspendChat() {
+        if (jid==null) return;
+
+        chat.saveSuspendedText(messageBox.getText().toString());
+        
+        sendChatState(ChatStates.PAUSED);
+
+        markAllRead();
+    }
 }

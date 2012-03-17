@@ -20,7 +20,9 @@
 package org.bombusim.lime.activity;
 
 import org.bombusim.lime.R;
+import org.bombusim.lime.fragments.ChatFragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
@@ -30,8 +32,21 @@ public class RosterActivity extends FragmentActivity{
         // TODO Auto-generated method stub
         super.onCreate(savedInstance);
         
-        setContentView(R.layout.main);
+        //setContentView(R.layout.main);
+        setContentView(R.layout.main_tab);
     }
-    
-    
+
+    public void openChat(String jid, String rosterJid) {
+        ChatFragment chatFragment = (ChatFragment) getSupportFragmentManager().findFragmentById(R.id.chatFragment);
+        
+        if (chatFragment !=null) {
+            chatFragment.suspendChat();
+            chatFragment.attachToChat(jid, rosterJid);
+        } else {
+            Intent openChat =  new Intent(this, ChatActivity.class);
+            openChat.putExtra(ChatActivity.MY_JID, rosterJid);
+            openChat.putExtra(ChatActivity.TO_JID, jid);
+            startActivity(openChat);
+        }
+    }
 }
