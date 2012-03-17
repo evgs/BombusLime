@@ -29,10 +29,15 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.net.ssl.SSLException;
+
 import org.bombusim.lime.Lime;
+import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.lime.logger.LoggerData;
 import org.bombusim.lime.logger.LoggerEvent;
@@ -41,6 +46,7 @@ import org.bombusim.networking.NetworkSocketDataStream;
 import org.bombusim.xml.Attributes;
 import org.bombusim.xml.XMLException;
 import org.bombusim.xml.XMLParser;
+import org.bombusim.xmpp.exception.XmppAuthException;
 import org.bombusim.xmpp.exception.XmppException;
 import org.bombusim.xmpp.exception.XmppTerminatedException;
 import org.bombusim.xmpp.handlers.ChatStates;
@@ -55,6 +61,7 @@ import org.bombusim.xmpp.stanza.Iq;
 import org.bombusim.xmpp.stanza.XmppPresence;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
+import org.xbill.DNS.ResolverConfig;
 import org.xbill.DNS.SRVRecord;
 import org.xbill.DNS.Type;
 
@@ -237,7 +244,7 @@ public class XmppStream extends XmppParser {
         keepAlive=new TimerTaskKeepAlive(account.keepAlivePeriod, account.keepAliveType);
     }*/
     
-    public void connect() throws UnknownHostException, IOException, XMLException, XmppException {
+    private void connect() throws UnknownHostException, IOException, XMLException, XmppException {
     	account.runtimeIsSecure = false;
     	
     	xmppV1 = true;
@@ -369,10 +376,12 @@ public class XmppStream extends XmppParser {
      * Method to close the connection to the server 
      */
     
-    public void close() {
+    private void close() {
     	account.runtimeStatus = XmppPresence.PRESENCE_OFFLINE;
     	account.runtimeIsSecure = false;
     	
+    	if (dataStream.isClosed()) 
+    	    return;
         //if (keepAlive!=null) keepAlive.destroyTask();
         
     	//cancelling all XmppObjectListeners
@@ -398,7 +407,6 @@ public class XmppStream extends XmppParser {
 		} catch (NullPointerException e) { 
 			// ignoring - socket was not opened  
 		}
-        broadcastTerminatedConnection(new XmppTerminatedException("Connection closed"));
     }
 
 
@@ -413,14 +421,6 @@ public class XmppStream extends XmppParser {
 		}
 		
 	}
-    
-    private void broadcastTerminatedConnection(Exception exception) {
-		// TODO Auto-generated method stub
-    	System.out.println("Broadcasted exception <Close>");
-		exception.printStackTrace();
-	}
-
-
     
     public int getStatus() { return status; }
     public int getPriority() { return -255; }
@@ -650,5 +650,83 @@ public class XmppStream extends XmppParser {
 
 	public String getCertificateInfo() {
 		return ((NetworkSocketDataStream)dataStream).getCertificateInfo();
+	}
+	
+	private Thread streamThread;
+	
+	public void doConnect() {
+	    if (streamThread == null || !streamThread.isAlive()) 
+	        streamThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    boolean isRunning = true;
+                    
+                    while (isRunning) {
+                        try {
+                            connect();
+                        } catch (UnknownHostException e) {
+                            //TODO: sometimes Unknown host may be thrown if interface switching is in progress
+                            LimeLog.e("XmppStream", "Unknown Host", e.toString());
+                            streamThread.interrupt(); isRunning = false;
+                            
+                        } catch (SSLException e) {
+                            //TODO: Raise error notification if Certificate exception
+                            if (isSecured()) {
+                                LimeLog.e("XmppStream", "SSL Error (IO)", e.toString());
+                            } else {
+                                LimeLog.e("XmppStream", "SSL Error (Handshake)", e.toString());
+                                streamThread.interrupt(); isRunning = false;
+                            }
+                            
+                        } catch (IOException e) {
+                            LimeLog.e("XmppStream", "IO Error", e.toString());
+                        } catch (XmppAuthException e) {
+                            LimeLog.e("XmppStream", "Authentication error", e.getMessage());
+                            streamThread.interrupt(); isRunning = false;
+                            e.printStackTrace();
+                        } catch (XmppTerminatedException e) {
+                            LimeLog.e("XmppStream", "Stream shutdown", e.getMessage());
+                            streamThread.interrupt(); isRunning = false;
+                            e.printStackTrace();
+                        } catch (XmppException e) {
+                            LimeLog.e("XmppStream", "Xmpp Error", e.getMessage());
+                            streamThread.interrupt(); isRunning = false;
+                            e.printStackTrace();
+                        } catch (XMLException e) {
+                            LimeLog.e("XmppStream", "XML broken", e.toString());
+                        }
+                        
+                        close();
+                        
+                        //TODO: send as broadcast
+                        Lime.getInstance().getRoster().forceRosterOffline(jid);
+                        sendBroadcast(Roster.UPDATE_CONTACT);
+
+                        if (isRunning) { 
+                            LimeLog.d("XmppStream", "Waiting for reconnect", null);
+                            try {
+                                Thread.sleep(5000); 
+                            } catch (InterruptedException e) { }
+                        } else {
+                            LimeLog.d("XmppStream", "Stay offline", null);
+                        }
+                    }
+                }
+            });
+	    if (streamThread.isAlive()) return;
+	    streamThread.setName("XmppStream->"+jid);
+	    streamThread.start();
+	}
+	
+	public void doForcedDisconnect() {
+	    if (streamThread==null) return;
+	    if (streamThread.isInterrupted()) return;
+	    
+	    streamThread.interrupt();
+	    
+	    new Thread (new Runnable() {
+            @Override
+            public void run() { close(); }
+        }).start();
 	}
 }

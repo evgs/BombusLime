@@ -51,15 +51,15 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
-public class XmppService extends Service implements Runnable {
+public class XmppService extends Service {
 
     public static final String ON_KEEP_ALIVE = "onKeepAlive";
     public static final String ON_BOOT       = "onBoot";
     public static final String ON_STATUS     = "onStatusChange";
 
-	private BroadcastReceiver br;
+	private BroadcastReceiver mBr;
 
-	private XmppStream s;
+	private XmppStream mStream;
 
 	 /**
      * Class for clients to access.  Because we know this service always
@@ -80,12 +80,13 @@ public class XmppService extends Service implements Runnable {
 
 	public void postStanza(XmppObject stanza, String fromJid) {
 		XmppStream s = getXmppStream(fromJid);
+		
 		if (s!=null) s.postStanza(stanza);
 	}
 
 	public XmppStream getXmppStream(String rosterJid) {
 		//TODO: select the stream by "fromJid"
-		return s;
+		return mStream;
 	}
 
 	@Override
@@ -107,28 +108,33 @@ public class XmppService extends Service implements Runnable {
 		XmppAccount activeAccount = Lime.getInstance().getActiveAccount();
 		
 		// TODO start multiple connections
-		if (s==null) {
-			s=new XmppStream(activeAccount);
-			s.setContext(this);
+		if (mStream==null) {
+			mStream=new XmppStream(activeAccount);
+			mStream.setContext(this);
 		} else {
-			s.bindAccount(activeAccount);
+			mStream.bindAccount(activeAccount);
 		}
 		
-		if (br == null) {
-			br = new ConnBroadcastReceiver();
-			registerReceiver(br, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        //language code for xmpp stream
+        //TODO: check http://developer.android.com/reference/java/util/Locale.html
+        //  Note that Java uses several deprecated two-letter codes. 
+        //  The Hebrew ("he") language code is rewritten as "iw", Indonesian ("id") as "in", and Yiddish ("yi") as "ji"
+        String lang = getResources().getConfiguration().locale.getLanguage();
+        mStream.setLocaleLang(lang);
+		
+		if (mBr == null) {
+			mBr = new ConnBroadcastReceiver();
+			registerReceiver(mBr, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 		}
 		
 	   	checkNetworkState();
 	   	
 	   	PresenceStorage ps = new PresenceStorage(this);
 	   	
-	   	s.setPresence(ps.getStatus(), ps.getMessage(), ps.getPriority());
+	   	mStream.setPresence(ps.getStatus(), ps.getMessage(), ps.getPriority());
 	   	
-	   	if (running) {
-	   		if (s.resourceAvailable)
-	   			s.sendPresence();
-	   		
+   		if (mStream.resourceAvailable) {
+   			mStream.sendPresence();
 	   	} else {
 	   		doConnect();
 	   	}
@@ -136,96 +142,28 @@ public class XmppService extends Service implements Runnable {
 	   	return START_STICKY;
 	}
 	
-	public boolean running = false;
-	
 	public void doConnect() {
 		//TODO: check presence status
 		if (networkAvailable) {
-			if (!running) {
-				running = true;
-			   	
-				Thread thread=new Thread( this );
-				thread.setName("XmppStream->"+s.jid);
-				thread.start();
-			} 
+            //update DNS server info
+            //TODO: refresh on network status changed
+            ResolverConfig.refresh();
+            Lookup.refreshDefault();
+            
+            ka.setAlarm(this);
+            showNotification(true);
+            
+            mStream.doConnect();
+            
 		} else {
-			s.close();
+			mStream.doForcedDisconnect();
+			
+			ka.cancelAlarm(this);
+	        cancelNotification();
+
 		}
 	}
 	
-	@Override
-	public void run() {
-		while (running) {
-		   	try {
-		        showNotification(false);
-			   	//update DNS server info
-			   	ResolverConfig.refresh();
-			   	Lookup.refreshDefault();
-
-			   	//language code for xmpp stream
-			   	//TODO: check http://developer.android.com/reference/java/util/Locale.html
-			   	//  Note that Java uses several deprecated two-letter codes. 
-			   	//  The Hebrew ("he") language code is rewritten as "iw", Indonesian ("id") as "in", and Yiddish ("yi") as "ji"
-			   	String lang = getResources().getConfiguration().locale.getLanguage();
-			   	s.setLocaleLang(lang);
-
-		        showNotification(true);
-		        
-		        ka.setAlarm(this);
-		        
-			   	s.connect();
-			   	
-			} catch (UnknownHostException e) {
-				//TODO: sometimes Unknown host may be thrown if interface switching is in progress
-		    	LimeLog.e("XmppStream", "Unknown Host", e.toString());
-				running = false;
-				
-			} catch (SSLException e) {
-				//TODO: Raise error notification if Certificate exception
-		        showNotification(false);
-				if (s.isSecured()) {
-					LimeLog.e("XmppStream", "SSL Error (IO)", e.toString());
-				} else {
-					LimeLog.e("XmppStream", "SSL Error (Handshake)", e.toString());
-					running = false;
-				}
-				
-		    } catch (IOException e) {
-		    	if (!networkAvailable) running = false;
-		    	LimeLog.e("XmppStream", "IO Error", e.toString());
-		        showNotification(false);
-			} catch (XmppAuthException e) {
-		    	LimeLog.e("XmppStream", "Authentication error", e.getMessage());
-				running = false;
-				e.printStackTrace();
-			} catch (XmppTerminatedException e) {
-		    	LimeLog.e("XmppStream", "Stream shutdown", e.getMessage());
-				running = false;
-				e.printStackTrace();
-			} catch (XmppException e) {
-		    	LimeLog.e("XmppStream", "Xmpp Error", e.getMessage());
-				running = false;
-				e.printStackTrace();
-			} catch (XMLException e) {
-		    	LimeLog.e("XmppStream", "XML broken", e.toString());
-		        showNotification(false);
-			}
-		   	
-	    	//TODO: check status (online/offline)
-		   	if (!networkAvailable) running = false;
-		   	
-		   	ka.cancelAlarm(this);
-		   	
-		   	s.close();
-		   	
-		   	Lime.getInstance().getRoster().forceRosterOffline(s.jid);
-			s.sendBroadcast(Roster.UPDATE_CONTACT);
-
-		   	
-		}
-        cancelNotification();
-	}
-
     @Override
     public void onDestroy() {
         // Cancel the persistent notification.
@@ -275,37 +213,33 @@ public class XmppService extends Service implements Runnable {
 					+ ((networkType==ConnectivityManager.TYPE_WIFI)?"WiFi":"GPRS")
 					+ ((networkAvailable)?" Up":" Down" ),
 					null);
-			
+
 			doConnect();
-			
 		}
-		
 	}
 
 
 	public void disconnectAll() {
         //TODO: remove try/catch when service on/off behavior will be changed 
         try {
-        	unregisterReceiver(br);
-        	br = null;
+        	unregisterReceiver(mBr);
+        	mBr = null;
         } catch (Exception e) {
         	e.printStackTrace();
         }
         
-        //TODO: remove when service on/off behavior will be changed 
-        running = false;
-        if (s!=null)
-        	s.close();
+        if (mStream!=null)
+        	mStream.doForcedDisconnect();
         
         stopSelf();
 	}
 	
 	private KeepAliveAlarm ka = new KeepAliveAlarm();
 
-	public void keepAlive() {
+	private void keepAlive() {
 		//TODO: keep alive all connections
-	    if (s!=null) 
-	        s.keepAlive();
+	    if (mStream!=null) 
+	        mStream.keepAlive();
 	    //TODO: check how keepAlive may be active with s==null
 	}
 	
