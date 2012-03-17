@@ -653,21 +653,22 @@ public class XmppStream extends XmppParser {
 	}
 	
 	private Thread streamThread;
+	private boolean allowReconnect;
 	
 	public void doConnect() {
 	    if (streamThread == null || !streamThread.isAlive()) 
 	        streamThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    boolean isRunning = true;
+                    allowReconnect = true;
                     
-                    while (isRunning) {
+                    while (allowReconnect) {
                         try {
                             connect();
                         } catch (UnknownHostException e) {
                             //TODO: sometimes Unknown host may be thrown if interface switching is in progress
                             LimeLog.e("XmppStream", "Unknown Host", e.toString());
-                            streamThread.interrupt(); isRunning = false;
+                            streamThread.interrupt(); allowReconnect = false;
                             
                         } catch (SSLException e) {
                             //TODO: Raise error notification if Certificate exception
@@ -675,22 +676,22 @@ public class XmppStream extends XmppParser {
                                 LimeLog.e("XmppStream", "SSL Error (IO)", e.toString());
                             } else {
                                 LimeLog.e("XmppStream", "SSL Error (Handshake)", e.toString());
-                                streamThread.interrupt(); isRunning = false;
+                                streamThread.interrupt(); allowReconnect = false;
                             }
                             
                         } catch (IOException e) {
                             LimeLog.e("XmppStream", "IO Error", e.toString());
                         } catch (XmppAuthException e) {
                             LimeLog.e("XmppStream", "Authentication error", e.getMessage());
-                            streamThread.interrupt(); isRunning = false;
+                            streamThread.interrupt(); allowReconnect = false;
                             e.printStackTrace();
                         } catch (XmppTerminatedException e) {
                             LimeLog.e("XmppStream", "Stream shutdown", e.getMessage());
-                            streamThread.interrupt(); isRunning = false;
+                            streamThread.interrupt(); allowReconnect = false;
                             e.printStackTrace();
                         } catch (XmppException e) {
                             LimeLog.e("XmppStream", "Xmpp Error", e.getMessage());
-                            streamThread.interrupt(); isRunning = false;
+                            streamThread.interrupt(); allowReconnect = false;
                             e.printStackTrace();
                         } catch (XMLException e) {
                             LimeLog.e("XmppStream", "XML broken", e.toString());
@@ -702,11 +703,11 @@ public class XmppStream extends XmppParser {
                         Lime.getInstance().getRoster().forceRosterOffline(jid);
                         sendBroadcast(Roster.UPDATE_CONTACT);
 
-                        if (isRunning) { 
+                        if (allowReconnect) { 
                             LimeLog.d("XmppStream", "Waiting for reconnect", null);
                             try {
                                 Thread.sleep(5000); 
-                            } catch (InterruptedException e) { }
+                            } catch (InterruptedException e) { allowReconnect = false; }
                         } else {
                             LimeLog.d("XmppStream", "Stay offline", null);
                         }
@@ -722,6 +723,7 @@ public class XmppStream extends XmppParser {
 	    if (streamThread==null) return;
 	    if (streamThread.isInterrupted()) return;
 	    
+	    allowReconnect = false;
 	    streamThread.interrupt();
 	    
 	    new Thread (new Runnable() {
