@@ -46,7 +46,7 @@ public class IqRoster extends XmppObjectListener{
 	public void queryRoster(XmppStream stream) {
 		XmppObject q=new Iq(null, Iq.TYPE_GET, id);
 		q.addChildNs("query", XMLNS_JABBER_IQ_ROSTER);
-		stream.send(q);
+		stream.postStanza(q);
 	}
 	
 	@Override
@@ -136,7 +136,7 @@ public class IqRoster extends XmppObjectListener{
 		item.setAttribute("jid", jid);
 		item.setAttribute(SUBSCRIPTION, REMOVE);
 		
-		stream.send(q);
+		stream.postStanza(q);
 	}
 
 	public static void setContact(Contact contact, XmppStream stream) {
@@ -152,13 +152,13 @@ public class IqRoster extends XmppObjectListener{
 			item.addChild("group", group);
 		}
 		
-		stream.send(q);
+		stream.postStanza(q);
 	}
 	
 	public static void setSubscription(String toJid, String subscription, XmppStream stream) {
 		XmppObject q = new XmppPresence(toJid, subscription);
 		
-		stream.send(q);
+		stream.postStanza(q);
 	}
 
 }

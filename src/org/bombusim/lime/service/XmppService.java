@@ -78,9 +78,9 @@ public class XmppService extends Service implements Runnable {
 		return binder;
 	}
 
-	public void sendStanza(XmppObject stanza, String fromJid) {
-		//TODO: select the stream by "fromJid"
-		if (s!=null) s.send(stanza);
+	public void postStanza(XmppObject stanza, String fromJid) {
+		XmppStream s = getXmppStream(fromJid);
+		if (s!=null) s.postStanza(stanza);
 	}
 
 	public XmppStream getXmppStream(String rosterJid) {

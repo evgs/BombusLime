@@ -475,28 +475,55 @@ public class XmppStream extends XmppParser {
     	send(bytes, bytes.length);
     }
     
+    private Queue<XmppObject> sendQueue = new LinkedList<XmppObject>();
+    
     /**
      * Method of sending a Jabber datablock to the server.
-     *
+     * This metod is ANR-safe, and recoomended to use in UI threads
+     * 
      * @param block The data block to send to the server.
-     * @return true if no errors during sending, false otherwise
      */
     
-    public boolean send( XmppObject block )  {
+    
+    public void postStanza( XmppObject block )  {
     	
-   		byte[] bytes = block.getBytes();
-   		int length = bytes.length;
-    		
-    	try {
-    		send(bytes, length);
-    	} catch (Exception e) {
-    		//TODO: verify action on error
-    		e.printStackTrace();
-    		close();
-    		return false;
-		}
-    	
-    	return true;
+        //TODO: single thread for outgoing packets 
+        synchronized(sendQueue) { sendQueue.add(block); }
+        
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+             
+                XmppObject block;
+                synchronized(sendQueue) { block = sendQueue.poll(); }
+                
+                send(block);
+            }
+        }).start();
+    }
+
+    /**
+     * Method of sending a Jabber datablock to the server.
+     * WARNING! This metod is not ANR-safe!
+     * 
+     * WARNING! Android 3+ generates exception 
+     *  if networking method is invoked within UI thread!
+     *
+     * @param block The data block to send to the server.
+     */
+
+    public void send( XmppObject block )  {
+        
+        byte[] bytes = block.getBytes();
+        int length = bytes.length;
+            
+        try {
+            send(bytes, length);
+        } catch (Exception e) {
+            //TODO: verify action on error
+            e.printStackTrace();
+            close();
+        }
     }
     
     /**
@@ -590,7 +617,7 @@ public class XmppStream extends XmppParser {
     	
     	resourceAvailable = true;
     	//offline messages will be delivered after this presence
-    	send(online);
+    	postStanza(online);
 	}
     
     private void updateCaps() {

@@ -108,7 +108,7 @@ public class IqVcard extends XmppObjectListener {
 		this.jid = jid;
 		
 		stream.addBlockListener(this);
-		stream.send(request);
+		stream.postStanza(request);
 		
 		timeoutThread.start();
 	}

@@ -426,8 +426,10 @@ public class ChatActivity extends Activity {
 		sentChatState = ChatStates.ACTIVE;
 		
 		//TODO: message queue
-		if ( serviceBinding.sendStanza(visavis.getRosterJid(), msg) ) {
-			
+		if ( serviceBinding.isLoggedIn(visavis.getRosterJid()) ) {
+		    
+		    serviceBinding.postStanza(visavis.getRosterJid(), msg);
+		    
 			//clear box after success sending
 			messageBox.setText("");
 
@@ -467,7 +469,7 @@ public class ChatActivity extends Activity {
 		msg.addChildNs(state, ChatStates.XMLNS_CHATSTATES);
 		sentChatState = state;
 		
-		serviceBinding.sendStanza(visavis.getRosterJid(), msg);
+		serviceBinding.postStanza(visavis.getRosterJid(), msg);
 		
 	}
 	
