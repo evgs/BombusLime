@@ -21,7 +21,7 @@
 	        android:id="@+id/messageBox"
 	        android:layout_width="0dip"
 	        android:layout_height="wrap_content"
-	        
+	        android:freezesText = "false"
 	        android:singleLine="false" 
 	        android:layout_weight="1"
 	        >

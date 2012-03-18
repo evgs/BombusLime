@@ -27,17 +27,65 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
 public class RosterActivity extends FragmentActivity{
+    private String mChatJid;
+    private String mChatRJid;
+    
+    }
+    
     @Override
     protected void onCreate(Bundle savedInstance) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstance);
         
         //setContentView(R.layout.main);
         setContentView(R.layout.main_tab);
+        
+        handleIntent(getIntent());
+
+        if (savedInstance!=null) {
+            mChatJid = savedInstance.getString(ChatActivity.TO_JID);
+            mChatRJid = savedInstance.getString(ChatActivity.MY_JID);
+        }
+        
     }
 
+    private void handleIntent(Intent intent) {
+        
+        String intentAction = intent.getAction(); 
+        if (intentAction.startsWith("Msg")) {
+            mChatJid = intent.getStringExtra(ChatActivity.TO_JID);
+            mChatRJid = intent.getStringExtra(ChatActivity.MY_JID);
+            
+            showChat(true);
+        }
+    }
+
+    /*
+     * called when android:launchMode="singleTop"
+     * single-chat mode, replaces existing chat;
+     * @see android.app.Activity#onNewIntent(android.content.Intent)
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        setIntent(intent);
+        handleIntent(intent);
+    }
+    
+    private ChatFragment getChatFragment() {
+        if (!isTabMode()) return null;
+        return (ChatFragment) getSupportFragmentManager().findFragmentById(R.id.chatFragment);
+    }
+    
     public void openChat(String jid, String rosterJid) {
-        ChatFragment chatFragment = (ChatFragment) getSupportFragmentManager().findFragmentById(R.id.chatFragment);
+        mChatJid = jid;
+        mChatRJid = rosterJid;
+        
+        showChat(true);
+    }
+
+    public void showChat(boolean openActivity) {
+        ChatFragment chatFragment = getChatFragment();
         
         if (chatFragment !=null) {
             chatFragment.suspendChat();
@@ -48,5 +96,21 @@ public class RosterActivity extends FragmentActivity{
             openChat.putExtra(ChatActivity.TO_JID, jid);
             startActivity(openChat);
         }
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        
+        showChat(false);
+    }
+    
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        
+        outState.putString(ChatActivity.MY_JID, mChatRJid);
+        outState.putString(ChatActivity.TO_JID, mChatJid);
     }
 }

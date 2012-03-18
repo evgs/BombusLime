@@ -190,6 +190,10 @@ public class ChatFragment extends Fragment {
         this.jid=jid;
         this.rJid=rJid;
         
+        //TODO: remove workaround after splash screen will be created
+        //disable message box until actual chat selected
+        messageBox.setEnabled( jid != null );
+        
         if (jid == null || rJid ==null) return; 
         //throw new InvalidParameterException("No parameters specified for ChatActivity");
 
@@ -453,6 +457,8 @@ public class ChatFragment extends Fragment {
 
 	protected void sendChatState(String state) {
 
+	    if (jid==null) return;
+        
 		//TODO: optional chat state notifications
 
 		if (!chat.acceptComposingEvents()) return;
@@ -498,8 +504,9 @@ public class ChatFragment extends Fragment {
 	private class PresenceReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+		    if (jid == null) return;
 			String jid = intent.getStringExtra("param");
-			if (jid==null || visavis.getJid().equals(jid) ) {
+			if (visavis.getJid().equals(jid) ) {
 				updateContactBar();
 			}
 		}
@@ -601,5 +608,7 @@ public class ChatFragment extends Fragment {
         sendChatState(ChatStates.PAUSED);
 
         markAllRead();
+        
+        jid = null;
     }
 }

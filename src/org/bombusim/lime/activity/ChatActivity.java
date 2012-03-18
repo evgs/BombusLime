@@ -23,6 +23,7 @@ import org.bombusim.lime.R;
 import org.bombusim.lime.fragments.ChatFragment;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Window;
@@ -31,8 +32,8 @@ public class ChatActivity extends FragmentActivity{
     public static final String MY_JID = "fromJid";
     public static final String TO_JID = "toJid";
 
-    private String mJid;
-    private String mRJid;
+    private String mChatJid;
+    private String mChatRJid;
     
     /*
      * called when android:launchMode="singleTop"
@@ -43,24 +44,29 @@ public class ChatActivity extends FragmentActivity{
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        setIntent(intent);
         attachToChat(intent);
     }
 
     private void attachToChat(Intent intent) {
-        mJid = intent.getStringExtra(TO_JID);
-        mRJid = intent.getStringExtra(MY_JID);
+        mChatJid = intent.getStringExtra(TO_JID);
+        mChatRJid = intent.getStringExtra(MY_JID);
     }
 
     @Override
     protected void onCreate(Bundle savedInstance) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstance);
         
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         
         
         setContentView(R.layout.single_chat);
+        
+        if(savedInstance != null) {
+            mChatJid = savedInstance.getString(ChatActivity.TO_JID);
+            mChatRJid = savedInstance.getString(ChatActivity.MY_JID);
+        } else {
+            attachToChat(getIntent());
+        }
     }
     
     @Override
@@ -68,7 +74,7 @@ public class ChatActivity extends FragmentActivity{
         super.onResume();
         
         ((ChatFragment)getSupportFragmentManager().findFragmentById(R.id.chatFragment))
-        .attachToChat(mJid, mRJid);
+        .attachToChat(mChatJid, mChatRJid);
     }
     
     @Override
@@ -77,5 +83,14 @@ public class ChatActivity extends FragmentActivity{
         
         //((ChatFragment)getSupportFragmentManager().findFragmentById(R.id.chatFragment)) .suspendChat();
     }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        
+        outState.putString(ChatActivity.MY_JID, mChatRJid);
+        outState.putString(ChatActivity.TO_JID, mChatJid);
+    }
+    
 }
 
