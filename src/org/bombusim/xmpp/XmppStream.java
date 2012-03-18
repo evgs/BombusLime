@@ -458,7 +458,10 @@ public class XmppStream extends XmppParser {
         //ping.addChildNs("query", "jabber:iq:version");
         ping.addChildNs("ping", "urn:xmpp:ping");
         pingSent=true;
-        send(ping);
+        
+        //check if ping will be sent unlil phone goes sleep
+        postStanza(ping);
+        //send(ping);
     }
 
   
