@@ -27,11 +27,12 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
-public class RosterActivity extends FragmentActivity{
+public class RosterActivity extends FragmentActivity
+    implements ChatFragment.ChatFragmentListener {
     private String mChatJid;
     private String mChatRJid;
     
-    private boolean isTabMode() {
+    public boolean isTabMode() {
         //TODO: make choice based on screen resolution, not only orientation 
         return (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
     }
@@ -123,5 +124,11 @@ public class RosterActivity extends FragmentActivity{
         
         outState.putString(ChatActivity.MY_JID, mChatRJid);
         outState.putString(ChatActivity.TO_JID, mChatJid);
+    }
+
+    @Override
+    public void closeChat() {
+        // TODO Auto-generated method stub
+        
     }
 }

@@ -21,6 +21,7 @@ package org.bombusim.lime.activity;
 
 import org.bombusim.lime.R;
 import org.bombusim.lime.fragments.ChatFragment;
+import org.bombusim.lime.fragments.ChatFragment.ChatFragmentListener;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -28,7 +29,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Window;
 
-public class ChatActivity extends FragmentActivity{
+public class ChatActivity extends FragmentActivity
+    implements ChatFragmentListener {
     public static final String MY_JID = "fromJid";
     public static final String TO_JID = "toJid";
 
@@ -99,6 +101,13 @@ public class ChatActivity extends FragmentActivity{
         outState.putString(ChatActivity.MY_JID, mChatRJid);
         outState.putString(ChatActivity.TO_JID, mChatJid);
     }
-    
+
+    @Override
+    public void closeChat() { finish(); }
+
+    @Override
+    public boolean isTabMode() {
+        return false;
+    }
 }
 

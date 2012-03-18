@@ -29,6 +29,12 @@
 	    </org.bombusim.lime.widgets.ChatEditText>
 
 	    <ImageButton
+	        android:id="@+id/smileButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/sm_smile" />
+
+	    <ImageButton
 	        android:id="@+id/sendButton"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"

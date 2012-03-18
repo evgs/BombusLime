@@ -42,6 +42,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -89,8 +90,9 @@ public class ChatFragment extends Fragment {
 	private String jid;
 	private String rJid;
 	
-	private ChatEditText messageBox;
-	private ImageButton sendButton;
+	private ChatEditText mMessageBox;
+	private ImageButton mSendButton;
+    private ImageButton mSmileButton;
 	
 	private ListView chatListView;
 	
@@ -111,7 +113,16 @@ public class ChatFragment extends Fragment {
 	public void onAttach(Activity activity) {
 	    super.onAttach(activity);
 	    
+        if (!(activity instanceof ChatFragmentListener)) 
+            throw new ClassCastException(activity.toString() + " must implement ChatFragmentListener");
+        
         serviceBinding = new XmppServiceBinding(activity);
+	}
+	
+	public interface ChatFragmentListener {
+	    public void closeChat();
+	    
+	    public boolean isTabMode();
 	}
 	
 	@Override
@@ -120,20 +131,26 @@ public class ChatFragment extends Fragment {
 	    View v = inflater.inflate(R.layout.chat, container,  false);
 	    
         contactBar =   (ContactBar)   v.findViewById(R.id.contact_head);
-        messageBox =   (ChatEditText) v.findViewById(R.id.messageBox);
-        sendButton =   (ImageButton)  v.findViewById(R.id.sendButton);
+        mMessageBox =   (ChatEditText) v.findViewById(R.id.messageBox);
+        mSendButton =   (ImageButton)  v.findViewById(R.id.sendButton);
+        mSmileButton =  (ImageButton)  v.findViewById(R.id.smileButton);
         chatListView = (ListView)     v.findViewById(R.id.chatListView);
 
         registerForContextMenu(chatListView);
         enableTrackballTraversing();
         
-        sendButton.setOnClickListener(new OnClickListener() {
+        mSendButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {   sendMessage();  }
         });
+        
+        mSmileButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) { mMessageBox.showAddSmileDialog(); }
+        });
 
         //TODO: optional
-        messageBox.setOnKeyListener(new OnKeyListener() {
+        mMessageBox.setOnKeyListener(new OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
 
@@ -146,7 +163,7 @@ public class ChatFragment extends Fragment {
             }
         });
 
-        messageBox.addTextChangedListener(new TextWatcher() {
+        mMessageBox.addTextChangedListener(new TextWatcher() {
             
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
@@ -163,10 +180,10 @@ public class ChatFragment extends Fragment {
         
         //TODO: optional behavior
         //messageBox.setImeActionLabel("Send", EditorInfo.IME_ACTION_SEND); //Keeps IME opened
-        messageBox.setImeActionLabel(getString(R.string.sendMessage), EditorInfo.IME_ACTION_DONE); //Closes IME
+        mMessageBox.setImeActionLabel(getString(R.string.sendMessage), EditorInfo.IME_ACTION_DONE); //Closes IME
         
         
-        messageBox.setOnEditorActionListener(new OnEditorActionListener() {
+        mMessageBox.setOnEditorActionListener(new OnEditorActionListener() {
             
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -192,7 +209,7 @@ public class ChatFragment extends Fragment {
         
         //TODO: remove workaround after splash screen will be created
         //disable message box until actual chat selected
-        messageBox.setEnabled( jid != null );
+        mMessageBox.setEnabled( jid != null );
         
         if (jid == null || rJid ==null) return; 
         //throw new InvalidParameterException("No parameters specified for ChatActivity");
@@ -215,10 +232,10 @@ public class ChatFragment extends Fragment {
         
         String s = chat.getSuspendedText();
         if (s!=null) {
-            messageBox.setText(s);
+            mMessageBox.setText(s);
         }
         
-        messageBox.setDialogHostActivity(getActivity());
+        mMessageBox.setDialogHostActivity(getActivity());
 	}
 
 	private void updateContactBar() {
@@ -227,16 +244,23 @@ public class ChatFragment extends Fragment {
 		
 	}
 	
+	private ChatFragmentListener getChatFragmentListener() {
+	    return (ChatFragmentListener) getActivity();
+	}
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-        setHasOptionsMenu(true);
+		//TODO: remove when ActionBar will be implemented
+		if (!getChatFragmentListener().isTabMode())
+		    setHasOptionsMenu(true);
 	}
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.chat_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
 	}
 	
 	@Override
@@ -248,9 +272,9 @@ public class ChatFragment extends Fragment {
 			//finish();
 			break;
 		
-		case R.id.addSmile:   messageBox.showAddSmileDialog();  break;
+		case R.id.addSmile:   mMessageBox.showAddSmileDialog();  break;
 		
-		case R.id.addMe:      messageBox.addMe(); break;
+		case R.id.addMe:      mMessageBox.addMe(); break;
 		
 		default: return true; // on submenu
 		}
@@ -413,7 +437,7 @@ public class ChatFragment extends Fragment {
     
 	
 	protected void sendMessage() {
-		String text = messageBox.getText().toString();
+		String text = mMessageBox.getText().toString();
 		
 		//avoid sending of empty messages
 		if (text.length() == 0) return;
@@ -440,7 +464,7 @@ public class ChatFragment extends Fragment {
 		    serviceBinding.postStanza(visavis.getRosterJid(), msg);
 		    
 			//clear box after success sending
-			messageBox.setText("");
+			mMessageBox.setText("");
 
 			if (visavis.getPresence() == XmppPresence.PRESENCE_OFFLINE) {
 				Toast.makeText(getActivity(), R.string.chatSentOffline, Toast.LENGTH_LONG).show();
@@ -569,7 +593,7 @@ public class ChatFragment extends Fragment {
         super.onPause();
         
         //avoid memory leak
-        messageBox.setDialogHostActivity(null);
+        mMessageBox.setDialogHostActivity(null);
 		
 		serviceBinding.doUnbindService();
 		getActivity().unregisterReceiver(bcUpdateChat);
@@ -603,7 +627,7 @@ public class ChatFragment extends Fragment {
     public void suspendChat() {
         if (jid==null) return;
 
-        chat.saveSuspendedText(messageBox.getText().toString());
+        chat.saveSuspendedText(mMessageBox.getText().toString());
         
         sendChatState(ChatStates.PAUSED);
 
@@ -611,4 +635,5 @@ public class ChatFragment extends Fragment {
         
         jid = null;
     }
+
 }

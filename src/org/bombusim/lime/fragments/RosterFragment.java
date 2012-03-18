@@ -141,6 +141,8 @@ public class RosterFragment extends ListFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.roster_menu, menu);
 
+        super.onCreateOptionsMenu(menu, inflater);
+        
         //enable items available only if logged in
         //TODO: modify behavior if multiple account
         /*
