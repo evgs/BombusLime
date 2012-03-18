@@ -55,6 +55,14 @@ public class ChatActivity extends FragmentActivity{
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+
+        //TODO: make choice based on screen resolution, not only orientation
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // If the screen is now in landscape mode, we can show the
+            // dialog in-line with the list so we don't need this activity.
+            finish();
+            return;
+        }
         
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         

@@ -23,6 +23,7 @@ import org.bombusim.lime.R;
 import org.bombusim.lime.fragments.ChatFragment;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
@@ -30,14 +31,21 @@ public class RosterActivity extends FragmentActivity{
     private String mChatJid;
     private String mChatRJid;
     
+    private boolean isTabMode() {
+        //TODO: make choice based on screen resolution, not only orientation 
+        return (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
     }
     
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         
-        //setContentView(R.layout.main);
-        setContentView(R.layout.main_tab);
+        //TODO: set layout based on screen resolution, not only orientation 
+        if (isTabMode()) {
+            setContentView(R.layout.main_tab);
+        } else {
+            setContentView(R.layout.main);
+        }
         
         handleIntent(getIntent());
 
@@ -89,11 +97,14 @@ public class RosterActivity extends FragmentActivity{
         
         if (chatFragment !=null) {
             chatFragment.suspendChat();
-            chatFragment.attachToChat(jid, rosterJid);
-        } else {
+            chatFragment.attachToChat(mChatJid, mChatRJid);
+            return;
+        } 
+        
+        if (openActivity) {
             Intent openChat =  new Intent(this, ChatActivity.class);
-            openChat.putExtra(ChatActivity.MY_JID, rosterJid);
-            openChat.putExtra(ChatActivity.TO_JID, jid);
+            openChat.putExtra(ChatActivity.MY_JID, mChatRJid);
+            openChat.putExtra(ChatActivity.TO_JID, mChatJid);
             startActivity(openChat);
         }
     }
