@@ -102,9 +102,8 @@ public class Lime extends Application {
 	/**
 	 * Should be removed with getServiceBinding() 
 	 */
-    public void saveBinding(XmppServiceBinding sb2) {
-        // TODO Auto-generated method stub
-        
+    public void saveBinding(XmppServiceBinding sb) {
+	    this.sb = sb;
     }
 	
 	@Override

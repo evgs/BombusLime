@@ -97,7 +97,7 @@ public class RosterFragment extends ListFragment {
         sb = new XmppServiceBinding(getActivity());
 
         //temporary
-        Lime.getInstance().sb=sb;
+        Lime.getInstance().saveBinding(sb);
         
     }
 
