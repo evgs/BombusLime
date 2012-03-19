@@ -124,7 +124,7 @@ public class NotificationMgr {
 	public void showOnlineNotification(boolean online) {
 		if (!serviceIcon) return;
 	
-		int icon = ((online)? R.drawable.status_online : R.drawable.status_offline);
+		int icon = ((online)? R.drawable.ic_launcher : R.drawable.ic_launcher_gray);
 		CharSequence title = context.getText(R.string.app_name);
 		CharSequence message = context.getText((online)? R.string.presence_online : R.string.presence_offline); 
 		
