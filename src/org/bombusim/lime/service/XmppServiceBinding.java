@@ -102,6 +102,7 @@ public class XmppServiceBinding {
 	 * USE WITH CAUTION!!!
 	 * @return XmppService object
 	 */
+	@Deprecated
 	public XmppService getXmppService() {
 		return xmppService;
 	}
