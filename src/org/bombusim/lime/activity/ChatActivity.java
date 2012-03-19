@@ -66,7 +66,9 @@ public class ChatActivity extends FragmentActivity
             return;
         }
         
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //temporary, until ActionBar will be implemented for this activity
+        if (android.os.Build.VERSION.SDK_INT < 11)
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
         
         
         setContentView(R.layout.single_chat);
