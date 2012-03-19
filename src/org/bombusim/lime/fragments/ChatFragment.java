@@ -637,7 +637,7 @@ public class ChatFragment extends Fragment {
     @Override
     public void onStop() {
         CursorAdapter ca = (CursorAdapter) chatListView.getAdapter();
-        ca.changeCursor(null);
+        if (ca!=null) ca.changeCursor(null);
         
         super.onStop();
     }
