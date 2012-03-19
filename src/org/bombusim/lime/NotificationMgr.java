@@ -133,7 +133,7 @@ public class NotificationMgr {
 
         // The PendingIntent to launch our activity if the user selects this notification
         PendingIntent contentIntent = 
-        		PendingIntent.getActivity(context, 0, new Intent(context, RosterActivity.class), 0);
+        		PendingIntent.getActivity(context, 0, new Intent("org.bombusim.lime", null, context, RosterActivity.class), 0);
 
         // Set the info for the views that show in the notification panel.
         notification.setLatestEventInfo(context, title, message, contentIntent);

@@ -59,7 +59,9 @@ public class RosterActivity extends FragmentActivity
 
     private void handleIntent(Intent intent) {
         
-        String intentAction = intent.getAction(); 
+        String intentAction = intent.getAction();
+        if (intentAction == null) return;
+        
         if (intentAction.startsWith("Msg")) {
             mChatJid = intent.getStringExtra(ChatActivity.TO_JID);
             mChatRJid = intent.getStringExtra(ChatActivity.MY_JID);
