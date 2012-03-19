@@ -19,6 +19,6 @@
 	    android:layout_marginLeft="5dp"
 	    android:layout_toRightOf="@+id/iconStatus"
 	    android:text="presence"
-	    android:textAppearance="?android:attr/textAppearanceButton" />
+	    style="?android:attr/spinnerItemStyle" />
 
 </RelativeLayout>
