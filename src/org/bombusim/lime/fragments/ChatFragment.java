@@ -568,11 +568,9 @@ public class ChatFragment extends Fragment {
 		if (ca == null) {
 			ca = new ChatListAdapter(getActivity(), c);
 	        chatListView.setAdapter(ca);
-	        getActivity().startManagingCursor(c);
 		} else {
 	        //TODO: detach old cursor
 			ca.changeCursor(c);
-			getActivity().startManagingCursor(c);
 			
 	        ca.notifyDataSetChanged();
 
@@ -632,8 +630,16 @@ public class ChatFragment extends Fragment {
         sendChatState(ChatStates.PAUSED);
 
         markAllRead();
-        
+
         jid = null;
+    }
+    
+    @Override
+    public void onStop() {
+        CursorAdapter ca = (CursorAdapter) chatListView.getAdapter();
+        ca.changeCursor(null);
+        
+        super.onStop();
     }
 
 }
