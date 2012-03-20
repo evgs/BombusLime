@@ -21,12 +21,18 @@
 	        android:id="@+id/messageBox"
 	        android:layout_width="0dip"
 	        android:layout_height="wrap_content"
-	        
+	        android:freezesText = "false"
 	        android:singleLine="false" 
 	        android:layout_weight="1"
 	        >
 		    
 	    </org.bombusim.lime.widgets.ChatEditText>
+
+	    <ImageButton
+	        android:id="@+id/smileButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/sm_smile" />
 
 	    <ImageButton
 	        android:id="@+id/sendButton"

@@ -64,5 +64,7 @@ public abstract class NetworkDataStream {
 		ostream.write(bytes, 0, length);
 		ostream.flush();
 	}
+
+    public abstract boolean isClosed();
 	
 }

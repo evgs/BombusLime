@@ -91,21 +91,18 @@ public class XmppServiceBinding {
 	 * Sending XMPP stanza
 	 * @param streamJid - JID identifies stream so be used  
 	 * @param stanza stanza to be sent
-	 * @return true if success, false otherwise
 	 */
-	public boolean sendStanza(String streamJid, XmppObject stanza) {
+	public void postStanza(String streamJid, XmppObject stanza) {
 		try {
-			return getXmppStream(streamJid).send(stanza);
-		} catch (Exception e) {	}
-		
-		return false;
-		
+		    xmppService.postStanza(stanza, streamJid);
+		} catch (Exception e) {	e.printStackTrace(); }
 	}
 	
 	/**
 	 * USE WITH CAUTION!!!
 	 * @return XmppService object
 	 */
+	@Deprecated
 	public XmppService getXmppService() {
 		return xmppService;
 	}
