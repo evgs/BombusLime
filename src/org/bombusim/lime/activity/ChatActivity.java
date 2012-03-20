@@ -23,13 +23,16 @@ import org.bombusim.lime.R;
 import org.bombusim.lime.fragments.ChatFragment;
 import org.bombusim.lime.fragments.ChatFragment.ChatFragmentListener;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.MenuItem;
+
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Window;
 
-public class ChatActivity extends FragmentActivity
+public class ChatActivity extends SherlockFragmentActivity
     implements ChatFragmentListener {
     public static final String MY_JID = "fromJid";
     public static final String TO_JID = "toJid";
@@ -110,6 +113,18 @@ public class ChatActivity extends FragmentActivity
     @Override
     public boolean isTabMode() {
         return false;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case android.R.id.home:
+            Intent intent = new Intent(this, RosterActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item); 
     }
 }
 

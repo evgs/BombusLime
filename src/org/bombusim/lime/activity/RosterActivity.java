@@ -22,12 +22,14 @@ package org.bombusim.lime.activity;
 import org.bombusim.lime.R;
 import org.bombusim.lime.fragments.ChatFragment;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
-public class RosterActivity extends FragmentActivity
+public class RosterActivity extends SherlockFragmentActivity
     implements ChatFragment.ChatFragmentListener {
     private String mChatJid;
     private String mChatRJid;

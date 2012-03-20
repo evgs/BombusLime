@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/cmdLogin" android:title="@string/menuStatus" android:orderInCategory="10" android:icon="@drawable/status_online"></item>
+    <item android:id="@+id/cmdLogin" android:showAsAction="always" android:title="@string/menuStatus" android:orderInCategory="10" android:icon="@drawable/status_online"></item>
     <item android:id="@+id/cmdAccount" android:title="@string/account" android:orderInCategory="30" android:icon="@android:drawable/ic_menu_manage"></item>
-    <item android:id="@+id/cmdChat" android:title="Chat" android:orderInCategory="40" android:icon="@drawable/ic_menu_chat_dashboard"></item>
+    <item android:id="@+id/cmdChat" android:showAsAction="always" android:title="Chat" android:orderInCategory="40" android:icon="@drawable/ic_menu_chat_dashboard"></item>
     <item android:id="@+id/cmdLog" android:title="Log" android:orderInCategory="50" android:icon="@android:drawable/ic_menu_report_image"></item>
     <item android:id="@+id/cmdRosterSettings" android:orderInCategory="60" android:title="Roster settings" android:icon="@drawable/status_offline"/>
     <item android:id="@+id/cmdSettings" android:orderInCategory="70" android:title="@string/buttonPreferences" android:icon="@android:drawable/ic_menu_preferences"/>

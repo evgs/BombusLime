@@ -37,6 +37,8 @@ import org.bombusim.xmpp.handlers.MessageDispatcher;
 import org.bombusim.xmpp.stanza.XmppPresence;
 import org.bombusim.xmpp.stanza.XmppMessage;
 
+import com.actionbarsherlock.app.SherlockFragment;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -86,7 +88,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-public class ChatFragment extends Fragment {
+public class ChatFragment extends SherlockFragment {
 	private String jid;
 	private String rJid;
 	
@@ -258,13 +260,13 @@ public class ChatFragment extends Fragment {
 	}
 
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	public void onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu, com.actionbarsherlock.view.MenuInflater inflater) {
         inflater.inflate(R.menu.chat_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
 	}
 	
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.closeChat:
 			Lime.getInstance().getChatFactory().closeChat(chat);

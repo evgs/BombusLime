@@ -42,6 +42,8 @@ import org.bombusim.xmpp.XmppAccount;
 import org.bombusim.xmpp.handlers.IqRoster;
 import org.bombusim.xmpp.stanza.XmppPresence;
 
+import com.actionbarsherlock.app.SherlockListFragment;
+
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -65,7 +67,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-public class RosterFragment extends ListFragment {
+public class RosterFragment extends SherlockListFragment {
     XmppServiceBinding sb;
     
     private Bitmap[] statusIcons;
@@ -138,7 +140,7 @@ public class RosterFragment extends ListFragment {
     }
     
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu, com.actionbarsherlock.view.MenuInflater inflater) {
         inflater.inflate(R.menu.roster_menu, menu);
 
         super.onCreateOptionsMenu(menu, inflater);
@@ -153,7 +155,7 @@ public class RosterFragment extends ListFragment {
     
     
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
         Context context = getActivity().getBaseContext(); 
         switch (item.getItemId()) {
         case R.id.cmdLogin:     startActivityForResult(new Intent(context, PresenceActivity.class),        0); break;
