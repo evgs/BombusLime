@@ -138,6 +138,16 @@ public class ChatFragment extends SherlockFragment {
         mSmileButton =  (ImageButton)  v.findViewById(R.id.smileButton);
         chatListView = (ListView)     v.findViewById(R.id.chatListView);
 
+        if (!getChatFragmentListener().isTabMode()) {
+            contactBar.setVisibility(View.GONE);
+
+            View abCustomView = getSherlockActivity()
+                    .getSupportActionBar().getCustomView();
+            
+            contactBar = (ContactBar) abCustomView.findViewById(R.id.contactHeadActionbar);
+        }
+        
+        
         registerForContextMenu(chatListView);
         enableTrackballTraversing();
         

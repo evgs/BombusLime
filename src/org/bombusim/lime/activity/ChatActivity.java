@@ -61,6 +61,13 @@ public class ChatActivity extends SherlockFragmentActivity
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
 
+        //getSupportActionBar().setDisplayShowHomeEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        
+        getSupportActionBar().setCustomView(R.layout.contactbar_wrapper);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        
         //TODO: make choice based on screen resolution, not only orientation
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             // If the screen is now in landscape mode, we can show the
@@ -68,11 +75,6 @@ public class ChatActivity extends SherlockFragmentActivity
             finish();
             return;
         }
-        
-        //temporary, until ActionBar will be implemented for this activity
-        if (android.os.Build.VERSION.SDK_INT < 11)
-            requestWindowFeature(Window.FEATURE_NO_TITLE);
-        
         
         setContentView(R.layout.single_chat);
         
@@ -87,7 +89,7 @@ public class ChatActivity extends SherlockFragmentActivity
     @Override
     protected void onResume() {
         super.onResume();
-        
+       
         ((ChatFragment)getSupportFragmentManager().findFragmentById(R.id.chatFragment))
         .attachToChat(mChatJid, mChatRJid);
     }
