@@ -170,5 +170,10 @@ public class NetworkSocketDataStream extends NetworkDataStream{
 		// TODO Auto-generated method stub
 		return certificateInfo;
 	}
+
+    @Override
+    public boolean isClosed() {
+        return socket.isClosed();
+    }
 }
 

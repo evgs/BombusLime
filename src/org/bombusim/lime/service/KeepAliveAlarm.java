@@ -38,7 +38,8 @@ public class KeepAliveAlarm extends BroadcastReceiver {
 	}
     
 	public void setAlarm(Context context) {
-		
+		cancelAlarm(context);
+	    
         PendingIntent keepAlivePendingIntent 
            = PendingIntent.getBroadcast(context, 0, new Intent(context, KeepAliveAlarm.class), 0);
 		

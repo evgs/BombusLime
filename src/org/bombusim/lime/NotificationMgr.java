@@ -55,7 +55,7 @@ public class NotificationMgr {
 		// target ChatActivity
 		// Every intent should have unique action or uri, 
 		// else we have a mess: same intents with different values.  
-		Intent openChat =  new Intent("Msg"+String.valueOf(id), null, context, ChatActivity.class);
+		Intent openChat =  new Intent("Msg"+String.valueOf(id), null, context, RosterActivity.class);
 		openChat.putExtra(ChatActivity.MY_JID, visavis.getRosterJid());
 		openChat.putExtra(ChatActivity.TO_JID, visavis.getJid());
 		
@@ -133,7 +133,7 @@ public class NotificationMgr {
 
         // The PendingIntent to launch our activity if the user selects this notification
         PendingIntent contentIntent = 
-        		PendingIntent.getActivity(context, 0, new Intent(context, RosterActivity.class), 0);
+        		PendingIntent.getActivity(context, 0, new Intent("org.bombusim.lime", null, context, RosterActivity.class), 0);
 
         // Set the info for the views that show in the notification panel.
         notification.setLatestEventInfo(context, title, message, contentIntent);

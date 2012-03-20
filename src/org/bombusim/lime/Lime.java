@@ -86,8 +86,25 @@ public class Lime extends Application {
 	//temporary
 	public VcardResolver vcardResolver;
 	
-	//temporary
-	public XmppServiceBinding sb;
+	//temporary. used only in vcardResolver.
+	private XmppServiceBinding sb;
+	@Deprecated
+	/**
+	 * Application should bind service locally in Activity 
+	 *
+	 * @return XmppServiceBinding - binding to access running xmpp service
+	 */
+	public XmppServiceBinding getServiceBinding() {
+	    return sb;
+	}
+	
+	@Deprecated
+	/**
+	 * Should be removed with getServiceBinding() 
+	 */
+    public void saveBinding(XmppServiceBinding sb) {
+	    this.sb = sb;
+    }
 	
 	@Override
 	public final void onCreate() {
@@ -236,4 +253,5 @@ public class Lime extends Application {
 	}
 
 	public int getActiveAccountIndex() { return activeAccountIndex; }
+
 }

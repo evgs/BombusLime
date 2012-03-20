@@ -60,7 +60,6 @@ public class Message {
 	private final static int PRESENCE_COLOR = Color.GRAY;
 	
 	private final static int UNREAD_BK_COLOR = 0x00004020 | Color.BLACK;
-	private final static int DEFAULT_BK_COLOR = Color.BLACK;
 
 	public static int getColor(int type) {
 		switch (type) {
@@ -72,7 +71,8 @@ public class Message {
 	}
 	
 	public static int getBkColor(boolean unread) {
-		return (unread)? UNREAD_BK_COLOR : DEFAULT_BK_COLOR;
+	    //TODO: use theme
+		return (unread)? UNREAD_BK_COLOR : android.R.color.background_dark;
 	}
 
 	public void setId(long id) { 

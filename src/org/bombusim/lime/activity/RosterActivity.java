@@ -19,423 +19,120 @@
 
 package org.bombusim.lime.activity;
 
-import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
-import org.bombusim.lime.data.Contact;
-import org.bombusim.lime.data.Roster;
-import org.bombusim.lime.data.RosterGroup;
-import org.bombusim.lime.service.XmppService;
-import org.bombusim.lime.service.XmppServiceBinding;
-import org.bombusim.xmpp.XmppAccount;
-import org.bombusim.xmpp.handlers.IqRoster;
-import org.bombusim.xmpp.stanza.XmppPresence;
+import org.bombusim.lime.fragments.ChatFragment;
 
-import android.app.AlertDialog;
-import android.app.ExpandableListActivity;
-import android.app.ListActivity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.support.v4.app.FragmentActivity;
 
-public class RosterActivity extends ListActivity {
-	XmppServiceBinding sb;
-	
-	private Bitmap[] statusIcons;
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		
-        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-		
-		statusIcons = new Bitmap[] { 
-        		BitmapFactory.decodeResource(getResources(), R.drawable.status_offline),
-        		BitmapFactory.decodeResource(getResources(), R.drawable.status_online),
-        		BitmapFactory.decodeResource(getResources(), R.drawable.status_chat),
-        		BitmapFactory.decodeResource(getResources(), R.drawable.status_away),
-        		BitmapFactory.decodeResource(getResources(), R.drawable.status_xa),
-        		BitmapFactory.decodeResource(getResources(), R.drawable.status_dnd),
-        		BitmapFactory.decodeResource(getResources(), R.drawable.status_ask),
-        		BitmapFactory.decodeResource(getResources(), R.drawable.status_unknown),
-        		BitmapFactory.decodeResource(getResources(), R.drawable.status_invisible)
-        		};
+public class RosterActivity extends SherlockFragmentActivity
+    implements ChatFragment.ChatFragmentListener {
+    private String mChatJid;
+    private String mChatRJid;
+    
+    public boolean isTabMode() {
+        //TODO: make choice based on screen resolution, not only orientation 
+        return (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
+    }
+    
+    @Override
+    protected void onCreate(Bundle savedInstance) {
+        super.onCreate(savedInstance);
+        
+        //TODO: set layout based on screen resolution, not only orientation 
+        if (isTabMode()) {
+            setContentView(R.layout.main_tab);
+        } else {
+            setContentView(R.layout.main);
+        }
+        
+        handleIntent(getIntent());
 
-		ListAdapter adapter=new RosterAdapter(this, statusIcons);
-		
-		setListAdapter(adapter);
-		
-		registerForContextMenu(getListView());
+        if (savedInstance!=null) {
+            mChatJid = savedInstance.getString(ChatActivity.TO_JID);
+            mChatRJid = savedInstance.getString(ChatActivity.MY_JID);
+        }
+        
+    }
 
-		sb = new XmppServiceBinding(this);
+    private void handleIntent(Intent intent) {
+        
+        String intentAction = intent.getAction();
+        if (intentAction == null) return;
+        
+        if (intentAction.startsWith("Msg")) {
+            mChatJid = intent.getStringExtra(ChatActivity.TO_JID);
+            mChatRJid = intent.getStringExtra(ChatActivity.MY_JID);
+            
+            showChat(true);
+        }
+    }
 
-		//temporary
-		Lime.getInstance().sb=sb;
-	
-		
-        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.roster_title);
-		updateRosterTitle();
-		
-		OnClickListener sslShowCert = new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				try { 
-					String rJid = Lime.getInstance().getActiveAccount().userJid;
-					showSslStatus(sb.getXmppStream(rJid).getCertificateInfo());
-				} catch (Exception e){};
-			}
-		};
-		
-		((ImageView) findViewById(R.id.imageSSL)).setOnClickListener(sslShowCert);
-		((TextView) findViewById(R.id.activeJid)).setOnClickListener(sslShowCert);
-		
-	}
+    /*
+     * called when android:launchMode="singleTop"
+     * single-chat mode, replaces existing chat;
+     * @see android.app.Activity#onNewIntent(android.content.Intent)
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
 
-	protected void showSslStatus(String certificateChain) {
-		if (certificateChain == null) return;
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(R.string.sslInfo)
-			   .setIcon(R.drawable.ssl_yes)
-			   .setMessage(certificateChain)
-		       .setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) { dialog.cancel(); }
-		       });
-		AlertDialog alert = builder.create();
-		alert.setOwnerActivity(this);
-		alert.show();
-	}
+        setIntent(intent);
+        handleIntent(intent);
+    }
+    
+    private ChatFragment getChatFragment() {
+        if (!isTabMode()) return null;
+        return (ChatFragment) getSupportFragmentManager().findFragmentById(R.id.chatFragment);
+    }
+    
+    public void openChat(String jid, String rosterJid) {
+        mChatJid = jid;
+        mChatRJid = rosterJid;
+        
+        showChat(true);
+    }
 
-	private void updateRosterTitle() {
-		String rJid = Lime.getInstance().getActiveAccount().userJid;
-		((TextView) findViewById(R.id.activeJid)).setText(rJid);
+    public void showChat(boolean openActivity) {
+        ChatFragment chatFragment = getChatFragment();
+        
+        if (chatFragment !=null) {
+            chatFragment.suspendChat();
+            chatFragment.attachToChat(mChatJid, mChatRJid);
+            return;
+        } 
+        
+        if (openActivity) {
+            Intent openChat =  new Intent(this, ChatActivity.class);
+            openChat.putExtra(ChatActivity.MY_JID, mChatRJid);
+            openChat.putExtra(ChatActivity.TO_JID, mChatJid);
+            startActivity(openChat);
+        }
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        
+        showChat(false);
+    }
+    
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        
+        outState.putString(ChatActivity.MY_JID, mChatRJid);
+        outState.putString(ChatActivity.TO_JID, mChatJid);
+    }
 
-		boolean isSecure = false; 
-		
-		int status = XmppPresence.PRESENCE_OFFLINE;
-		
-		try { 
-			isSecure = sb.getXmppStream(rJid).isSecured();
-			
-			status = sb.getXmppStream(rJid).getStatus();
-			
-		} catch (Exception e){};
-
-		((ImageView) findViewById(R.id.statusIcon)).setImageBitmap(statusIcons[status]);
-		
-		((ImageView) findViewById(R.id.imageSSL)).setVisibility(isSecure? View.VISIBLE : View.GONE);
-	}
-
-	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-		//TODO: collapse/expand account
-		
-		Object item = getListAdapter().getItem(position);
-		
-		if (item instanceof RosterGroup) {
-			((RosterGroup)item).toggleCollapsed();
-			refreshVisualContent();
-			return;
-		}
-		if (item instanceof XmppAccount) {
-			((XmppAccount)item).toggleCollapsed();
-			refreshVisualContent();
-			return;
-		}
-		if (item instanceof Contact) {
-			Contact c = (Contact) item;
-			openChatActivity(c);
-		}
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(android.view.Menu menu) {
-		getMenuInflater().inflate(R.menu.roster_menu, menu);
-
-		//enable items available only if logged in
-		//TODO: modify behavior if multiple account
-		/*
-		String rJid = Lime.getInstance().accounts.get(0).userJid;
-		menu.setGroupEnabled(R.id.groupLoggedIn, sb.isLoggedIn(rJid) );
-		*/
-		
-		return true;
-	};
-	
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.cmdLogin:     startActivityForResult(new Intent(getBaseContext(), PresenceActivity.class),        0); break;
-		
-		case R.id.cmdAddContact: openEditContactActivity(null); break;
-		
-		case R.id.cmdAccount:  startActivityForResult(new Intent(getBaseContext(), AccountSettingsActivity.class), 0); break;
-		
-		case R.id.cmdChat:  {
-			ActiveChats chats = new ActiveChats();
-			chats.setStatusIcons(statusIcons);
-			chats.showActiveChats(this, null);
-			
-			break;
-		}
-		
-		case R.id.cmdLog:      startActivityForResult(new Intent(getBaseContext(), LoggerActivity.class),          0); break;
-		case R.id.cmdSettings: startActivityForResult(new Intent(getBaseContext(), LimePrefs.class),               0); break;
-		case R.id.cmdRosterSettings: startActivityForResult(new Intent(getBaseContext(), RosterLimePrefsActivity.class), 0); break;
-			
-		case R.id.cmdAbout: About.showAboutDialog(this); break;
-		default: return true; // on submenu
-		}
-		
-		return false;
-	}
-	
-	Object contextItem;
-	
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-
-		super.onCreateContextMenu(menu, v, menuInfo);
-		
-		int pos = ((AdapterContextMenuInfo)menuInfo).position;
-		
-		contextItem = getListAdapter().getItem(pos);
-		
-		if (contextItem instanceof RosterGroup) {
-			//TODO: context menu for group
-			return;
-		}
-		if (contextItem instanceof XmppAccount) {
-			//TODO: context menu for account
-			return;
-		}
-		
-		if (contextItem instanceof Contact) {
-		Contact c = (Contact) contextItem;
-			menu.setHeaderTitle(c.getScreenName());
-			
-			Drawable icon = new BitmapDrawable(c.getAvatar());
-			menu.setHeaderIcon(icon);
-			
-			MenuInflater inflater = getMenuInflater();
-			inflater.inflate(R.menu.contact_menu, menu);
-			
-			//enable items available only if logged in
-			menu.setGroupEnabled(R.id.groupLoggedIn, sb.isLoggedIn(c.getRosterJid()) );
-			return;
-		}
-	}
-
-	public boolean onContextItemSelected(MenuItem item) {
-		
-		AdapterContextMenuInfo cmi = (AdapterContextMenuInfo) item.getMenuInfo();
-
-		//contextItem = getListAdapter().getItem(cmi.position);
-
-		if (contextItem instanceof Contact) {
-			final Contact ctc = (Contact) contextItem;
-	
-			switch (item.getItemId()) {
-			case R.id.cmdChat: 
-				openChatActivity(ctc);
-				return true;
-			case R.id.cmdVcard:
-				openVCardActivity(ctc);
-				return true;
-			case R.id.cmdEdit:
-				openEditContactActivity(ctc);
-				return true;
-			case R.id.cmdDelete:
-				confirmDeleteContact(ctc);
-				return true;
-				
-			case R.id.cmdSubscrRequestFrom:
-				subscription(ctc, XmppPresence.PRESENCE_SUBSCRIBE);
-				return true;
-			case R.id.cmdSubscrSendTo:
-				subscription(ctc, XmppPresence.PRESENCE_SUBSCRIBED);
-				return true;
-			case R.id.cmdSubscrRemove:
-				subscription(ctc, XmppPresence.PRESENCE_UNSUBSCRIBED);
-				return true;
-				
-			default:
-				Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show();
-			}
-		}
-		
-		return super.onContextItemSelected(item);
-	}
-
-	private class RosterBroadcastReceiver extends BroadcastReceiver {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			String from = intent.getStringExtra("param");
-			
-			if (! Lime.getInstance().prefs.hideOfflines) {
-				//TODO: optimize if hide offlines
-				if (from !=null) {
-					for (Contact c: Lime.getInstance().getRoster().getContacts()) {
-						if (c.getJid().equals(from)) {
-							refreshSingleContact(c);
-						}
-					}
-					
-					return;
-				}
-			}
-			refreshVisualContent();
-		}
-		
-	}
-	
-	void refreshSingleContact(Contact c) {
-		ListView lv = getListView();
-
-		int firstVisible = lv.getFirstVisiblePosition();
-		int lastVisible = lv.getLastVisiblePosition();
-
-		for (int position = firstVisible; position<=lastVisible; position++) {
-			try {
-				Contact clv = (Contact) lv.getItemAtPosition(position);
-				if (c == clv) {
-					
-					//TODO: remove this workaround
-					refreshVisualContent();
-					/*
-					View cv = lv.getChildAt(position);
-					if (cv !=null) { 
-						cv.invalidate();
-					} else {
-						//can't find view for contact, so refresh all
-						//TODO: is it real need to refresh all?
-						refreshVisualContent();
-						return;
-					}*/
-				}
-			} catch (ClassCastException e) {}
-		}
-
-	}
-	
-	//TODO: update only group if presence update 
-	void refreshVisualContent(){
-		//TODO: fix update
-		updateRosterTitle();
-		
-		ListView lv = getListView(); 
-		lv.setVisibility(View.GONE);
-		RosterAdapter ra = (RosterAdapter)getListAdapter();
-		lv.invalidate();
-		ra.notifyDataSetChanged();
-	
-		lv.setVisibility(View.VISIBLE);
-	}
-	
-	RosterBroadcastReceiver br;
-	@Override
-	protected void onResume() {
-		super.onResume();
-		
-		sb.setBindListener(new XmppServiceBinding.BindListener() {
-			@Override
-			public void onBindService(XmppService service) {
-				updateRosterTitle();
-			}
-		});
-		
-		sb.doBindService();
-		//update view to actual state
-		refreshVisualContent();
-		br = new RosterBroadcastReceiver();
-		registerReceiver(br, new IntentFilter(Roster.UPDATE_CONTACT));
-	}
-	
-	@Override
-	protected void onPause() {
-		sb.doUnbindService();
-		unregisterReceiver(br);
-		super.onPause();
-	}
-	
-	public void openChatActivity(Contact c) {
-		Intent openChat =  new Intent(this, ChatActivity.class);
-		openChat.putExtra(ChatActivity.MY_JID, c.getRosterJid());
-		openChat.putExtra(ChatActivity.TO_JID,   c.getJid());
-		startActivity(openChat);
-	}
-
-	private void openVCardActivity(Contact c) {
-		Intent openVcard =  new Intent(this, VCardActivity.class);
-		openVcard.putExtra(VCardActivity.MY_JID, c.getRosterJid());
-		openVcard.putExtra(VCardActivity.JID,   c.getJid());
-		startActivity(openVcard);
-	}
-	
-	private void openEditContactActivity(Contact c) {
-		Intent openEditContact =  new Intent(this, EditContactActivity.class);
-		if (c!=null) {
-			openEditContact.putExtra(EditContactActivity.MY_JID, c.getRosterJid());
-			openEditContact.putExtra(EditContactActivity.JID,   c.getJid());
-		} else {
-			String rJid = Lime.getInstance().getActiveAccount().userJid;
-			openEditContact.putExtra(EditContactActivity.MY_JID, rJid);
-			//openEditContact.putExtra(EditContactActivity.JID,   c.getJid());
-		}
-		startActivity(openEditContact);
-	}
-
-	private void confirmDeleteContact(final Contact ctc) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(ctc.getFullName())
-			   .setIcon(new BitmapDrawable(ctc.getAvatar()) )
-			   .setMessage(R.string.confirmDelete)
-		       .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) {
-		                deleteContact(ctc);
-		           }
-		       })
-		       .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) { dialog.cancel(); }
-		       });
-		AlertDialog alert = builder.create();
-		alert.setOwnerActivity(this);
-		alert.show();
-	}
-
-	private void subscription(Contact contact, String subscriptionAction) {
-		IqRoster.setSubscription(
-				contact.getJid(), 
-				subscriptionAction, 
-				sb.getXmppStream(contact.getRosterJid()));
-	}
-
-	protected void deleteContact(Contact c) {
-		IqRoster.deleteContact(
-			c.getJid(), 
-			sb.getXmppStream(c.getRosterJid())
-		);
-	}
-	
+    @Override
+    public void closeChat() {
+        // TODO Auto-generated method stub
+        
+    }
 }

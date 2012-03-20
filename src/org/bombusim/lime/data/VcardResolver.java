@@ -79,7 +79,7 @@ public class VcardResolver {
 
 		//TODO: move resolver into RosterActivity's context
 		//XmppServiceBinding sb = new XmppServiceBinding(context);
-		XmppServiceBinding sb = Lime.getInstance().sb;
+		XmppServiceBinding sb = Lime.getInstance().getServiceBinding();
 		
 		//sb.doBindService();
 		
