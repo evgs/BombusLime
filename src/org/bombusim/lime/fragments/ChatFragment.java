@@ -268,8 +268,9 @@ public class ChatFragment extends Fragment {
 		switch (item.getItemId()) {
 		case R.id.closeChat:
 			Lime.getInstance().getChatFactory().closeChat(chat);
-			//TODO: close fragment
-			//finish();
+			
+			getChatFragmentListener().closeChat();
+			
 			break;
 		
 		case R.id.addSmile:   mMessageBox.showAddSmileDialog();  break;
