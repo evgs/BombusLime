@@ -35,6 +35,7 @@ import org.bombusim.xmpp.XmppStream;
 import org.bombusim.xmpp.exception.XmppAuthException;
 import org.bombusim.xmpp.exception.XmppException;
 import org.bombusim.xmpp.exception.XmppTerminatedException;
+import org.bombusim.xmpp.stanza.XmppPresence;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.ResolverConfig;
 
@@ -98,7 +99,7 @@ public class XmppService extends Service {
         if (intent!=null) {
             if (ON_KEEP_ALIVE.equals(intent.getAction())) {
                 keepAlive();
-                ka.releaseWakeLock();
+                mKeepAliveAlarm.releaseWakeLock();
                 
                 return START_STICKY;
             }
@@ -143,14 +144,17 @@ public class XmppService extends Service {
 	}
 	
 	public void doConnect() {
-		//TODO: check presence status
+	    
+	    //TODO: perform check for every account 
+	    if (mStream.getStatus() == XmppPresence.PRESENCE_OFFLINE) return;
+	    
 		if (networkAvailable) {
             //update DNS server info
             //TODO: refresh on network status changed
             ResolverConfig.refresh();
             Lookup.refreshDefault();
             
-            ka.setAlarm(this);
+            mKeepAliveAlarm.setAlarm(this);
             showNotification(true);
             
             mStream.doConnect();
@@ -158,7 +162,7 @@ public class XmppService extends Service {
 		} else {
 			mStream.doForcedDisconnect();
 			
-			ka.cancelAlarm(this);
+			mKeepAliveAlarm.cancelAlarm(this);
 	        cancelNotification();
 
 		}
@@ -228,13 +232,15 @@ public class XmppService extends Service {
         	e.printStackTrace();
         }
         
+        mKeepAliveAlarm.cancelAlarm(this);
+        
         if (mStream!=null)
         	mStream.doForcedDisconnect();
         
         stopSelf();
 	}
 	
-	private KeepAliveAlarm ka = new KeepAliveAlarm();
+	private KeepAliveAlarm mKeepAliveAlarm = new KeepAliveAlarm();
 
 	private void keepAlive() {
 		//TODO: keep alive all connections
