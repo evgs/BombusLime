@@ -78,6 +78,7 @@ import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -86,7 +87,6 @@ import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -271,9 +271,6 @@ public class ChatFragment extends SherlockFragment
 
         refreshVisualContent();
         
-        //BaseAdapter ca = (BaseAdapter) (chatListView.getAdapter());
-        //chatListView.setSelection(ca.getCount()-1);
-        
         String s = chat.getSuspendedText();
         if (s!=null) {
             mMessageBox.setText(s);
@@ -408,18 +405,14 @@ public class ChatFragment extends SherlockFragment
 	private Time tf=new Time(Time.getCurrentTimezone());
 	private final static long MS_PER_DAY = 1000*60*60*24;
     
-    private class MessageView extends LinearLayout {
+    private class MessageView extends TextView {
         public MessageView(Context context) {
             super(context);
             
-            this.setOrientation(VERTICAL);
-            
-            mMessageBody = new TextView(context);
-            
             //TODO: available in API 11
-            //mMessageBody.setTextIsSelectable(true);
+            //setTextIsSelectable(true);
             
-            addView(mMessageBody, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+            //setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         }
         
         public void setUnread(boolean unread) {
@@ -441,7 +434,7 @@ public class ChatFragment extends SherlockFragment
         	}
 
         	tf.set(time);
-        	String tm=tf.format(fmt);
+        	String tm= tf.format(fmt);
 
         	SpannableStringBuilder ss = new SpannableStringBuilder(tm);
 
@@ -465,17 +458,15 @@ public class ChatFragment extends SherlockFragment
 
             ss.append(msg);
             
-            mMessageBody.setText(ss);
-            mMessageBody.setMovementMethod(LinkMovementMethod.getInstance());
+            setText(ss);
+            setMovementMethod(LinkMovementMethod.getInstance());
             
         }
         
         @Override
         public String toString() {
-        	return mMessageBody.getText().toString();
+        	return getText().toString();
         }
-        
-        private TextView mMessageBody;
     }
     
 	
@@ -677,12 +668,6 @@ public class ChatFragment extends SherlockFragment
         public Cursor loadInBackground() {
             if (chat == null) return null;
             
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
             return chat.getCursor();
         }
         
@@ -699,8 +684,9 @@ public class ChatFragment extends SherlockFragment
         // Swap the new cursor in.  (The framework will take care of closing the
         // old cursor once we return.)
         
-        CursorAdapter ca = (CursorAdapter) chatListView.getAdapter();
-        ca.swapCursor(cursor);
+        mCursorAdapter.swapCursor(cursor);
+        
+        chatListView.setSelection(mCursorAdapter.getCount()-1);
         
         //TODO: hide progress
         chatListView.setVisibility(View.VISIBLE);
