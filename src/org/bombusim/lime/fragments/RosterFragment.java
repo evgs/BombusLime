@@ -94,8 +94,6 @@ public class RosterFragment extends SherlockListFragment {
         
         setListAdapter(adapter);
         
-        //registerForContextMenu(getListView());
-
         sb = new XmppServiceBinding(getActivity());
 
         //temporary
@@ -103,6 +101,13 @@ public class RosterFragment extends SherlockListFragment {
         
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        
+        registerForContextMenu(getListView());
+    }
+    
     protected void showSslStatus(String certificateChain) {
         if (certificateChain == null) return;
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
