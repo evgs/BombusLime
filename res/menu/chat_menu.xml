@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/closeChat" android:showAsAction="always" android:icon="@drawable/ic_menu_end_conversation" android:title="@string/closeChat"></item>
+    <item android:id="@+id/cmdChat" android:showAsAction="always" android:title="Chat" android:orderInCategory="40" android:icon="@drawable/ic_menu_chat_dashboard"></item>
     <item android:id="@+id/addSmile" android:icon="@drawable/sm_smile" android:title="@string/addSmileMenuItem"></item>
     <item android:id="@+id/addMe" android:title="@string/addMeMenuItem"></item>
     

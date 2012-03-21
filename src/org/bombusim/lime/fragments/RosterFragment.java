@@ -158,7 +158,6 @@ public class RosterFragment extends SherlockListFragment {
         */
     };
     
-    
     @Override
     public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
         Context context = getActivity().getBaseContext(); 
@@ -171,7 +170,6 @@ public class RosterFragment extends SherlockListFragment {
         
         case R.id.cmdChat:  {
             ActiveChats chats = new ActiveChats();
-            chats.setStatusIcons(statusIcons);
             chats.showActiveChats(getActivity(), null);
             
             break;

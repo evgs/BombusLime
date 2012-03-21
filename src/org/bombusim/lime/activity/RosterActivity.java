@@ -64,7 +64,7 @@ public class RosterActivity extends SherlockFragmentActivity
         String intentAction = intent.getAction();
         if (intentAction == null) return;
         
-        if (intentAction.startsWith("Msg")) {
+        if (intentAction.startsWith("Chat")) {
             mChatJid = intent.getStringExtra(ChatActivity.TO_JID);
             mChatRJid = intent.getStringExtra(ChatActivity.MY_JID);
             

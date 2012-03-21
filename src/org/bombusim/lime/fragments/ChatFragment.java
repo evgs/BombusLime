@@ -23,6 +23,7 @@ import java.security.InvalidParameterException;
 
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
+import org.bombusim.lime.activity.ActiveChats;
 import org.bombusim.lime.data.Chat;
 import org.bombusim.lime.data.ChatHistoryDbAdapter;
 import org.bombusim.lime.data.Contact;
@@ -288,6 +289,13 @@ public class ChatFragment extends SherlockFragment {
 		case R.id.addSmile:   mMessageBox.showAddSmileDialog();  break;
 		
 		case R.id.addMe:      mMessageBox.addMe(); break;
+		
+        case R.id.cmdChat:  {
+            ActiveChats chats = new ActiveChats();
+            chats.showActiveChats(getActivity(), null);
+            
+            break;
+        }
 		
 		default: return true; // on submenu
 		}

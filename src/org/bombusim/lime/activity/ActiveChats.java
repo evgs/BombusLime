@@ -11,6 +11,8 @@ import org.bombusim.lime.widgets.ContactViewFactory;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -30,11 +32,19 @@ public class ActiveChats {
 	private Bitmap[] statusIcons;
 	
 
-	public void setStatusIcons(Bitmap[] statusIcons) {
-		this.statusIcons = statusIcons;
-	}
-	
 	public void showActiveChats(final Activity hostActivity, String rJid) {
+	    Resources r = hostActivity.getResources();
+        statusIcons = new Bitmap[] { 
+                BitmapFactory.decodeResource(r, R.drawable.status_offline),
+                BitmapFactory.decodeResource(r, R.drawable.status_online),
+                BitmapFactory.decodeResource(r, R.drawable.status_chat),
+                BitmapFactory.decodeResource(r, R.drawable.status_away),
+                BitmapFactory.decodeResource(r, R.drawable.status_xa),
+                BitmapFactory.decodeResource(r, R.drawable.status_dnd),
+                BitmapFactory.decodeResource(r, R.drawable.status_ask),
+                BitmapFactory.decodeResource(r, R.drawable.status_unknown),
+                BitmapFactory.decodeResource(r, R.drawable.status_invisible)
+                };
 		
 		final ContactViewFactory cvf = new ContactViewFactory(hostActivity, statusIcons);
 		
@@ -99,8 +109,11 @@ public class ActiveChats {
 				
 				Contact c = activeContacts.get(position);
 				
-				((RosterActivity) hostActivity).openChat(c.getJid(), c.getRosterJid());
-				
+		        Intent openChat =  new Intent("Chat", null, hostActivity, RosterActivity.class);
+		        openChat.putExtra(ChatActivity.MY_JID, c.getRosterJid());
+		        openChat.putExtra(ChatActivity.TO_JID, c.getJid());
+
+		        hostActivity.startActivity(openChat);
 			}
 
 		});

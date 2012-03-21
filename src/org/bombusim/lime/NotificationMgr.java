@@ -55,7 +55,7 @@ public class NotificationMgr {
 		// target ChatActivity
 		// Every intent should have unique action or uri, 
 		// else we have a mess: same intents with different values.  
-		Intent openChat =  new Intent("Msg"+String.valueOf(id), null, context, RosterActivity.class);
+		Intent openChat =  new Intent("Chat"+String.valueOf(id), null, context, RosterActivity.class);
 		openChat.putExtra(ChatActivity.MY_JID, visavis.getRosterJid());
 		openChat.putExtra(ChatActivity.TO_JID, visavis.getJid());
 		
