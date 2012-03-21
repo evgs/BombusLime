@@ -29,6 +29,7 @@ import org.bombusim.lime.data.ChatHistoryDbAdapter;
 import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Message;
 import org.bombusim.lime.data.Roster;
+import org.bombusim.lime.data.SimpleCursorLoader;
 import org.bombusim.lime.service.XmppService;
 import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.lime.widgets.ChatEditText;
@@ -53,6 +54,8 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.Loader;
 import android.text.ClipboardManager;
 import android.text.Editable;
 import android.text.Spannable;
@@ -89,8 +92,12 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-public class ChatFragment extends SherlockFragment {
-	private String jid;
+public class ChatFragment extends SherlockFragment 
+        implements LoaderCallbacks<Cursor> {
+    
+	private static final int CHAT_LOADER_ID = 0;
+	
+    private String jid;
 	private String rJid;
 	
 	private ChatEditText mMessageBox;
@@ -105,14 +112,23 @@ public class ChatFragment extends SherlockFragment {
 	
 	Contact visavis;
 	
-	Chat chat;
+	static Chat chat;
 	
 	String sentChatState;
+	
+	private CursorAdapter mCursorAdapter;
 	
 	protected String visavisNick;
 	protected String myNick;
 	
-	@Override
+    public interface ChatFragmentListener {
+        public void closeChat();
+        
+        public boolean isTabMode();
+    }
+
+    
+    @Override
 	public void onAttach(Activity activity) {
 	    super.onAttach(activity);
 	    
@@ -122,11 +138,14 @@ public class ChatFragment extends SherlockFragment {
         serviceBinding = new XmppServiceBinding(activity);
 	}
 	
-	public interface ChatFragmentListener {
-	    public void closeChat();
-	    
-	    public boolean isTabMode();
-	}
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        //TODO: remove when ActionBar will be implemented
+        if (!getChatFragmentListener().isTabMode())
+            setHasOptionsMenu(true);
+    }
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -215,6 +234,18 @@ public class ChatFragment extends SherlockFragment {
 	    return v;
 	}
 
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+	    super.onActivityCreated(savedInstanceState);
+	    //TODO: set empty view until chat will be attached
+	    
+	    mCursorAdapter = new ChatListAdapter(getActivity(), null);
+	    chatListView.setAdapter(mCursorAdapter);
+	    
+        
+        getLoaderManager().initLoader(CHAT_LOADER_ID, null, this);
+	}
+	
     public void attachToChat(String jid, String rJid) {
         
         this.jid=jid;
@@ -240,8 +271,8 @@ public class ChatFragment extends SherlockFragment {
 
         refreshVisualContent();
         
-        BaseAdapter ca = (BaseAdapter) (chatListView.getAdapter());
-        chatListView.setSelection(ca.getCount()-1);
+        //BaseAdapter ca = (BaseAdapter) (chatListView.getAdapter());
+        //chatListView.setSelection(ca.getCount()-1);
         
         String s = chat.getSuspendedText();
         if (s!=null) {
@@ -261,15 +292,6 @@ public class ChatFragment extends SherlockFragment {
 	    return (ChatFragmentListener) getActivity();
 	}
 	
-	@Override
-    public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		
-		//TODO: remove when ActionBar will be implemented
-		if (!getChatFragmentListener().isTabMode())
-		    setHasOptionsMenu(true);
-	}
-
 	@Override
 	public void onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu, com.actionbarsherlock.view.MenuInflater inflater) {
         inflater.inflate(R.menu.chat_menu, menu);
@@ -582,27 +604,7 @@ public class ChatFragment extends SherlockFragment {
 	
 	public void refreshVisualContent() {
 		
-		chatListView.setVisibility(View.GONE);
-		Cursor c = chat.getCursor();
-		
-		CursorAdapter ca = (CursorAdapter) (chatListView.getAdapter());
-		if (ca == null) {
-			ca = new ChatListAdapter(getActivity(), c);
-	        chatListView.setAdapter(ca);
-		} else {
-	        //TODO: detach old cursor
-			ca.changeCursor(c);
-			
-	        ca.notifyDataSetChanged();
-
-			chatListView.invalidate();
-		}
-		
-
-		chatListView.setVisibility(View.VISIBLE);
-
-		//Move focus to last message is now provided with transcript mode
-		//chatListView.setSelection(chatSize-1);
+        getLoaderManager().restartLoader(CHAT_LOADER_ID, null, this);
 		
 	}
 	
@@ -628,8 +630,8 @@ public class ChatFragment extends SherlockFragment {
 			
 			visavis.setUnread(0);
 
-			CursorAdapter ca = (CursorAdapter) chatListView.getAdapter();
-			Cursor cursor = ca.getCursor();
+			Cursor cursor = mCursorAdapter.getCursor();
+			if (cursor == null) return;
 			
 			if (cursor.moveToLast()) do {
 				Message m = ChatHistoryDbAdapter.getMessageFromCursor(cursor);
@@ -663,4 +665,53 @@ public class ChatFragment extends SherlockFragment {
         super.onStop();
     }
 
+    
+    private static class ChatCursorLoader extends SimpleCursorLoader {
+
+        public ChatCursorLoader(Context context) {
+            super(context);
+            // TODO Auto-generated constructor stub
+        }
+
+        @Override
+        public Cursor loadInBackground() {
+            if (chat == null) return null;
+            
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return chat.getCursor();
+        }
+        
+    }
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
+        return new ChatCursorLoader(getActivity());
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        // Swap the new cursor in.  (The framework will take care of closing the
+        // old cursor once we return.)
+        
+        CursorAdapter ca = (CursorAdapter) chatListView.getAdapter();
+        ca.swapCursor(cursor);
+        
+        //TODO: hide progress
+        chatListView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        CursorAdapter ca = (CursorAdapter) chatListView.getAdapter();
+        ca.swapCursor(null);
+        
+        //TODO: show progress
+        chatListView.setVisibility(View.GONE);
+    }
 }
