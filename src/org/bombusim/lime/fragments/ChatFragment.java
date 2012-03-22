@@ -231,8 +231,6 @@ public class ChatFragment extends SherlockFragment
             }
         });
 
-        mMessageBox.setDialogHostActivity(getActivity());
-        
 	    return v;
 	}
 
@@ -589,6 +587,8 @@ public class ChatFragment extends SherlockFragment
         
         bcPresence = new PresenceReceiver();
         getActivity().registerReceiver(bcPresence, new IntentFilter(Roster.UPDATE_CONTACT));
+
+        mMessageBox.setDialogHostActivity(getActivity());
 
 	}
 	
