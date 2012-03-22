@@ -109,7 +109,10 @@ public class ActiveChats {
 				
 				Contact c = activeContacts.get(position);
 				
-		        Intent openChat =  new Intent("Chat", null, hostActivity, RosterActivity.class);
+				//HACK: faster ChatActivity invocation in portrait mode 
+				Class<? extends Activity> destClass = (hostActivity.getClass());
+				
+		        Intent openChat =  new Intent("Chat", null, hostActivity, destClass);
 		        openChat.putExtra(ChatActivity.MY_JID, c.getRosterJid());
 		        openChat.putExtra(ChatActivity.TO_JID, c.getJid());
 
