@@ -231,6 +231,8 @@ public class ChatFragment extends SherlockFragment
             }
         });
 
+        mMessageBox.setDialogHostActivity(getActivity());
+        
 	    return v;
 	}
 
@@ -275,8 +277,6 @@ public class ChatFragment extends SherlockFragment
         if (s!=null) {
             mMessageBox.setText(s);
         }
-        
-        mMessageBox.setDialogHostActivity(getActivity());
 	}
 
 	private void updateContactBar() {
