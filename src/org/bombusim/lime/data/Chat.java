@@ -61,10 +61,18 @@ public class Chat {
 		updateActiveChatDb(true);
 	}
 	
-	public void closeChat(boolean keepActive) {
-		readDbAdapter.close();
+	public void resetActiveState(boolean keepActive) {
+		//readDbAdapter.close(); done in finalizer
 		updateActiveChatDb(false);
 	}
+	
+	//TODO: redsesign cursor handling 
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        readDbAdapter.close();
+    }
+	
 	
 	private void updateActiveChatDb(boolean active) {
 		if (visavis.hasActiveChats() == active) return;

@@ -131,7 +131,7 @@ public class RosterActivity extends SherlockFragmentActivity
     }
 
     @Override
-    public void closeChat() {
+    public void closeChatFragment() {
         // TODO Auto-generated method stub
         
     }

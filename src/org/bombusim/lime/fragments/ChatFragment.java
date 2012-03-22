@@ -112,8 +112,7 @@ public class ChatFragment extends SherlockFragment
 	
 	Contact visavis;
 	
-	//TODO: remove static to avoid side effects on create/destroy fragment
-	static Chat chat;
+	private static Chat mChat;
 	
 	String sentChatState;
 	
@@ -123,7 +122,7 @@ public class ChatFragment extends SherlockFragment
 	protected String myNick;
 	
     public interface ChatFragmentListener {
-        public void closeChat();
+        public void closeChatFragment();
         
         public boolean isTabMode();
     }
@@ -243,7 +242,7 @@ public class ChatFragment extends SherlockFragment
 	    mCursorAdapter = new ChatListAdapter(getActivity(), null);
 	    chatListView.setAdapter(mCursorAdapter);
 	    
-        if (jid==null) chat = null;
+        if (jid==null) mChat = null;
         getLoaderManager().initLoader(CHAT_LOADER_ID, null, this);
 	}
 	
@@ -262,7 +261,7 @@ public class ChatFragment extends SherlockFragment
         //TODO: move into ChatFactory
         visavis = Lime.getInstance().getRoster().findContact(jid, rJid);
         
-        chat = Lime.getInstance().getChatFactory().getChat(jid, rJid);
+        mChat = Lime.getInstance().getChatFactory().getChat(jid, rJid);
 
         updateContactBar();
         
@@ -272,7 +271,7 @@ public class ChatFragment extends SherlockFragment
 
         refreshVisualContent();
         
-        String s = chat.getSuspendedText();
+        String s = mChat.getSuspendedText();
         if (s!=null) {
             mMessageBox.setText(s);
         }
@@ -282,7 +281,7 @@ public class ChatFragment extends SherlockFragment
 
 	private void updateContactBar() {
 	    
-	    contactBar.bindContact(visavis, chat.isComposing());
+	    contactBar.bindContact(visavis, mChat.isComposing());
 		
 	}
 	
@@ -300,10 +299,9 @@ public class ChatFragment extends SherlockFragment
 	public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.closeChat:
-			Lime.getInstance().getChatFactory().closeChat(chat);
-			
-			getChatFragmentListener().closeChat();
-			
+		    
+			Lime.getInstance().getChatFactory().resetActiveState(mChat);
+			getChatFragmentListener().closeChatFragment(); //finish activity if single mode chat
 			break;
 		
 		case R.id.addSmile:   mMessageBox.showAddSmileDialog();  break;
@@ -357,7 +355,7 @@ public class ChatFragment extends SherlockFragment
 		case R.id.cmdDelete:
 
 			chatListView.setVisibility(View.GONE);
-			chat.removeFromHistory(info.id);
+			mChat.removeFromHistory(info.id);
 			refreshVisualContent();
 			
 			return true;
@@ -480,7 +478,7 @@ public class ChatFragment extends SherlockFragment
 		String to = visavis.getJid();
 		
 		Message out = new Message(Message.TYPE_MESSAGE_OUT, to, text);
-		chat.addMessage(out);
+		mChat.addMessage(out);
 
 		//TODO: resource magic
 		XmppMessage msg = new XmppMessage(to, text, null, false);
@@ -508,7 +506,7 @@ public class ChatFragment extends SherlockFragment
 		} else {
 			Toast.makeText(getActivity(), R.string.shouldBeLoggedIn, Toast.LENGTH_LONG).show();
 			//not sent - removing from history
-			chat.removeFromHistory(out.getId());
+			mChat.removeFromHistory(out.getId());
 		}
 		
 		refreshVisualContent();
@@ -520,7 +518,7 @@ public class ChatFragment extends SherlockFragment
         
 		//TODO: optional chat state notifications
 
-		if (!chat.acceptComposingEvents()) return;
+		if (!mChat.acceptComposingEvents()) return;
 		
 		if (state.equals(sentChatState)) return; //no duplicates
 		
@@ -628,7 +626,7 @@ public class ChatFragment extends SherlockFragment
 			if (cursor.moveToLast()) do {
 				Message m = ChatHistoryDbAdapter.getMessageFromCursor(cursor);
 				if (m.unread) {
-					chat.markRead(m.getId());
+					mChat.markRead(m.getId());
 					Lime.getInstance().notificationMgr().cancelChatNotification(m.getId());
 					
 					unreadCount--;
@@ -640,7 +638,7 @@ public class ChatFragment extends SherlockFragment
     public void suspendChat() {
         if (jid==null) return;
 
-        chat.saveSuspendedText(mMessageBox.getText().toString());
+        mChat.saveSuspendedText(mMessageBox.getText().toString());
         
         sendChatState(ChatStates.PAUSED);
 
@@ -650,29 +648,17 @@ public class ChatFragment extends SherlockFragment
         jid = null;
     }
     
-    @Override
-    public void onStop() {
-        CursorAdapter ca = (CursorAdapter) chatListView.getAdapter();
-        if (ca!=null) ca.changeCursor(null);
-        
-        super.onStop();
-    }
-
-    
     private static class ChatCursorLoader extends SimpleCursorLoader {
 
         public ChatCursorLoader(Context context) {
             super(context);
-            // TODO Auto-generated constructor stub
         }
-
+        
         @Override
         public Cursor loadInBackground() {
+            if (mChat == null) return null;
             
-            //todo: replace static access with getter method 
-            if (chat == null) return null;
-            
-            return chat.getCursor();
+            return mChat.getCursor();
         }
         
     }
@@ -698,8 +684,7 @@ public class ChatFragment extends SherlockFragment
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        CursorAdapter ca = (CursorAdapter) chatListView.getAdapter();
-        ca.swapCursor(null);
+        mCursorAdapter.swapCursor(null);
         
         //TODO: show progress
         chatListView.setVisibility(View.GONE);

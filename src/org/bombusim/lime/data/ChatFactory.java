@@ -33,7 +33,7 @@ public class ChatFactory {
 	
 	public void closeAllKeepActive() {
 		for (Chat chat : chats) {
-			chat.closeChat(true);
+			chat.resetActiveState(true);
 		}
 		
 		chats.clear();
@@ -67,9 +67,8 @@ public class ChatFactory {
 		return c;
 	}
 	
-	public void closeChat (Chat c) {
+	public void resetActiveState (Chat c) {
 		chats.remove(c);
-		c.closeChat(false);
+		c.resetActiveState(false);
 	}
-
 }
