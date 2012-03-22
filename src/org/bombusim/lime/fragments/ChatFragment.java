@@ -112,6 +112,7 @@ public class ChatFragment extends SherlockFragment
 	
 	Contact visavis;
 	
+	//TODO: remove static to avoid side effects on create/destroy fragment
 	static Chat chat;
 	
 	String sentChatState;
@@ -242,7 +243,7 @@ public class ChatFragment extends SherlockFragment
 	    mCursorAdapter = new ChatListAdapter(getActivity(), null);
 	    chatListView.setAdapter(mCursorAdapter);
 	    
-        
+        if (jid==null) chat = null;
         getLoaderManager().initLoader(CHAT_LOADER_ID, null, this);
 	}
 	
@@ -645,6 +646,7 @@ public class ChatFragment extends SherlockFragment
 
         markAllRead();
 
+        getLoaderManager().restartLoader(CHAT_LOADER_ID, null, this);        
         jid = null;
     }
     
@@ -666,6 +668,8 @@ public class ChatFragment extends SherlockFragment
 
         @Override
         public Cursor loadInBackground() {
+            
+            //todo: replace static access with getter method 
             if (chat == null) return null;
             
             return chat.getCursor();
