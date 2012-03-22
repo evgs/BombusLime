@@ -19,6 +19,9 @@
 
 package org.bombusim.lime.fragments;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 import org.bombusim.lime.activity.About;
@@ -30,7 +33,6 @@ import org.bombusim.lime.activity.LimePrefs;
 import org.bombusim.lime.activity.LoggerActivity;
 import org.bombusim.lime.activity.PresenceActivity;
 import org.bombusim.lime.activity.RosterActivity;
-import org.bombusim.lime.activity.RosterAdapter;
 import org.bombusim.lime.activity.RosterLimePrefsActivity;
 import org.bombusim.lime.activity.VCardActivity;
 import org.bombusim.lime.data.Contact;
@@ -38,6 +40,9 @@ import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.data.RosterGroup;
 import org.bombusim.lime.service.XmppService;
 import org.bombusim.lime.service.XmppServiceBinding;
+import org.bombusim.lime.widgets.AccountViewFactory;
+import org.bombusim.lime.widgets.ContactViewFactory;
+import org.bombusim.lime.widgets.GroupViewFactory;
 import org.bombusim.xmpp.XmppAccount;
 import org.bombusim.xmpp.handlers.IqRoster;
 import org.bombusim.xmpp.stanza.XmppPresence;
@@ -54,14 +59,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -270,18 +279,6 @@ public class RosterFragment extends SherlockListFragment {
         public void onReceive(Context context, Intent intent) {
             String from = intent.getStringExtra("param");
             
-            if (! Lime.getInstance().prefs.hideOfflines) {
-                //TODO: optimize if hide offlines
-                if (from !=null) {
-                    for (Contact c: Lime.getInstance().getRoster().getContacts()) {
-                        if (c.getJid().equals(from)) {
-                            refreshSingleContact(c);
-                        }
-                    }
-                    
-                    return;
-                }
-            }
             refreshVisualContent();
         }
         
@@ -320,19 +317,20 @@ public class RosterFragment extends SherlockListFragment {
     void refreshVisualContent(){
         //TODO: fix update
         //updateRosterTitle();
-        
-        ListView lv = getListView(); 
-        lv.setVisibility(View.GONE);
+
         RosterAdapter ra = (RosterAdapter)getListAdapter();
-        lv.invalidate();
-        ra.notifyDataSetChanged();
-    
-        lv.setVisibility(View.VISIBLE);
+        ra.populateRosterObjects();
+        
     }
     
     RosterBroadcastReceiver br;
+    
+    
+    private boolean mFragmentActive = false;
     @Override
     public void onResume() {
+        mFragmentActive = true;
+        
         super.onResume();
         
         sb.setBindListener(new XmppServiceBinding.BindListener() {
@@ -351,6 +349,8 @@ public class RosterFragment extends SherlockListFragment {
     
     @Override
     public void onPause() {
+        mFragmentActive = false;
+        
         sb.doUnbindService();
         getActivity().unregisterReceiver(br);
         super.onPause();
@@ -413,6 +413,238 @@ public class RosterFragment extends SherlockListFragment {
             c.getJid(), 
             sb.getXmppStream(c.getRosterJid())
         );
+    }
+    
+    
+    private class RosterAdapter extends BaseAdapter {
+        
+        public final static int ITEM_ACCOUNT = 0;
+        public final static int ITEM_CONTACT = 1;
+        public final static int ITEM_GROUP = 2;
+        
+        public final static int ITEM_TYPECOUNT = 3;
+
+        private ArrayList mRosterObjects;
+        
+        private ArrayList<RosterGroup> mGroups;
+
+        private ContactViewFactory cvf;
+        private GroupViewFactory gvf;
+        private AccountViewFactory avf;
+        
+        
+        public RosterAdapter(Context context, Bitmap[] statusIcons) {
+
+            cvf = new ContactViewFactory(context, statusIcons);
+            avf = new AccountViewFactory(context, statusIcons);
+            gvf = new GroupViewFactory(context);
+
+            mRosterObjects = new ArrayList();
+            
+            mGroups = new ArrayList<RosterGroup>();
+        }
+        
+        
+        @Override
+        public int getCount() { return mRosterObjects.size(); }
+
+        @Override
+        public Object getItem(int position) { return mRosterObjects.get(position); }
+
+        @Override
+        public long getItemId(int position) { return position; }
+
+        @Override
+        public boolean hasStableIds() { return true;    }
+        
+        @Override
+        public int getViewTypeCount() { return ITEM_TYPECOUNT; }
+        
+        @Override
+        public int getItemViewType(int position) {
+            Object o = mRosterObjects.get(position);
+            if (o instanceof XmppAccount) return ITEM_ACCOUNT;
+            if (o instanceof RosterGroup) return ITEM_GROUP;
+            if (o instanceof Contact)     return ITEM_CONTACT;
+            
+            return -1;
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            // TODO Auto-generated method stub
+            Object o = mRosterObjects.get(position);
+            
+            if (o instanceof Contact) return cvf.getView(convertView, (Contact)o);
+            if (o instanceof RosterGroup) return gvf.getView(convertView, (RosterGroup)o);
+            if (o instanceof XmppAccount) return avf.getView(convertView, (XmppAccount)o);
+            
+            return null;
+        }
+        
+        private void addContactToGroup(Contact contact, String groupName) {
+            for (RosterGroup g : mGroups) {
+                if (g.groupName.equals(groupName)) {
+                    g.contacts.add(contact);
+                    return;
+                }
+            }
+            
+            RosterGroup ng = new RosterGroup(groupName);
+            ng.contacts.add(contact);
+            mGroups.add(ng);
+        }
+
+        private final static long PRESENCE_GROUPING_TIME_MS = 500;
+        
+        private long mLastUpdate;
+        private int mUpdateLock;
+        private Object mUpdateSyncObject = new Object();
+
+        public void populateRosterObjects() {
+            
+            synchronized (mUpdateSyncObject) {
+                long now = System.currentTimeMillis();
+                
+                mUpdateLock++;
+                if (now-mLastUpdate < PRESENCE_GROUPING_TIME_MS) {
+                    mUpdateLock++;
+                }
+
+                Log.d("Roster", "Triggered: "+mUpdateLock);
+                
+                
+                mLastUpdate = now;
+                
+                if (mUpdateLock>3) return;
+
+            }
+            
+            new PresenceUpdateBunch().execute();
+        }
+        
+        
+        void releaseLock() {
+            synchronized (mUpdateSyncObject) {
+                Log.d("Roster", "Updates: "+mUpdateLock);
+                mUpdateLock--;
+            }
+        }
+
+        /**
+         * Asynchronous refreshing roster structure
+         * @author evgs
+         *
+         */
+        
+        private class PresenceUpdateBunch extends AsyncTask<Void, Integer, ArrayList> {
+            
+            @Override
+            protected ArrayList doInBackground(Void... params) {
+                
+             
+                if (mUpdateLock > 1)
+                    try {
+                        Thread.sleep(PRESENCE_GROUPING_TIME_MS);
+                    } catch (InterruptedException e) { /* normal case */ }
+                
+                synchronized (mUpdateSyncObject) {
+                    mUpdateLock = 1;
+                }
+                
+                boolean hideOfflines = Lime.getInstance().prefs.hideOfflines;
+
+                ArrayList rosterObjects = new ArrayList();
+                
+                //0. add account item
+                //TODO: loop trough accounts
+                XmppAccount a = Lime.getInstance().getActiveAccount();
+                rosterObjects.add(a);
+                
+                if (a.collapsed) {
+                    //TODO: next account
+                    releaseLock();
+                    return rosterObjects;
+                }
+                
+                ArrayList<Contact> contacts = Lime.getInstance().getRoster().getContacts();
+                
+                //1. reset groups
+                for (RosterGroup group: mGroups) {   group.contacts.clear(); }
+
+                synchronized (contacts) {
+                    
+                    //2. populate groups with contacts
+                    //TODO: collate by roster jid
+                    for (Contact contact: contacts) {
+                        String allGroups = contact.getAllGroups();
+                        if (allGroups == null) {
+                            //TODO: group sorting indexes
+                            addContactToGroup(contact, "- No group");
+                            continue;
+                        }
+                        
+                        String cgroups[] = allGroups.split("\t");
+                        for (String cg : cgroups) {
+                            addContactToGroup(contact, cg);
+                        }
+                    }
+                
+                }
+
+                //3. remove empty groups
+                int i=0;
+                while (i<mGroups.size()) {
+                    if (mGroups.get(i).contacts.isEmpty()) { 
+                        mGroups.remove(i);
+                    } else i++;
+                }
+                
+                //4. sort groups
+                Collections.sort(mGroups);
+                
+                //5. add groups to roster
+                //TODO 5.1 check if account collapsed
+                
+                for (RosterGroup group : mGroups) {
+                    rosterObjects.add(group);
+                    
+                    //skip contacts if group collapsed
+                    if (group.collapsed) continue;
+                    
+                    for (Contact contact : group.contacts) {
+                        // skip offlines
+                        if (hideOfflines) if (contact.getPresence() == XmppPresence.PRESENCE_OFFLINE)
+                            continue;
+                        
+                        rosterObjects.add(contact);
+                    }
+                }
+                
+                //TODO: add MUC
+                releaseLock();
+                return rosterObjects;
+            }
+            
+            @Override
+            protected void onPostExecute(ArrayList result) {
+                if (result == null) return;
+                
+                if (!mFragmentActive) return;
+                
+                ListView lv = getListView();
+                
+                lv.setVisibility(View.GONE);
+                
+                RosterAdapter ra = (RosterAdapter)getListAdapter();
+                lv.invalidate();
+                mRosterObjects = result;
+                notifyDataSetChanged();
+            
+                lv.setVisibility(View.VISIBLE);
+            }
+        }
+        
     }
 
 }
