@@ -165,6 +165,7 @@ public class ChatFragment extends SherlockFragment
                     .getSupportActionBar().getCustomView();
             
             contactBar = (ContactBar) abCustomView.findViewById(R.id.contactHeadActionbar);
+            contactBar.removeBackground();
         }
         
         

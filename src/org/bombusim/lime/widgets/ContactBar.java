@@ -49,5 +49,10 @@ public class ContactBar extends RelativeLayout{
                     .setVisibility( (composing) ? View.VISIBLE : View.GONE );
 
     }
+
+    public void removeBackground() {
+        ((RelativeLayout) findViewById(R.id.contactBarWidget)).setBackgroundDrawable(null);
+        
+    }
     
 }
