@@ -23,11 +23,13 @@ import org.bombusim.lime.activity.ChatActivity;
 import org.bombusim.lime.activity.RosterActivity;
 import org.bombusim.lime.data.Contact;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 
@@ -52,10 +54,16 @@ public class NotificationMgr {
 		//cancelling old notification
 		mNM.cancel(NOTIFICATION_CHAT);
 		
+		int orientation = context.getResources().getConfiguration().orientation;
+		
+		Class<? extends Activity> targetClass = 
+		        ( orientation == Configuration.ORIENTATION_LANDSCAPE)?
+		        RosterActivity.class : ChatActivity.class;
+		
 		// target ChatActivity
 		// Every intent should have unique action or uri, 
 		// else we have a mess: same intents with different values.  
-		Intent openChat =  new Intent("Chat"+String.valueOf(id), null, context, RosterActivity.class);
+		Intent openChat =  new Intent("Chat"+String.valueOf(id), null, context, targetClass);
 		openChat.putExtra(ChatActivity.MY_JID, visavis.getRosterJid());
 		openChat.putExtra(ChatActivity.TO_JID, visavis.getJid());
 		

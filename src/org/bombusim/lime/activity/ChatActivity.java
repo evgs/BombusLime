@@ -118,12 +118,17 @@ public class ChatActivity extends SherlockFragmentActivity
     }
     
     @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, RosterActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+    
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case android.R.id.home:
-            Intent intent = new Intent(this, RosterActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item); 

@@ -637,9 +637,9 @@ public class RosterFragment extends SherlockListFragment {
                 
                 lv.setVisibility(View.GONE);
                 
-                RosterAdapter ra = (RosterAdapter)getListAdapter();
-                lv.invalidate();
                 mRosterObjects = result;
+                
+                lv.invalidate();
                 notifyDataSetChanged();
             
                 lv.setVisibility(View.VISIBLE);
