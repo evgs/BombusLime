@@ -569,11 +569,11 @@ public class RosterFragment extends SherlockListFragment {
                 
                 ArrayList<Contact> contacts = Lime.getInstance().getRoster().getContacts();
                 
-                //1. reset groups
-                for (RosterGroup group: mGroups) {   group.contacts.clear(); }
+                synchronized (mGroups) {
+                
+                    //1. reset groups
+                    for (RosterGroup group: mGroups) {   group.contacts.clear(); }
 
-                synchronized (contacts) {
-                    
                     //2. populate groups with contacts
                     //TODO: collate by roster jid
                     for (Contact contact: contacts) {
@@ -590,36 +590,37 @@ public class RosterFragment extends SherlockListFragment {
                         }
                     }
                 
+                    //3. remove empty groups
+                    int i=0;
+                    while (i<mGroups.size()) {
+                        if (mGroups.get(i).contacts.isEmpty()) { 
+                            mGroups.remove(i);
+                        } else i++;
+                    }
+                    
+                    //4. sort groups
+                    Collections.sort(mGroups);
+                    
+                    //5. add groups to roster
+                    //TODO 5.1 check if account collapsed
+                    
+                    for (RosterGroup group : mGroups) {
+                        rosterObjects.add(group);
+                        
+                        //skip contacts if group collapsed
+                        if (group.collapsed) continue;
+                        
+                        for (Contact contact : group.contacts) {
+                            // skip offlines
+                            if (hideOfflines) if (contact.getPresence() == XmppPresence.PRESENCE_OFFLINE)
+                                continue;
+                            
+                            rosterObjects.add(contact);
+                        }
+                    }
+
                 }
 
-                //3. remove empty groups
-                int i=0;
-                while (i<mGroups.size()) {
-                    if (mGroups.get(i).contacts.isEmpty()) { 
-                        mGroups.remove(i);
-                    } else i++;
-                }
-                
-                //4. sort groups
-                Collections.sort(mGroups);
-                
-                //5. add groups to roster
-                //TODO 5.1 check if account collapsed
-                
-                for (RosterGroup group : mGroups) {
-                    rosterObjects.add(group);
-                    
-                    //skip contacts if group collapsed
-                    if (group.collapsed) continue;
-                    
-                    for (Contact contact : group.contacts) {
-                        // skip offlines
-                        if (hideOfflines) if (contact.getPresence() == XmppPresence.PRESENCE_OFFLINE)
-                            continue;
-                        
-                        rosterObjects.add(contact);
-                    }
-                }
                 
                 //TODO: add MUC
                 releaseLock();
