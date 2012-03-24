@@ -162,13 +162,6 @@ public class Lime extends Application {
 		super.onLowMemory();
 	}
 	
-	
-	@Override
-	public final void onConfigurationChanged(Configuration newConfig) {
-		// TODO Auto-generated method stub
-		super.onConfigurationChanged(newConfig);
-	}
-
 	private String version;
 
 	//tracking last message notification. 

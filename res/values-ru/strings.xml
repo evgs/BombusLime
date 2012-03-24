@@ -95,6 +95,12 @@
     <string name="gprsAvatars">Загружать аватары</string>
     <string name="cbEnabled">Разрешено</string>
     <string name="cbDisabled">Запрещено</string>
+    
+    <string name="prefsWiFiNetworkUsage">Использование WiFi</string>
+    <string name="WiFiLock">Удержание WiFi</string>
+    <string name="WiFiLockEnabled">Удерживать WiFi в активном состоянии при погашенном дисплее</string>
+    <string name="WiFiLockDisabled">Запрещено</string>
+    
     <string name="loadingVcardProgress">Получение личной карточки&#8230;</string>
     <string name="sendMessage">Отправить</string>
     <string name="yes">Да</string>

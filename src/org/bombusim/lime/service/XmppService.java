@@ -25,6 +25,7 @@ import java.net.UnknownHostException;
 import javax.net.ssl.SSLException;
 
 import org.bombusim.lime.Lime;
+import org.bombusim.lime.activity.LimePrefs;
 import org.bombusim.lime.data.PresenceStorage;
 import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.logger.LimeLog;
@@ -47,6 +48,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.net.wifi.WifiManager;
+import android.net.wifi.WifiManager.WifiLock;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -58,7 +61,8 @@ public class XmppService extends Service {
     public static final String ON_BOOT       = "onBoot";
     public static final String ON_STATUS     = "onStatusChange";
 
-	private BroadcastReceiver mBr;
+    private BroadcastReceiver mRosterBr;
+    private BroadcastReceiver mPrefsBr;
 
 	private XmppStream mStream;
 
@@ -123,12 +127,19 @@ public class XmppService extends Service {
         String lang = getResources().getConfiguration().locale.getLanguage();
         mStream.setLocaleLang(lang);
 		
-		if (mBr == null) {
-			mBr = new ConnBroadcastReceiver();
-			registerReceiver(mBr, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+		if (mRosterBr == null) {
+			mRosterBr = new ConnBroadcastReceiver();
+			registerReceiver(mRosterBr, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+		}
+		
+		if (mPrefsBr == null) {
+		    mPrefsBr = new PrefsUpdateReceiver();
+		    registerReceiver(mPrefsBr, new IntentFilter(LimePrefs.PREFS_CHANGED));
 		}
 		
 	   	checkNetworkState();
+	   	
+        setWiFiLock( (networkType==ConnectivityManager.TYPE_WIFI) );
 	   	
 	   	PresenceStorage ps = new PresenceStorage(this);
 	   	
@@ -172,6 +183,8 @@ public class XmppService extends Service {
     public void onDestroy() {
         // Cancel the persistent notification.
         cancelNotification();
+        
+        setWiFiLock(false);
     }
 	
     /**
@@ -206,12 +219,34 @@ public class XmppService extends Service {
     }
     
     
+    private WifiLock mWiFiLock;
+    private void setWiFiLock(boolean locked) {
+        if (! Lime.getInstance().prefs.wifiLock) return;
+        
+        if (!locked) {
+            if (mWiFiLock == null) return; // no active lock
+            mWiFiLock.release();
+            
+            return;
+        }
+        
+        WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        if (mWiFiLock == null) mWiFiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL, "org.bombusim.lime");
+        
+        mWiFiLock.setReferenceCounted(false);
+        mWiFiLock.acquire();
+        
+    }
+    
+    
 	private class ConnBroadcastReceiver extends BroadcastReceiver {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			
 			checkNetworkState();
+			
+	        setWiFiLock( (networkType==ConnectivityManager.TYPE_WIFI) );
 
 			LimeLog.i("XmppService", "Network state: "  
 					+ ((networkType==ConnectivityManager.TYPE_WIFI)?"WiFi":"GPRS")
@@ -222,12 +257,19 @@ public class XmppService extends Service {
 		}
 	}
 
+	private class PrefsUpdateReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            setWiFiLock(true);
+        }
+	}
 
 	public void disconnectAll() {
         //TODO: remove try/catch when service on/off behavior will be changed 
         try {
-        	unregisterReceiver(mBr);
-        	mBr = null;
+        	unregisterReceiver(mRosterBr);
+        	unregisterReceiver(mPrefsBr);
+        	mRosterBr = null;
         } catch (Exception e) {
         	e.printStackTrace();
         }

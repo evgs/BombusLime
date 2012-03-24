@@ -98,6 +98,12 @@
     <string name="gprsAvatars">Load avatars over mobile connection</string>
     <string name="cbEnabled">Enabled</string>
     <string name="cbDisabled">Disabled</string>
+    
+    <string name="prefsWiFiNetworkUsage">WiFi usage</string>
+    <string name="WiFiLock">WiFi lock</string>
+    <string name="WiFiLockEnabled">Hold WiFi active when screen is off</string>
+    <string name="WiFiLockDisabled">Disabled</string>
+    
     <string name="loadingVcardProgress">Fetching VCard&#8230;</string>
     <string name="sendMessage">Send</string>
     <string name="yes">Yes</string>

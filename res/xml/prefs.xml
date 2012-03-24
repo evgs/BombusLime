@@ -12,6 +12,16 @@
         <CheckBoxPreference android:key="VCARD_OVER_GPRS" android:title="@string/gprsAvatars" android:defaultValue="true" android:summaryOff="@string/cbDisabled" android:summaryOn="@string/cbEnabled" />
         
     </PreferenceCategory><PreferenceCategory android:key="PREFS_NOTIFY" android:title="@string/chatNotify" android:order="20">
+        
+    <PreferenceCategory android:key="WIFI_NETWORK" android:title="@string/prefsWiFiNetworkUsage" android:order="11">
+        <CheckBoxPreference android:key="WIFI_LOCK" 
+            android:title="@string/WiFiLock" 
+            android:defaultValue="false" 
+            android:summaryOff="@string/cbDisabled" 
+            android:summaryOn="@string/WiFiLockEnabled" />
+    </PreferenceCategory>
+        
+        
 	    <RingtonePreference 
 	        android:key="RINGTONE_MESSAGE" 
 	        android:title="@string/incomingMessageSound" 

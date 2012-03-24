@@ -36,6 +36,7 @@ public class Preferences {
 	public boolean loadAvatarsOverMobileConnections;
 	
 	public boolean hideOfflines;
+    public boolean wifiLock;
 	
 	public Preferences(Context applicationContext) {
 		loadPreferences(applicationContext);
@@ -55,6 +56,8 @@ public class Preferences {
 		
 		vibraNotifyMessage = prefs.getBoolean("NOTIFY_VIBRA", true);
 		ledNotifyMessage   = prefs.getBoolean("NOTIFY_LED",   true);
+		
+        wifiLock = prefs.getBoolean("WIFI_LOCK", false);
 		
 		String ka = prefs.getString("KEEP_ALIVE_PERIOD", "");
 		
