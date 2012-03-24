@@ -22,21 +22,33 @@ package org.bombusim.lime.activity;
 
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
+import org.bombusim.lime.service.XmppServiceBinding;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
 public class LimePrefs extends PreferenceActivity{
-	@Override
+    
+	public static final String PREFS_CHANGED = "org.bimbusim.lime.PREFS_UPDATE";
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		
 		addPreferencesFromResource(R.xml.prefs);
 	}
 
 	@Override
+	protected void onResume() {
+	    super.onResume();
+	}
+	
+	@Override
 	protected void onPause() {
 		super.onPause();
 		Lime.getInstance().loadPreferences();
+
+		sendBroadcast(new Intent(LimePrefs.PREFS_CHANGED));
 	}
 }
