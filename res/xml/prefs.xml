@@ -8,10 +8,14 @@
         android:title="@string/autoServiceStartup" 
         android:order="1"
         />
-    <PreferenceCategory android:key="PREFS_NETWORK" android:title="@string/prefsMobileNetworkUsage" android:order="10">
-        <CheckBoxPreference android:key="VCARD_OVER_GPRS" android:title="@string/gprsAvatars" android:defaultValue="true" android:summaryOff="@string/cbDisabled" android:summaryOn="@string/cbEnabled" />
+    <PreferenceCategory android:key="MOBILE_NETWORK" android:title="@string/prefsMobileNetworkUsage" android:order="10">
+        <CheckBoxPreference android:key="VCARD_OVER_GPRS" 
+            android:title="@string/gprsAvatars" 
+            android:defaultValue="true" 
+            android:summaryOff="@string/cbDisabled" 
+            android:summaryOn="@string/netMobileWifi" />
+    </PreferenceCategory>
         
-    </PreferenceCategory><PreferenceCategory android:key="PREFS_NOTIFY" android:title="@string/chatNotify" android:order="20">
         
     <PreferenceCategory android:key="WIFI_NETWORK" android:title="@string/prefsWiFiNetworkUsage" android:order="11">
         <CheckBoxPreference android:key="WIFI_LOCK" 
@@ -22,6 +26,7 @@
     </PreferenceCategory>
         
         
+    <PreferenceCategory android:key="PREFS_NOTIFY" android:title="@string/chatNotify" android:order="20">
 	    <RingtonePreference 
 	        android:key="RINGTONE_MESSAGE" 
 	        android:title="@string/incomingMessageSound" 

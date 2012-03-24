@@ -94,8 +94,12 @@
     <string name="deleteContact">Delete contact</string>
     <string name="confirmDelete">Are you sure want delete this contact from your roster?</string>
     <string name="editContact">Edit contact</string>
+    
     <string name="prefsMobileNetworkUsage">Mobile network usage</string>
     <string name="gprsAvatars">Load avatars over mobile connection</string>
+    <string name="netMobileWifi">Using active Mobile or WiFi connection</string>
+    <string name="netWifiOnly">Using WiFi connection only</string>
+    
     <string name="cbEnabled">Enabled</string>
     <string name="cbDisabled">Disabled</string>
     
