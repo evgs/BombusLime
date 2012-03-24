@@ -12,7 +12,7 @@
         <CheckBoxPreference android:key="VCARD_OVER_GPRS" 
             android:title="@string/gprsAvatars" 
             android:defaultValue="true" 
-            android:summaryOff="@string/cbDisabled" 
+            android:summaryOff="@string/netWifiOnly" 
             android:summaryOn="@string/netMobileWifi" />
     </PreferenceCategory>
         
