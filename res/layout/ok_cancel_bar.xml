@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal" 
     
-    android:background="@android:drawable/bottom_bar" 
+    android:background="@android:drawable/dark_header" 
     
     >
 
