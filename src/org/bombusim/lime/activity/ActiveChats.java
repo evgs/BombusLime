@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -108,6 +109,14 @@ public class ActiveChats {
 				alert.dismiss();
 				
 				Contact c = activeContacts.get(position);
+				
+		        //TODO: make choice based on screen resolution, not only orientation
+		        int orientation = hostActivity.getResources().getConfiguration().orientation;
+		        
+		        Class<? extends Activity> targetClass = 
+		                ( orientation == Configuration.ORIENTATION_LANDSCAPE)?
+		                RosterActivity.class : ChatActivity.class;
+				
 				
 				//HACK: faster ChatActivity invocation in portrait mode 
 				Class<? extends Activity> destClass = (hostActivity.getClass());
