@@ -117,11 +117,7 @@ public class ActiveChats {
 		                ( orientation == Configuration.ORIENTATION_LANDSCAPE)?
 		                RosterActivity.class : ChatActivity.class;
 				
-				
-				//HACK: faster ChatActivity invocation in portrait mode 
-				Class<? extends Activity> destClass = (hostActivity.getClass());
-				
-		        Intent openChat =  new Intent("Chat", null, hostActivity, destClass);
+		        Intent openChat =  new Intent("Chat", null, hostActivity, targetClass);
 		        openChat.putExtra(ChatActivity.MY_JID, c.getRosterJid());
 		        openChat.putExtra(ChatActivity.TO_JID, c.getJid());
 
