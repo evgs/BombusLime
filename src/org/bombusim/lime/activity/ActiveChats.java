@@ -6,6 +6,7 @@ import java.util.Collections;
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 import org.bombusim.lime.data.Contact;
+import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.widgets.ContactViewFactory;
 
 import android.app.Activity;
@@ -57,16 +58,22 @@ public class ActiveChats {
 		final ArrayList<Contact> activeContacts = new ArrayList<Contact>();
 		
 		// populating active contact list
-		ArrayList<Contact> contacts = Lime.getInstance().getRoster().getContacts();
 		
-		for (Contact c : contacts) {
-			if (rJid != null)  
-				if (!c.getRosterJid().equals(rJid)) continue;
-			
-			if (!c.hasActiveChats()) continue;
-			
-			activeContacts.add(c);
-		}
+        Roster roster = Lime.getInstance().getRoster();
+		
+        synchronized (roster) {
+            
+		    ArrayList<Contact> contacts = roster.getContacts();
+		
+            for (Contact c : contacts) {
+                if (rJid != null)  
+                    if (!c.getRosterJid().equals(rJid)) continue;
+                
+                if (!c.hasActiveChats()) continue;
+                
+                activeContacts.add(c);
+            }
+        }
 		
 		Collections.sort(activeContacts);
 		

@@ -567,10 +567,12 @@ public class RosterFragment extends SherlockListFragment {
                     return rosterObjects;
                 }
                 
-                ArrayList<Contact> contacts = 
-                        (ArrayList<Contact>) Lime.getInstance().getRoster().getContacts().clone();
+                Roster roster = Lime.getInstance().getRoster();
                 
+                synchronized (roster) {                    
                 synchronized (mGroups) {
+                    
+                    ArrayList<Contact> contacts = roster.getContacts();
                 
                     //1. reset groups
                     for (RosterGroup group: mGroups) {   group.contacts.clear(); }
@@ -620,7 +622,7 @@ public class RosterFragment extends SherlockListFragment {
                         }
                     }
 
-                }
+                }}
 
                 
                 //TODO: add MUC

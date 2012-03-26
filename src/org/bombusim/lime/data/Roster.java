@@ -44,7 +44,7 @@ public class Roster {
 	public ArrayList<Contact> getContacts() { return contacts; }
 
 	public void replaceRoster(ArrayList<Contact> updates, String rosterJid, boolean replaced) {
-		synchronized (contacts) {
+		synchronized (this) {
 				
 			//finalize all pending updates
 			updateDB();  
@@ -102,7 +102,7 @@ public class Roster {
 	}
 
 	public void updateDB() { 
-		synchronized (contacts) {
+		synchronized (this) {
 			RosterDbAdapter db = new RosterDbAdapter(Lime.getInstance().getApplicationContext());
 			
 			db.open();
@@ -128,40 +128,46 @@ public class Roster {
 	}
 
 	public void forceRosterOffline(String rosterJid) {
-		for (Contact c: contacts) {
-			if (c.getRosterJid().equals(rosterJid)) {
-				c.setResourcesOffline();
-			}
-		}
+        synchronized (this) {
+    		for (Contact c: contacts) {
+    		    if (c.getRosterJid().equals(rosterJid)) {
+    		        c.setResourcesOffline();
+    		    }
+    		}
+	    }
 	}
 	
 	public void notifyVcard(Vcard vcard) {
-		
-		for (int index = 0; index < contacts.size(); index++) {
-			Contact c = contacts.get(index);
-			if (c.getJid().equals(vcard.getJid())) { 
-				c.setAvatar(vcard.getAvatar(), vcard.getAvatarId());
-			}
-		}
-		
+        synchronized (this) {
+            for (int index = 0; index < contacts.size(); index++) {
+                Contact c = contacts.get(index);
+                if (c.getJid().equals(vcard.getJid())) { 
+                    c.setAvatar(vcard.getAvatar(), vcard.getAvatarId());
+                }
+            }
+        }
 		updateDB();
 	}
 
 	public Contact findContact(String from, String rosterJid) {
-		for (int i=0; i<contacts.size(); i++) {
-			Contact c = contacts.get(i);
-			if (c.getJid().equals(from))
-				if (c.getRosterJid().equals(rosterJid))
-					return c;
+		synchronized (this) { 
+		    for (int i=0; i<contacts.size(); i++) {
+    			Contact c = contacts.get(i);
+    			if (c.getJid().equals(from))
+    				if (c.getRosterJid().equals(rosterJid))
+    					return c;
+		    }
 		}
 		
 		return null;
 	}
 	
 	public void dropCachedAvatars() {
-		for (int i=0; i<contacts.size(); i++) {
-			contacts.get(i).dropAvatar();
-		}
+        synchronized (this) { 
+            for (int i=0; i<contacts.size(); i++) {
+                contacts.get(i).dropAvatar();
+            }
+        }
 	}
 
 
