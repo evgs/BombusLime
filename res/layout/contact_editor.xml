@@ -105,7 +105,7 @@
     <org.bombusim.lime.widgets.OkCancelBar
         xmlns:okcancelbar= "http://schemas.android.com/apk/res/org.bombusim.lime"
         android:id="@+id/okCancel"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content" 
 
 	    android:layout_alignParentBottom="true"
