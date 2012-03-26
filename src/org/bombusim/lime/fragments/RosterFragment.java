@@ -567,7 +567,8 @@ public class RosterFragment extends SherlockListFragment {
                     return rosterObjects;
                 }
                 
-                ArrayList<Contact> contacts = Lime.getInstance().getRoster().getContacts();
+                ArrayList<Contact> contacts = 
+                        (ArrayList<Contact>) Lime.getInstance().getRoster().getContacts().clone();
                 
                 synchronized (mGroups) {
                 

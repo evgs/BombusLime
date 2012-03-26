@@ -110,7 +110,7 @@ public class ChatActivity extends SherlockFragmentActivity
     }
 
     @Override
-    public void closeChatFragment() { finish(); }
+    public void closeChatFragment() { onBackPressed(); }
 
     @Override
     public boolean isTabMode() {
