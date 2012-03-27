@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
 
 public class XmppServiceBinding {
 	private Context context;
@@ -67,8 +68,14 @@ public class XmppServiceBinding {
 	}
 
 	public void doUnbindService() {
-		if (xmppService != null)
+		try {
 			Lime.getInstance().unbindService(xsc);
+		} catch (NullPointerException e) {
+		    //normal case
+		} catch (IllegalArgumentException e) {
+		    //TODO: check on stock android 2.3.7
+		    Log.d("XmppServiceBinding", "Closed unbinded service", e);
+		}
 	}
 	
 	public XmppStream getXmppStream(String rosterJid) {
