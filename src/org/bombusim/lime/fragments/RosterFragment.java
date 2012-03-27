@@ -567,29 +567,30 @@ public class RosterFragment extends SherlockListFragment {
                     return rosterObjects;
                 }
                 
-                Roster roster = Lime.getInstance().getRoster();
-                
-                synchronized (roster) {                    
                 synchronized (mGroups) {
                     
-                    ArrayList<Contact> contacts = roster.getContacts();
-                
-                    //1. reset groups
-                    for (RosterGroup group: mGroups) {   group.contacts.clear(); }
-
-                    //2. populate groups with contacts
-                    //TODO: collate by roster jid
-                    for (Contact contact: contacts) {
-                        String allGroups = contact.getAllGroups();
-                        if (allGroups == null) {
-                            //TODO: group sorting indexes
-                            addContactToGroup(contact, "- No group");
-                            continue;
-                        }
-                        
-                        String cgroups[] = allGroups.split("\t");
-                        for (String cg : cgroups) {
-                            addContactToGroup(contact, cg);
+                    Roster roster = Lime.getInstance().getRoster();
+                    
+                    synchronized (roster) {                    
+                        ArrayList<Contact> contacts = roster.getContacts();
+                    
+                        //1. reset groups
+                        for (RosterGroup group: mGroups) {   group.contacts.clear(); }
+                    
+                        //2. populate groups with contacts
+                        //TODO: collate by roster jid
+                        for (Contact contact: contacts) {
+                            String allGroups = contact.getAllGroups();
+                            if (allGroups == null) {
+                                //TODO: group sorting indexes
+                                addContactToGroup(contact, "- No group");
+                                continue;
+                            }
+                            
+                            String cgroups[] = allGroups.split("\t");
+                            for (String cg : cgroups) {
+                                addContactToGroup(contact, cg);
+                            }
                         }
                     }
                 
@@ -622,7 +623,7 @@ public class RosterFragment extends SherlockListFragment {
                         }
                     }
 
-                }}
+                }
 
                 
                 //TODO: add MUC
