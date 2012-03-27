@@ -133,6 +133,10 @@ public class RosterActivity extends SherlockFragmentActivity
     @Override
     public void closeChatFragment() {
         // TODO Auto-generated method stub
-        
+    }
+    
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 }
