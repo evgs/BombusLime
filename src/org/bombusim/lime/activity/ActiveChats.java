@@ -61,18 +61,15 @@ public class ActiveChats {
 		
         Roster roster = Lime.getInstance().getRoster();
 		
-        synchronized (roster) {
+	    ArrayList<Contact> contacts = roster.getContactsCopy();
+	
+        for (Contact c : contacts) {
+            if (rJid != null)  
+                if (!c.getRosterJid().equals(rJid)) continue;
             
-		    ArrayList<Contact> contacts = roster.getContacts();
-		
-            for (Contact c : contacts) {
-                if (rJid != null)  
-                    if (!c.getRosterJid().equals(rJid)) continue;
-                
-                if (!c.hasActiveChats()) continue;
-                
-                activeContacts.add(c);
-            }
+            if (!c.hasActiveChats()) continue;
+            
+            activeContacts.add(c);
         }
 		
 		Collections.sort(activeContacts);

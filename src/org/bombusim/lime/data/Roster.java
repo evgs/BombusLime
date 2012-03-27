@@ -42,12 +42,19 @@ public class Roster {
 	}
 	
 	public ArrayList<Contact> getContacts() { return contacts; }
+	
+    @SuppressWarnings("unchecked")
+    public ArrayList<Contact> getContactsCopy() {
+        synchronized (this) {
+            return (ArrayList<Contact>) contacts.clone();
+        }
+    }
 
 	public void replaceRoster(ArrayList<Contact> updates, String rosterJid, boolean replaced) {
+        //finalize all pending updates
+        updateDB();
+        
 		synchronized (this) {
-				
-			//finalize all pending updates
-			updateDB();  
 	
 			//1. mark all for drop
 			
@@ -69,20 +76,10 @@ public class Roster {
 					o.update(upd);
 				}
 			}
-			
-			//3. finalize transaction
-			updateDB();
-			
-			//4. check all avatars
-			
-			//massive avatar request
-			//for (int index = 0; index < contacts.size(); index++) {
-			//	contacts.get(index).getLazyAvatar(false);
-			//}
-			
-			Collections.sort(contacts);
-	
 		}
+		
+        //3. finalize transaction
+        updateDB();
 	}
 	
 	private void loadDB(String rosterJid) {
