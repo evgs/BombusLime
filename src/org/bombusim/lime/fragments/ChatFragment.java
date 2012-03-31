@@ -271,6 +271,12 @@ public class ChatFragment extends SherlockFragment
         //TODO: move into ChatFactory
         visavis = Lime.getInstance().getRoster().findContact(jid, rJid);
         
+        if (visavis == null) {
+            showChatActive(false);
+            return;
+        }
+        showChatActive(true);
+
         mChat = Lime.getInstance().getChatFactory().getChat(jid, rJid);
 
         updateContactBar();
