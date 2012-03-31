@@ -73,7 +73,6 @@ public class PresenceDispatcher extends XmppObjectListener{
 			String avatarId = x.getChildBlockText("photo");
 			if (avatarId != null) {
 				c.updateAvatarHash(avatarId);
-				c.getLazyAvatar(false);		//trigger avatar update
 			}
 		}
 		

@@ -26,6 +26,7 @@ import org.bombusim.lime.Lime;
 import org.bombusim.xmpp.stanza.XmppPresence;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 public class Contact implements Comparable<Contact>{
 	public static final String GROUP_SEPARATOR = "\t";
@@ -181,8 +182,11 @@ public class Contact implements Comparable<Contact>{
 	  */
 	
 	public void updateAvatarHash(String avatarId) {
-		if (!compareNStrings(this.avatarId, avatarId)) 
-			avatar = null;
+		if (!compareNStrings(this.avatarId, avatarId)) {
+		    Log.d("avatar", this.avatarId+"->"+avatarId);
+		    this.avatarId = avatarId;
+			dropAvatar();
+		}
 	}
 	
 	public void update(Contact n) {
