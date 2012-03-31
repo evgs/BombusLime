@@ -25,6 +25,7 @@ import org.bombusim.lime.Lime;
 import org.bombusim.lime.data.Chat;
 import org.bombusim.lime.data.Message;
 import org.bombusim.lime.data.Roster;
+import org.bombusim.lime.logger.LimeLog;
 import org.bombusim.xmpp.XmppJid;
 import org.bombusim.xmpp.XmppObject;
 import org.bombusim.xmpp.XmppObjectListener;
@@ -61,30 +62,33 @@ public class MessageDispatcher extends XmppObjectListener{
 		
 		msg.timestamp = m.getTimeStamp();
 		
-		//TODO: resource magic - should switch active resource
-		try {
-			
-			Chat c = Lime.getInstance().getChatFactory().getChat(from.getBareJid(), stream.jid); 
-			msg.unread = true;
-			c.addMessage(msg);
-			Lime.getInstance().notificationMgr().showChatNotification(c.getVisavis(), body, msg.getId());
-			
-			if (m.findNamespace("request", URN_XMPP_RECEIPTS)!=null) {
-				XmppMessage confirmReceived = new XmppMessage(m.getFrom());
-				confirmReceived.setAttribute("id", id);
-				confirmReceived.addChildNs("received", URN_XMPP_RECEIPTS);
-				
-				stream.send(confirmReceived);
-			}
-			
-			stream.sendBroadcast(Chat.UPDATE_CHAT, from.getBareJid());
-			stream.sendBroadcast(Roster.UPDATE_CONTACT, from.getBareJid());
+        Chat c = Lime.getInstance().getChatFactory()
+                .getChat(from.getBareJid(), stream.jid);
 
-		} catch (Exception e) {
-			e.printStackTrace(); //Will handle only NPE
-		}
-		
-		
+        if (c == null) {
+            LimeLog.w("MessageDispatcher",
+                    "Message dropped from unknown contact",
+                    from.getJidResource());
+            return BLOCK_REJECTED;
+        }
+
+        // TODO: resource magic - should switch active resource
+
+        msg.unread = true;
+        c.addMessage(msg);
+        Lime.getInstance().notificationMgr()
+                .showChatNotification(c.getVisavis(), body, msg.getId());
+
+        if (m.findNamespace("request", URN_XMPP_RECEIPTS) != null) {
+            XmppMessage confirmReceived = new XmppMessage(m.getFrom());
+            confirmReceived.setAttribute("id", id);
+            confirmReceived.addChildNs("received", URN_XMPP_RECEIPTS);
+
+            stream.send(confirmReceived);
+        }
+
+        stream.sendBroadcast(Chat.UPDATE_CHAT, from.getBareJid());
+        stream.sendBroadcast(Roster.UPDATE_CONTACT, from.getBareJid());
 		
 		return BLOCK_PROCESSED;
 	}

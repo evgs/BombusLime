@@ -77,7 +77,6 @@ public class PresenceDispatcher extends XmppObjectListener{
 		}
 		
 		//3. save presence to chat
-		//TODO: save to active chat
 		
 		//at last: repaint roster
 		//TODO: broadcast contact id to avoid unnececary roster repaints
