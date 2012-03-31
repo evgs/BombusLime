@@ -130,11 +130,15 @@ public class RosterDbAdapter  {
 	public Contact getContactFromCursor(Cursor cursor) {
 		String jid = cursor.getString(cursor.getColumnIndex(KEY_JID));
 		String name = cursor.getString(cursor.getColumnIndex(KEY_NAME));
+		String rJid = cursor.getString(cursor.getColumnIndex(KEY_RJID));
+		
 		long id = cursor.getLong(cursor.getColumnIndex(KEY_ID));
 		
-		Contact c = new Contact(jid, name, id);
+		Contact c = (jid.equals(rJid))? 
+		        new SelfContact(jid, name, id) : new Contact(jid, name, id);
 		
-		c.setRJid(cursor.getString(cursor.getColumnIndex(KEY_RJID)));
+		c.setRJid(rJid);
+		
 		c.setAllGroups(cursor.getString(cursor.getColumnIndex(KEY_GROUP)));
 		c.setSubscription(cursor.getInt(cursor.getColumnIndex(KEY_SUBSCR)));
 		c.setAvatar(null, cursor.getString(cursor.getColumnIndex(KEY_AVATAR)) );

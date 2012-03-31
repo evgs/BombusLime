@@ -38,6 +38,7 @@ import org.bombusim.lime.activity.VCardActivity;
 import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.data.RosterGroup;
+import org.bombusim.lime.data.SelfContact;
 import org.bombusim.lime.service.XmppService;
 import org.bombusim.lime.service.XmppServiceBinding;
 import org.bombusim.lime.widgets.AccountViewFactory;
@@ -224,7 +225,12 @@ public class RosterFragment extends SherlockListFragment {
             menu.setHeaderIcon(icon);
             
             MenuInflater inflater = getActivity().getMenuInflater();
-            inflater.inflate(R.menu.contact_menu, menu);
+            
+            if (contextItem instanceof SelfContact) {
+                inflater.inflate(R.menu.contact_self_menu, menu);
+            } else {
+                inflater.inflate(R.menu.contact_menu, menu);
+            }
             
             //enable items available only if logged in
             menu.setGroupEnabled(R.id.groupLoggedIn, sb.isLoggedIn(c.getRosterJid()) );
@@ -571,6 +577,9 @@ public class RosterFragment extends SherlockListFragment {
                     
                     Roster roster = Lime.getInstance().getRoster();
                     
+                    //0.1 add selfcontact
+                    rosterObjects.add(roster.getSelfContact(a.userJid));
+                    
                     ArrayList<Contact> contacts = roster.getContactsCopy();
                 
                     //1. reset groups
@@ -579,6 +588,9 @@ public class RosterFragment extends SherlockListFragment {
                     //2. populate groups with contacts
                     //TODO: collate by roster jid
                     for (Contact contact: contacts) {
+                        
+                        if (contact instanceof SelfContact) continue;
+                        
                         String allGroups = contact.getAllGroups();
                         if (allGroups == null) {
                             //TODO: group sorting indexes

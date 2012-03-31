@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    
+    <item android:id="@+id/cmdChat" android:title="@string/openChat" android:orderInCategory="1"> </item>
+    
+    
+    <group android:id="@+id/groupLoggedIn"><item android:id="@+id/cmdVcard" android:title="@string/contactVCard" android:orderInCategory="2"></item></group>
+    
+
+</menu>

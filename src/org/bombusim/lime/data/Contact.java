@@ -135,12 +135,12 @@ public class Contact implements Comparable<Contact>{
 	public void setSubscription(int subscr) { this.subscription = subscr; }
 	
 	public void setSubscription(String subscr) {
-		if (subscr.equals("none")) { subscription = SUBSCR_NONE; }
-		if (subscr.equals("from")) { subscription = SUBSCR_FROM; }
-		if (subscr.equals("to"))   { subscription = SUBSCR_TO;   }
-		if (subscr.equals("both")) { subscription = SUBSCR_BOTH; }
+		if (subscr.equals("none")) { setSubscription(SUBSCR_NONE); }
+		if (subscr.equals("from")) { setSubscription(SUBSCR_FROM); }
+		if (subscr.equals("to"))   { setSubscription(SUBSCR_TO);   }
+		if (subscr.equals("both")) { setSubscription(SUBSCR_BOTH); }
 		if (subscr.equals("remove")) {
-			subscription = SUBSCR_REMOVE;
+			setSubscription(SUBSCR_REMOVE);
 			updateMark = UPDATE_DROP;
 		}
 	}

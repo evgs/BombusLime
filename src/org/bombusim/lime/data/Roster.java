@@ -166,6 +166,18 @@ public class Roster {
             }
         }
 	}
-
-
+	
+    public Object getSelfContact(String jid) {
+        Contact c = findContact(jid, jid);
+        
+        if (c == null) {
+            c = new SelfContact(jid, null, -1);
+            c.setRJid(jid);
+            
+            c.setUpdate(SelfContact.UPDATE_SAVE);
+            synchronized (this) { addContact(c); }
+        }
+        
+        return c;
+    }
 }
