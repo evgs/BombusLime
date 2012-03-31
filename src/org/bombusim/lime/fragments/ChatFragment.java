@@ -108,6 +108,9 @@ public class ChatFragment extends SherlockFragment
 	
 	private ContactBar contactBar;
 	
+    private View mChatActive;
+    private View mChatInactive;
+	
 	private XmppServiceBinding serviceBinding;
 	
 	Contact visavis;
@@ -120,7 +123,7 @@ public class ChatFragment extends SherlockFragment
 	
 	protected String visavisNick;
 	protected String myNick;
-	
+
     public interface ChatFragmentListener {
         public void closeChatFragment();
         
@@ -157,6 +160,9 @@ public class ChatFragment extends SherlockFragment
         mSendButton =   (ImageButton)  v.findViewById(R.id.sendButton);
         mSmileButton =  (ImageButton)  v.findViewById(R.id.smileButton);
         chatListView = (ListView)     v.findViewById(R.id.chatListView);
+        
+        mChatActive = v.findViewById(R.id.chatActive);
+        mChatInactive = v.findViewById(R.id.chatInactive);
 
         if (!getChatFragmentListener().isTabMode()) {
             contactBar.setVisibility(View.GONE);
@@ -256,7 +262,10 @@ public class ChatFragment extends SherlockFragment
         //disable message box until actual chat selected
         mMessageBox.setEnabled( jid != null );
         
-        if (jid == null || rJid ==null) return; 
+        if (jid == null || rJid ==null) {
+            showChatActive(false);
+            return; 
+        }
         //throw new InvalidParameterException("No parameters specified for ChatActivity");
 
         //TODO: move into ChatFactory
@@ -278,7 +287,17 @@ public class ChatFragment extends SherlockFragment
         }
 	}
 
-	private void updateContactBar() {
+	private void showChatActive(boolean active) {
+	    if (active) {
+	        mChatInactive.setVisibility(View.GONE);
+	        mChatActive.setVisibility(View.VISIBLE);
+	    } else {
+            mChatActive.setVisibility(View.GONE);
+            mChatInactive.setVisibility(View.VISIBLE);
+	    }
+    }
+
+    private void updateContactBar() {
 	    
 	    contactBar.bindContact(visavis, mChat.isComposing());
 		
