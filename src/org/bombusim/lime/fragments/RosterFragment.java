@@ -35,7 +35,6 @@ import org.bombusim.lime.activity.RosterActivity;
 import org.bombusim.lime.activity.VCardActivity;
 import org.bombusim.lime.activity.preferences.LimePrefs;
 import org.bombusim.lime.activity.preferences.LimePrefsHC;
-import org.bombusim.lime.activity.preferences.RosterLimePrefsActivity;
 import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.data.RosterGroup;

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory 
+        android:title="Debug" 
+        android:order="100">
+
+        <CheckBoxPreference  android:key="ADB_XML_LOG" 
+	        android:title="ADB XMPP logging" 
+	        android:summary="Dump XMPP stream into ADB log" 
+	        android:defaultValue="true" 
+	        android:summaryOff="Disabled" 
+	        android:summaryOn="Enabled" android:order="101"
+        />
+        
+	    <EditTextPreference  android:key="KEEP_ALIVE_PERIOD" 
+	        android:title="Keep-Alive period" 
+	        android:summary="How often empty packets will be sent to keep connection alive" 
+	        android:dialogMessage="Enter Keep-alive period in minutes" 
+	        android:dialogTitle="Keep-Alive period" 
+	        android:positiveButtonText="@string/save" 
+	        android:negativeButtonText="@string/cancel" 
+	        android:defaultValue="10"/>
+
+		<CheckBoxPreference  android:key="acra.enable"
+		    android:title="@string/pref_disable_acra"
+		    android:summaryOn="@string/pref_acra_enabled"
+		    android:summaryOff="@string/pref_acra_disabled"
+		    android:defaultValue="true"/>	    
+	    
+    </PreferenceCategory>
+        
+</PreferenceScreen>

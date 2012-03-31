@@ -37,7 +37,11 @@ public class LimePrefs extends PreferenceActivity{
 		super.onCreate(savedInstanceState);
 		
         addPreferencesFromResource(R.xml.roster_prefs);
-        addPreferencesFromResource(R.xml.prefs);
+        addPreferencesFromResource(R.xml.prefs_notify);
+        addPreferencesFromResource(R.xml.prefs_net);
+        addPreferencesFromResource(R.xml.prefs_startup);
+        addPreferencesFromResource(R.xml.prefs_privacy);
+        addPreferencesFromResource(R.xml.prefs_debug);
 	}
 
 	@Override

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <PreferenceCategory android:title="Startup" android:order="40">
+	    <CheckBoxPreference android:key="AUTO_SERVICE_STARTUP" 
+	        android:title="@string/autoServiceStartup" 
+	        android:defaultValue="false" 
+	        android:summaryOff="@string/cbDisabled" 
+	        android:summaryOn="@string/cbEnableRebootStatus" 
+	        android:order="1"
+	        />
+        
+    </PreferenceCategory>
+        
+    
+    
+</PreferenceScreen>

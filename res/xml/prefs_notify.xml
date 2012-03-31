@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <PreferenceCategory android:title="@string/chatNotify" android:order="20">
+	    <RingtonePreference 
+	        android:key="RINGTONE_MESSAGE" 
+	        android:title="@string/incomingMessageSound" 
+	        android:order="21" 
+	        android:ringtoneType="notification" />
+	    <CheckBoxPreference 
+	        android:key="NOTIFY_LED" 
+	        android:title="@string/notificationLed" 
+	        android:order="22" 
+	        android:summaryOff="@string/cbDisabled" 
+	        android:summaryOn="@string/systemEnabled" 
+	        android:defaultValue="true"
+	        />
+	    <CheckBoxPreference 
+	        android:key="NOTIFY_VIBRA" 
+	        android:summaryOff="@string/cbDisabled" 
+	        android:title="@string/notifyVibration" 
+	        android:summaryOn="@string/systemEnabled" 
+	        android:defaultValue="true" 
+	        android:order="23"
+	        />
+    </PreferenceCategory>
+    
+</PreferenceScreen>

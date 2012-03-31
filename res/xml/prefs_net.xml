@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <PreferenceCategory android:title="@string/prefsMobileNetworkUsage" android:order="30">
+        <CheckBoxPreference android:key="VCARD_OVER_GPRS" 
+            android:title="@string/gprsAvatars" 
+            android:defaultValue="true" 
+            android:summaryOff="@string/netWifiOnly" 
+            android:summaryOn="@string/netMobileWifi" />
+    </PreferenceCategory>
+        
+        
+    <PreferenceCategory android:title="@string/prefsWiFiNetworkUsage" android:order="31">
+        <CheckBoxPreference android:key="WIFI_LOCK" 
+            android:title="@string/WiFiLock" 
+            android:defaultValue="false" 
+            android:summaryOff="@string/cbDisabled" 
+            android:summaryOn="@string/WiFiLockEnabled" />
+    </PreferenceCategory>
+    
+</PreferenceScreen>

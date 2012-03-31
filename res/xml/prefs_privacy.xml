@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <PreferenceCategory android:title="@string/prefsPrivacy" android:order="50">
+        <CheckBoxPreference android:key="ALLOW_NOT_IN_ROSTER_MESSAGES" 
+            android:summaryOn="@string/allowUnknownContactsMessages" 
+            android:title="@string/unknownContacts" 
+            android:defaultValue="false" 
+            android:summaryOff="@string/dropUnknownIncomingMessages" 
+            />
+    </PreferenceCategory>
+    
+</PreferenceScreen>

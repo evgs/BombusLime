@@ -1,12 +1,44 @@
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- 10 -->
     <header android:fragment="org.bombusim.lime.fragments.StockPreferenceFragment"
-            android:title="Roster settings"
-            android:summary="The original set from the other examples">
+            android:title="Roster view"
+            android:summary="Visible roster items">
       <extra android:name="resource" android:value="roster_prefs" />
     </header>
+    
+    <!-- 20 -->
     <header android:fragment="org.bombusim.lime.fragments.StockPreferenceFragment"
-            android:title="Other settings"
-            android:summary="All another unsorted settings">
-      <extra android:name="resource" android:value="prefs" />
+            android:title="Notifications"
+            >
+      <extra android:name="resource" android:value="prefs_notify" />
+    </header>
+    
+    <!-- 30 -->
+    <header android:fragment="org.bombusim.lime.fragments.StockPreferenceFragment"
+            android:title="Network policy"
+            >
+      <extra android:name="resource" android:value="prefs_net" />
+    </header>
+    
+    <!-- 40 -->
+    <header android:fragment="org.bombusim.lime.fragments.StockPreferenceFragment"
+            android:title="Startup"
+            >
+      <extra android:name="resource" android:value="prefs_startup" />
+    </header>
+    
+    <!-- 50 -->
+    <header android:fragment="org.bombusim.lime.fragments.StockPreferenceFragment"
+            android:title="Privacy"
+            >
+      <extra android:name="resource" android:value="prefs_privacy" />
+    </header>
+    
+    <!-- 100 -->
+    <header android:fragment="org.bombusim.lime.fragments.StockPreferenceFragment"
+            android:title="Debug"
+            android:summary="Developer debug settings">
+      <extra android:name="resource" android:value="prefs_debug" />
     </header>
 </preference-headers>
