@@ -68,8 +68,6 @@ public class Preferences {
 			keepAlivePeriodMinutes = 10;
 		}
 		
-		//TODO: load from roster preferences
-		prefs = context.getSharedPreferences("rosterPrefs", Context.MODE_PRIVATE);
 		hideOfflines = prefs.getBoolean("HIDE_OFFLINES", false);
 	}
 	

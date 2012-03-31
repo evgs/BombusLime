@@ -29,12 +29,13 @@ import org.bombusim.lime.activity.AccountSettingsActivity;
 import org.bombusim.lime.activity.ActiveChats;
 import org.bombusim.lime.activity.ChatActivity;
 import org.bombusim.lime.activity.EditContactActivity;
-import org.bombusim.lime.activity.LimePrefs;
 import org.bombusim.lime.activity.LoggerActivity;
 import org.bombusim.lime.activity.PresenceActivity;
 import org.bombusim.lime.activity.RosterActivity;
-import org.bombusim.lime.activity.RosterLimePrefsActivity;
 import org.bombusim.lime.activity.VCardActivity;
+import org.bombusim.lime.activity.preferences.LimePrefs;
+import org.bombusim.lime.activity.preferences.LimePrefsHC;
+import org.bombusim.lime.activity.preferences.RosterLimePrefsActivity;
 import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.data.RosterGroup;
@@ -185,10 +186,15 @@ public class RosterFragment extends SherlockListFragment {
             break;
         }
         
-        case R.id.cmdLog:      startActivityForResult(new Intent(context, LoggerActivity.class),          0); break;
-        case R.id.cmdSettings: startActivityForResult(new Intent(context, LimePrefs.class),               0); break;
-        case R.id.cmdRosterSettings: startActivityForResult(new Intent(context, RosterLimePrefsActivity.class), 0); break;
-            
+        case R.id.cmdLog:      startActivity(new Intent(context, LoggerActivity.class)); break;
+        case R.id.cmdSettings: {
+            if (android.os.Build.VERSION.SDK_INT<android.os.Build.VERSION_CODES.HONEYCOMB) {
+                startActivity(new Intent(context, LimePrefs.class)); 
+            } else {
+                startActivity(new Intent(context, LimePrefsHC.class)); 
+            }
+            break;
+        }
         case R.id.cmdAbout: About.showAboutDialog(getActivity()); break;
         default: return true; // on submenu
         }

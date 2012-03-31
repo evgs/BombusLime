@@ -25,7 +25,7 @@ import java.net.UnknownHostException;
 import javax.net.ssl.SSLException;
 
 import org.bombusim.lime.Lime;
-import org.bombusim.lime.activity.LimePrefs;
+import org.bombusim.lime.activity.preferences.LimePrefs;
 import org.bombusim.lime.data.PresenceStorage;
 import org.bombusim.lime.data.Roster;
 import org.bombusim.lime.logger.LimeLog;

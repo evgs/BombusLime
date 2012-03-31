@@ -47,9 +47,9 @@
             android:launchMode="singleTop" 
           ></activity>
         
-        <activity android:name=".activity.LimePrefs"></activity>
+        <activity android:name=".activity.preferences.LimePrefs"></activity>
         
-        <activity android:name=".activity.RosterLimePrefsActivity"></activity>
+        <activity android:name=".activity.preferences.LimePrefsHC"></activity>
         
         <activity android:name=".activity.VCardActivity" 
             android:windowSoftInputMode="stateHidden|adjustResize"

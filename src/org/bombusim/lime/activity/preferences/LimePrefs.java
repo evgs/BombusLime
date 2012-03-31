@@ -18,30 +18,38 @@
  */
          
 
-package org.bombusim.lime.activity;
+package org.bombusim.lime.activity.preferences;
 
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
+import org.bombusim.lime.service.XmppServiceBinding;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 
-public class RosterLimePrefsActivity extends PreferenceActivity{
-	@Override
+public class LimePrefs extends PreferenceActivity{
+    
+	public static final String PREFS_CHANGED = "org.bimbusim.lime.PREFS_UPDATE";
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
-		PreferenceManager prefMgr = getPreferenceManager();
-        prefMgr.setSharedPreferencesName("rosterPrefs");
-		
-		addPreferencesFromResource(R.xml.roster_prefs);
+        addPreferencesFromResource(R.xml.roster_prefs);
+        addPreferencesFromResource(R.xml.prefs);
 	}
 
+	@Override
+	protected void onResume() {
+	    super.onResume();
+	}
+	
 	@Override
 	protected void onPause() {
 		super.onPause();
 		Lime.getInstance().loadPreferences();
+
+		sendBroadcast(new Intent(LimePrefs.PREFS_CHANGED));
 	}
 }

@@ -1,0 +1,12 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+    <header android:fragment="org.bombusim.lime.fragments.StockPreferenceFragment"
+            android:title="Roster settings"
+            android:summary="The original set from the other examples">
+      <extra android:name="resource" android:value="roster_prefs" />
+    </header>
+    <header android:fragment="org.bombusim.lime.fragments.StockPreferenceFragment"
+            android:title="Other settings"
+            android:summary="All another unsorted settings">
+      <extra android:name="resource" android:value="prefs" />
+    </header>
+</preference-headers>
