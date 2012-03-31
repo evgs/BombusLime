@@ -24,70 +24,75 @@
 package org.bombusim.xmpp;
 
 public class XmppAccount {
-	
-	public long _id;
 
-	public boolean active = true;
-	
-	//////////////////// generic settings  //////////////////////
-	public String userJid;
-	public String password;
-	
-	public boolean savedPassword = true;
-	//////////////////// advanced settings //////////////////////
-	public String resource = "mobile";
-	
-	public int priority = DEFAULT_PRIORITY;
-	
-	public boolean autoLogin;
+    public static final int DEFAULT_XMPP_PORT = 5222;
+    public static final int DEFAULT_SECURE_XMPP_PORT = 5223;
+    public static final int DEFAULT_PRIORITY = 50;
+    public static final int DEFAULT_PRIORITY_ACCOUNT = -255;
 
-	public boolean specificHostPort = false;
-	public String xmppHost = null;
-	public int    xmppPort = DEFAULT_XMPP_PORT;
-	
-	public final static int SECURE_CONNECTION_DISABLED=0;
-	public final static int SECURE_CONNECTION_IF_AVAILABLE=1;
-	public final static int SECURE_CONNECTION_ALWAYS=2;
-	public final static int SECURE_CONNECTION_LEGACY_SSL=3;
-	
-	public int secureConnection = SECURE_CONNECTION_IF_AVAILABLE;
-	
-	public final static int PLAIN_AUTH_ALWAYS = 0;
-	public final static int PLAIN_AUTH_OVER_SSL = 1;
-	public final static int PLAIN_AUTH_NEVER = 2;
+    public final static int SECURE_CONNECTION_DISABLED = 0;
+    public final static int SECURE_CONNECTION_IF_AVAILABLE = 1;
+    public final static int SECURE_CONNECTION_ALWAYS = 2;
+    public final static int SECURE_CONNECTION_LEGACY_SSL = 3;
 
-	public static final int DEFAULT_XMPP_PORT        = 5222;
-	public static final int DEFAULT_SECURE_XMPP_PORT = 5223;
-	public static final int DEFAULT_PRIORITY = 50;
-	public static final int DEFAULT_PRIORITY_ACCOUNT = -255;
-	
-	public int enablePlainAuth = PLAIN_AUTH_OVER_SSL;
-	
-	public boolean trafficCompression = true;
-	
-	public XmppAccount() {
-		//TODO: resource initialization here
-		_id = -1;
-	};
-	
-	//temporary
-	boolean runtimeIsSecure;
-	int runtimeStatus;
-	
-	public XmppAccount(String userJid, String password) {
-		this();
-		this.userJid  = userJid;
-		this.password = password;
-	}
+    public final static int PLAIN_AUTH_ALWAYS = 0;
+    public final static int PLAIN_AUTH_OVER_SSL = 1;
+    public final static int PLAIN_AUTH_NEVER = 2;
 
-	//TODO: own group holder class
-	public int getRuntimeStatus() { return runtimeStatus; }
-	public boolean connectionIsSecure() { return runtimeIsSecure; }
-	
-	public boolean collapsed = false;
+    public long _id;
 
-	public void toggleCollapsed() {
-		collapsed = !collapsed;
-	}
+    public boolean active = true;
+
+    // ////////////////// generic settings //////////////////////
+    public String userJid;
+    public String password;
+
+    public boolean savedPassword = true;
+    // ////////////////// advanced settings //////////////////////
+    public String resource = "mobile";
+
+    public int priority = DEFAULT_PRIORITY;
+
+    public boolean autoLogin;
+
+    public boolean specificHostPort = false;
+    public String xmppHost = null;
+    public int xmppPort = DEFAULT_XMPP_PORT;
+
+    public int secureConnection = SECURE_CONNECTION_IF_AVAILABLE;
+
+    public int enablePlainAuth = PLAIN_AUTH_OVER_SSL;
+
+    public boolean trafficCompression = true;
+
+    public XmppAccount() {
+        // TODO: resource initialization here
+        _id = -1;
+    };
+
+    // temporary
+    boolean runtimeIsSecure;
+    int runtimeStatus;
+
+    public XmppAccount(String userJid, String password) {
+        this();
+        this.userJid = userJid;
+        this.password = password;
+    }
+
+    // TODO: own group holder class
+    public int getRuntimeStatus() {
+        return runtimeStatus;
+    }
+
+    public boolean connectionIsSecure() {
+        return runtimeIsSecure;
+    }
+
+    public boolean collapsed = false;
+
+    public void toggleCollapsed() {
+        collapsed = !collapsed;
+    }
 
 }
