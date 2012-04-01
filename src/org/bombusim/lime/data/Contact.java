@@ -81,36 +81,47 @@ public class Contact implements Comparable<Contact>{
 
 	public Resource setPresence(int presenceIndex, String resource, int priority, long timestamp) {
 		//TODO: check usecase "unavailable"
-		Resource c =  getResource(resource);
-		if (c == null) {
-			c = new Resource();
-			resources.add(c);
-		}
-		c.presence = presenceIndex;
-		c.resource = resource;
-		c.priority = priority;
-		c.timestamp = timestamp;
-		
-		Collections.sort(resources);
-		activeResource = resources.get(0);
+        Resource c =  getResource(resource);
+
+        synchronized (resources) {
+            
+    		if (c == null) {
+    			c = new Resource();
+    			resources.add(c);
+    		}
+    		
+    		c.presence = presenceIndex;
+    		c.resource = resource;
+    		c.priority = priority;
+    		c.timestamp = timestamp;
+    		
+    		Collections.sort(resources);
+    		activeResource = resources.get(0);
+    		
+        }
 		
 		return c;
 	}
 	
 	public Resource getResource(String resource) {
-		for (int i=0; i<resources.size(); i++) {
-			Resource c = resources.get(i);
-			if (compareNStrings(c.resource, resource)) return c;
-		}
+	    
+	    synchronized(resources) {
+    		for (Resource c: resources) {
+    			if (compareNStrings(c.resource, resource)) return c;
+    		}
+	    }
+	    
 		return null;
 	}
 	
 	public int getOnlineResourceCount() {
 	    int count = 0;
 	    
+	    synchronized (resources) {
 	        for (Resource r : resources) {
 	            if (r.presence != XmppPresence.PRESENCE_OFFLINE) count++;
 	        }
+        }
 	    
 	    return count;
 	}
@@ -285,9 +296,11 @@ public class Contact implements Comparable<Contact>{
 	}
 
 	public void setResourcesOffline() {
-		for (Resource r : resources) {
-			r.presence = XmppPresence.PRESENCE_OFFLINE; 
-		}
+	    synchronized (resources) {
+    		for (Resource r : resources) {
+    			r.presence = XmppPresence.PRESENCE_OFFLINE; 
+    		}
+        }
 	}
 
 	@Override
