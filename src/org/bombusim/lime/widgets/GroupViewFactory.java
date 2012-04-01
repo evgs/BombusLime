@@ -66,7 +66,7 @@ public class GroupViewFactory {
         holder.group.setText(g.groupName);
         holder.expander.setImageBitmap((g.collapsed)? mIconCollapsed : mIconExpanded);
         //TODO online/size
-        holder.count.setText("(?/"+g.contacts.size()+")");
+        holder.count.setText("("+g.onlineCount+"/"+g.contacts.size()+")");
 
         return convertView;
 	}

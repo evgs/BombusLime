@@ -496,7 +496,12 @@ public class RosterFragment extends SherlockListFragment {
         private void addContactToGroup(Contact contact, String groupName) {
             for (RosterGroup g : mGroups) {
                 if (g.groupName.equals(groupName)) {
+                    
                     g.contacts.add(contact);
+                    
+                    if (contact.isAvailable()) 
+                        g.onlineCount++;
+                    
                     return;
                 }
             }
@@ -591,10 +596,11 @@ public class RosterFragment extends SherlockListFragment {
                     ArrayList<Contact> contacts = roster.getContactsCopy();
                 
                     //1. reset groups
-                    for (RosterGroup group: mGroups) {   group.contacts.clear(); }
+                    for (RosterGroup group: mGroups) { group.clear(); }
                 
                     //2. populate groups with contacts
                     //TODO: collate by roster jid
+                    
                     for (Contact contact: contacts) {
                         
                         if (contact instanceof SelfContact) continue;

@@ -7,6 +7,8 @@ public class RosterGroup implements Comparable<RosterGroup>{
 	public ArrayList<Contact> contacts;
 	public boolean collapsed;
 	
+	public int onlineCount;
+	
 	public RosterGroup(String name) {
 		this.groupName = name;
 		contacts = new ArrayList<Contact>();
@@ -20,4 +22,9 @@ public class RosterGroup implements Comparable<RosterGroup>{
 	public void toggleCollapsed() {
 		collapsed = !collapsed;
 	}
+
+    public void clear() {
+        contacts.clear();
+        onlineCount = 0;
+    }
 }
