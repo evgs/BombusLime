@@ -1,6 +1,7 @@
 package org.bombusim.lime.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class RosterGroup implements Comparable<RosterGroup>{
 	public String groupName;
@@ -26,5 +27,9 @@ public class RosterGroup implements Comparable<RosterGroup>{
     public void clear() {
         contacts.clear();
         onlineCount = 0;
+    }
+
+    public void sort() {
+        Collections.sort(contacts);
     }
 }

@@ -619,14 +619,18 @@ public class RosterFragment extends SherlockListFragment {
                     }
                 
                     //3. remove empty groups
+                    //3.1 sort non-empty groups
                     int i=0;
                     while (i<mGroups.size()) {
                         if (mGroups.get(i).contacts.isEmpty()) { 
                             mGroups.remove(i);
-                        } else i++;
+                        } else {
+                            mGroups.get(i).sort();
+                            i++;
+                        }
                     }
                     
-                    //4. sort groups
+                    //4. order groups
                     Collections.sort(mGroups);
                     
                     //5. add groups to roster
