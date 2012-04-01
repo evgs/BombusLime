@@ -105,6 +105,16 @@ public class Contact implements Comparable<Contact>{
 		return null;
 	}
 	
+	public int getOnlineResourceCount() {
+	    int count = 0;
+	    
+	        for (Resource r : resources) {
+	            if (r.presence != XmppPresence.PRESENCE_OFFLINE) count++;
+	        }
+	    
+	    return count;
+	}
+	
 	public int getPresence() { return activeResource.presence; }
 	
 	public String getStatusMessage() { return activeResource.statusMessage; }

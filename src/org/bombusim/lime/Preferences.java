@@ -36,6 +36,8 @@ public class Preferences {
 	public boolean loadAvatarsOverMobileConnections;
 	
 	public boolean hideOfflines;
+	public boolean selfContact;
+	
     public boolean wifiLock;
 	
 	public Preferences(Context applicationContext) {
@@ -68,7 +70,8 @@ public class Preferences {
 			keepAlivePeriodMinutes = 10;
 		}
 		
-		hideOfflines = prefs.getBoolean("HIDE_OFFLINES", false);
+        hideOfflines = prefs.getBoolean("HIDE_OFFLINES", false);
+        selfContact = prefs.getBoolean("SELF_CONTACT", false);
 	}
 	
 }

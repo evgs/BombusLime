@@ -583,7 +583,10 @@ public class RosterFragment extends SherlockListFragment {
                     Roster roster = Lime.getInstance().getRoster();
                     
                     //0.1 add selfcontact
-                    rosterObjects.add(roster.getSelfContact(a.userJid));
+                    
+                    Contact self = roster.getSelfContact(a.userJid);
+                    if (Lime.getInstance().prefs.selfContact || self.getOnlineResourceCount() > 1)
+                    rosterObjects.add(self);
                     
                     ArrayList<Contact> contacts = roster.getContactsCopy();
                 

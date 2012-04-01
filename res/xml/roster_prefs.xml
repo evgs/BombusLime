@@ -11,6 +11,13 @@
             android:summaryOff="show"
             android:summaryOn="hide"
             android:title="Hide offline contacts" />
-    </PreferenceCategory>
+        <CheckBoxPreference
+	        android:order="12"
+            android:defaultValue="false"
+            android:key="SELF_CONTACT"
+            android:summaryOn="show always"
+            android:summaryOff="hide when no other online resources"
+            android:title="Show self-contact" />
+        </PreferenceCategory>
 
 </PreferenceScreen>

@@ -167,7 +167,7 @@ public class Roster {
         }
 	}
 	
-    public Object getSelfContact(String jid) {
+    public SelfContact getSelfContact(String jid) {
         Contact c = findContact(jid, jid);
         
         if (c == null) {
@@ -178,6 +178,6 @@ public class Roster {
             synchronized (this) { addContact(c); }
         }
         
-        return c;
+        return (SelfContact) c;
     }
 }
