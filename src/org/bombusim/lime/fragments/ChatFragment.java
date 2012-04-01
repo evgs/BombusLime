@@ -715,4 +715,8 @@ public class ChatFragment extends SherlockFragment
         //TODO: show progress
         chatListView.setVisibility(View.GONE);
     }
+
+    public Chat getChat() {   
+        return mChat;
+    }
 }

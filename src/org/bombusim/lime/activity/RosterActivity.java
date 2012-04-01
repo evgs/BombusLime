@@ -19,18 +19,27 @@
 
 package org.bombusim.lime.activity;
 
+import java.util.ArrayList;
+
+import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
+import org.bombusim.lime.data.Chat;
+import org.bombusim.lime.data.Contact;
 import org.bombusim.lime.fragments.ChatFragment;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 
 public class RosterActivity extends SherlockFragmentActivity
-    implements ChatFragment.ChatFragmentListener {
+    implements ChatFragment.ChatFragmentListener,
+    ActionBar.TabListener {
     private String mChatJid;
     private String mChatRJid;
     
@@ -46,6 +55,7 @@ public class RosterActivity extends SherlockFragmentActivity
         //TODO: set layout based on screen resolution, not only orientation 
         if (isTabMode()) {
             setContentView(R.layout.main_tab);
+            getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);            
         } else {
             setContentView(R.layout.main);
         }
@@ -95,14 +105,38 @@ public class RosterActivity extends SherlockFragmentActivity
         mChatRJid = rosterJid;
         
         showChat(true);
+        updateTabs();
     }
 
+    public void updateTabs() {
+        if(!isTabMode()) return;
+        
+        ArrayList<Chat> chats = Lime.getInstance().getChatFactory().getChats();
+        Chat active = getChatFragment().getChat();
+        
+        //TODO: replace only changed tab
+        getSupportActionBar().removeAllTabs();
+        
+        for (int i=0; i<chats.size(); i++) {
+            Chat c = chats.get(i);
+            ActionBar.Tab tab = getSupportActionBar().newTab();
+            tab.setText(c.getVisavis().getScreenName());
+            tab.setTabListener(this);
+            
+            boolean selected = (c==active);
+            
+            getSupportActionBar().addTab(tab, i, selected);
+        }
+        
+    }
+    
     public void showChat(boolean openActivity) {
         ChatFragment chatFragment = getChatFragment();
         
         if (chatFragment !=null) {
             chatFragment.suspendChat();
             chatFragment.attachToChat(mChatJid, mChatRJid);
+            
             return;
         } 
         
@@ -119,6 +153,7 @@ public class RosterActivity extends SherlockFragmentActivity
         super.onResume();
         
         showChat(false);
+        updateTabs();
     }
     
     
@@ -138,5 +173,29 @@ public class RosterActivity extends SherlockFragmentActivity
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
+    }
+
+    @Override
+    public void onTabSelected(Tab tab, FragmentTransaction ft) {
+        int t=tab.getPosition();
+        Chat target = Lime.getInstance().getChatFactory().getChats().get(t);
+        
+        Contact visavis = target.getVisavis(); 
+        mChatJid = visavis.getJid();
+        mChatRJid = visavis.getRosterJid();
+        
+        showChat(true);
+    }
+
+    @Override
+    public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onTabReselected(Tab tab, FragmentTransaction ft) {
+        // TODO Auto-generated method stub
+        
     }
 }

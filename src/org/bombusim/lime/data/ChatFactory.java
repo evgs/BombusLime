@@ -71,4 +71,8 @@ public class ChatFactory {
 		chats.remove(c);
 		c.resetActiveState(false);
 	}
+
+    public ArrayList<Chat> getChats() {
+        return (ArrayList<Chat>) chats.clone();
+    }
 }
