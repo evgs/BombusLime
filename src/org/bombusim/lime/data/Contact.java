@@ -316,7 +316,7 @@ public class Contact implements Comparable<Contact>{
 
 	@Override
 	public int compareTo(Contact another) {
-		int diff = activeResource.presence - another.activeResource.presence;
+		int diff = XmppPresence.compare(activeResource.presence, another.activeResource.presence);
 		if (diff !=0) return diff;
 		//TODO: compare fast indexes
 		return getScreenName().compareToIgnoreCase(another.getScreenName());

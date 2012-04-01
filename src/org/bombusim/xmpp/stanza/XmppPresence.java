@@ -214,4 +214,14 @@ public final class XmppPresence extends XmppObject {
   public final static boolean isAvailable(int presenceCode) {
       return (presenceCode>PRESENCE_OFFLINE && presenceCode < PRESENCE_ASK);
   }
+
+    public final static int compare(int presence, int presence2) {
+        if (presence == PRESENCE_OFFLINE) presence = 100;
+        if (presence2 == PRESENCE_OFFLINE) presence2 = 100;
+        
+        if (presence == PRESENCE_CHAT) presence = 0;
+        if (presence2 == PRESENCE_CHAT) presence2 = 0;
+        
+        return presence - presence2;
+    }
 }
