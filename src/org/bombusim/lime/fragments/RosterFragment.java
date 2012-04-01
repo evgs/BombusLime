@@ -583,6 +583,12 @@ public class RosterFragment extends SherlockListFragment {
                     return rosterObjects;
                 }
                 
+                if (a.userJid == null) {
+                    //TODO: remove this temporary workaround for empty account
+                    releaseLock();
+                    return rosterObjects;
+                }
+                
                 synchronized (mGroups) {
                     
                     Roster roster = Lime.getInstance().getRoster();
