@@ -210,5 +210,8 @@ public final class XmppPresence extends XmppObject {
   public final static String PRS_DND="dnd";
   public final static String PRS_ONLINE="online";
   public final static String PRS_INVISIBLE="invisible";
-  
+
+  public final static boolean isAvailable(int presenceCode) {
+      return (presenceCode>PRESENCE_OFFLINE && presenceCode < PRESENCE_ASK);
+  }
 }

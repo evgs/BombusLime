@@ -634,7 +634,7 @@ public class RosterFragment extends SherlockListFragment {
                         
                         for (Contact contact : group.contacts) {
                             // skip offlines
-                            if (hideOfflines) if (contact.getPresence() == XmppPresence.PRESENCE_OFFLINE)
+                            if (hideOfflines) if (!contact.isAvailable())
                                 continue;
                             
                             rosterObjects.add(contact);

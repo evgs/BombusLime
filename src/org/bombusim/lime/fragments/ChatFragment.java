@@ -523,7 +523,7 @@ public class ChatFragment extends SherlockFragment
 			//clear box after success sending
 			mMessageBox.setText("");
 
-			if (visavis.getPresence() == XmppPresence.PRESENCE_OFFLINE) {
+			if (!visavis.isAvailable()) {
 				Toast.makeText(getActivity(), R.string.chatSentOffline, Toast.LENGTH_LONG).show();
 			}
 		
@@ -550,7 +550,7 @@ public class ChatFragment extends SherlockFragment
 		if (state.equals(ChatStates.PAUSED))
 			if (!ChatStates.COMPOSING.equals(sentChatState)) return;
 		
-		if ( visavis.getPresence() == XmppPresence.PRESENCE_OFFLINE ) return;
+		if ( !visavis.isAvailable() ) return;
 		
 		String to = visavis.getJid(); 
 

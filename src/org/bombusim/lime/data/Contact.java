@@ -119,7 +119,7 @@ public class Contact implements Comparable<Contact>{
 	    
 	    synchronized (resources) {
 	        for (Resource r : resources) {
-	            if (r.presence != XmppPresence.PRESENCE_OFFLINE) count++;
+	            if (XmppPresence.isAvailable(r.presence)) count++;
 	        }
         }
 	    
@@ -127,6 +127,10 @@ public class Contact implements Comparable<Contact>{
 	}
 	
 	public int getPresence() { return activeResource.presence; }
+	
+	public boolean isAvailable() {
+	    return XmppPresence.isAvailable(activeResource.presence);
+	}
 	
 	public String getStatusMessage() { return activeResource.statusMessage; }
 	
