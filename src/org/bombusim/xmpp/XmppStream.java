@@ -380,6 +380,9 @@ public class XmppStream extends XmppParser {
     	account.runtimeStatus = XmppPresence.PRESENCE_OFFLINE;
     	account.runtimeIsSecure = false;
     	
+    	//this may happens if we have network broken while resolving hostname
+    	if (dataStream == null) return;
+    	
     	if (dataStream.isClosed()) 
     	    return;
         //if (keepAlive!=null) keepAlive.destroyTask();
