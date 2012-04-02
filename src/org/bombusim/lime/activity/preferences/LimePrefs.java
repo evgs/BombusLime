@@ -24,17 +24,26 @@ import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 import org.bombusim.lime.service.XmppServiceBinding;
 
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
-public class LimePrefs extends PreferenceActivity{
+public class LimePrefs extends SherlockPreferenceActivity{
     
 	public static final String PREFS_CHANGED = "org.bimbusim.lime.PREFS_UPDATE";
 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.Theme_Sherlock);
 		super.onCreate(savedInstanceState);
+		
+        getSupportActionBar().setTitle(R.string.preferences);
+        
+		//TODO: handle "home"
+        //getSupportActionBar().setDisplayShowHomeEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
         addPreferencesFromResource(R.xml.roster_prefs);
         addPreferencesFromResource(R.xml.prefs_notify);
@@ -44,11 +53,6 @@ public class LimePrefs extends PreferenceActivity{
         addPreferencesFromResource(R.xml.prefs_debug);
 	}
 
-	@Override
-	protected void onResume() {
-	    super.onResume();
-	}
-	
 	@Override
 	protected void onPause() {
 		super.onPause();
