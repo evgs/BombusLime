@@ -25,7 +25,7 @@
     <string name="logClear">Очистить</string>
     <string name="loggerActivity">Консоль отладки</string>
     <string name="buttonLogout">Отключиться</string>
-    <string name="buttonPreferences">Настройки</string>
+    <string name="preferences">Настройки</string>
     
 
     <string name="accountSecurity">Безопасность</string>
@@ -104,6 +104,36 @@
     <string name="WiFiLock">Удержание WiFi</string>
     <string name="WiFiLockEnabled">Удерживать WiFi в активном состоянии при погашенном дисплее</string>
     <string name="WiFiLockDisabled">Запрещено</string>
+
+    <string name="incomingMessageSound">Звук уведомления</string>
+    <string name="notifyVibration">Вибрация</string>
+    <string name="notificationLed">Мигание светодиодом</string>
+    <string name="systemEnabled">Использовать настройки телефона</string>
+    
+    <string name="autoServiceStartup">Подключение при включении телефона</string>
+    <string name="cbEnableRebootStatus">Восстанавливать последний статус при перезагрузке устройства</string>
+
+    <string name="prefsPrivacy">Приватность</string>
+    <string name="unknownContacts">Неизвестные собеседники</string>
+    <string name="allowUnknownContactsMessages">Принимать входящие сообщения</string>
+    <string name="dropUnknownIncomingMessages">Игнорировать входящие сообщения</string>
+    
+    <string name="hideOfflineContacts">Скрывать оффлайн-контакты</string>
+    <string name="show">показывать</string>
+    <string name="hide">скрывать</string>
+    
+    <string name="showSelfContact">Собственный JID</string>
+    <string name="showSelfShow">показывать всегда</string>
+    <string name="showSelfHide">скрывать, если используется единственным клиентом</string>
+    
+    <string name="catRosterView">Отображение ростера</string>
+    <string name="catRosterViewHint">настройка видимых элементов ростера</string>
+    <string name="catNotifications">Уведомления</string>
+    <string name="catNetworkPolicy">Использование сети</string>
+    <string name="catStartup">Автостарт</string>
+    <string name="catPrivacy">Приватность</string>
+    <string name="catDebug">Отладка</string>
+    <string name="catDebugHint">Настройки для разработчиков</string>
     
     <string name="loadingVcardProgress">Получение личной карточки&#8230;</string>
     <string name="sendMessage">Отправить</string>
@@ -125,10 +155,6 @@
     <string name="aboutBombusLime">О программе</string>
     <string name="messageDelivered">Сообщение доставлено</string>
     <string name="chatSentOffline">Пользователь отключен от сети. Сообщение сохранено на сервере.</string>
-    <string name="incomingMessageSound">Звук уведомления</string>
-    <string name="notifyVibration">Вибрация</string>
-    <string name="notificationLed">Мигание светодиодом</string>
-    <string name="systemEnabled">Использовать настройки телефона</string>
     <string name="addSmileMenuItem">Вставить смайлик</string>
     <string name="addMeMenuItem">Вставить /me</string>
     <string name="shouldBeLoggedIn">Для отправки сообщения необходимо подключение к серверу</string>
