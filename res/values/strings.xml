@@ -26,7 +26,7 @@
     <string name="logClear">Clear</string>
     <string name="loggerActivity">Debug Log</string>
     <string name="buttonLogout">Logout</string>
-    <string name="buttonPreferences">Preferences</string>
+    <string name="preferences">Preferences</string>
     
     <string name="accountSecurity">Security</string>
     <string name="accountConnection">Connection settings</string>
@@ -107,6 +107,36 @@
     <string name="WiFiLock">WiFi lock</string>
     <string name="WiFiLockEnabled">Hold WiFi active when screen is off</string>
     <string name="WiFiLockDisabled">Disabled</string>
+
+    <string name="incomingMessageSound">Notification ringtone</string>
+    <string name="notifyVibration">Vibration</string>
+    <string name="notificationLed">Blink Notification Led</string>
+    <string name="systemEnabled">If enabled globally</string>
+    
+    <string name="autoServiceStartup">Login when phone is turned on</string>
+    <string name="cbEnableRebootStatus">Restore last status after reboot</string>
+
+    <string name="prefsPrivacy">Privacy</string>
+    <string name="allowUnknownContactsMessages">allow incoming messages</string>
+    <string name="dropUnknownIncomingMessages">drop incoming messages</string>
+    <string name="unknownContacts">Unknown contacts</string>
+    
+    <string name="hideOfflineContacts">Hide offline contacts</string>
+    <string name="show">show</string>
+    <string name="hide">hide</string>
+    
+    <string name="showSelfContact">Show self-contact</string>
+    <string name="showSelfShow">show always</string>
+    <string name="showSelfHide">hide when no other online resources</string>
+    
+    <string name="catRosterView">Roster view</string>
+    <string name="catRosterViewHint">visible roster items</string>
+    <string name="catNotifications">Notifications</string>
+    <string name="catNetworkPolicy">Network policy</string>
+    <string name="catStartup">Startup</string>
+    <string name="catPrivacy">Privacy</string>
+    <string name="catDebug">Debug</string>
+    <string name="catDebugHint">Developer debug settings</string>
     
     <string name="loadingVcardProgress">Fetching VCard&#8230;</string>
     <string name="sendMessage">Send</string>
@@ -121,7 +151,7 @@
     <string name="add">Add</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="close">Close</string>
     <string name="newGroupName">New group name</string>
     <string name="invalidJid">Please provide correct Jabber ID in form username@domain.tld</string>
@@ -129,10 +159,6 @@
     <string name="aboutBombusLime">About</string>
     <string name="messageDelivered">Message Delivered</string>
     <string name="chatSentOffline">User is now offline. Message will be stored on server.</string>
-    <string name="incomingMessageSound">Notification ringtone</string>
-    <string name="notifyVibration">Vibration</string>
-    <string name="notificationLed">Blink Notification Led</string>
-    <string name="systemEnabled">If enabled globally</string>
     <string name="sslInfo">Certificate chain</string>
     <string name="addSmileMenuItem">Add smile</string>
     <string name="addMeMenuItem">Insert /me</string>
@@ -147,14 +173,8 @@
     <string name="presenceMessage">Message</string>
     <string name="priorityHint">default priority</string>
     
-    <string name="prefsPrivacy">Privacy</string>
-    <string name="allowUnknownContactsMessages">allow incoming messages</string>
-    <string name="dropUnknownIncomingMessages">drop incoming messages</string>
-    <string name="unknownContacts">Unknown contacts</string>
     <string name="logExport">Export log</string>
     <string name="cantWriteStorage">Can\'t write to storage</string>
-    <string name="autoServiceStartup">Login when phone is turned on</string>
-    <string name="cbEnableRebootStatus">Restore last status after reboot</string>
     
     <string name="activeChats">Active chats</string>
 	<string name="noActiveChats">No active chats available</string>
