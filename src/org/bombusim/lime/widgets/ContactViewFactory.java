@@ -26,6 +26,8 @@ public class ContactViewFactory {
     static class ViewHolder {
         ImageView photo;
         ImageView status;
+        ImageView status2;
+        
         TextView jid;
         TextView presence;
         
@@ -60,9 +62,10 @@ public class ContactViewFactory {
             // Creates a ViewHolder and store references to the two children views
             // we want to bind data to.
             holder = new ViewHolder();
-            holder.photo = (ImageView) convertView.findViewById(R.id.rit_photo);
-            holder.status = (ImageView) convertView.findViewById(R.id.rit_statusIcon);
-            holder.jid = (TextView) convertView.findViewById(R.id.rit_jid);
+            holder.photo    = (ImageView) convertView.findViewById(R.id.rit_photo);
+            holder.status   = (ImageView) convertView.findViewById(R.id.rit_statusIcon);
+            holder.status2  = (ImageView) convertView.findViewById(R.id.rit_statusIcon2);
+            holder.jid      = (TextView) convertView.findViewById(R.id.rit_jid);
             holder.presence = (TextView) convertView.findViewById(R.id.rit_presence);
             holder.chatIcon = (ImageView) convertView.findViewById(R.id.rit_chatIcon);
 
@@ -87,6 +90,8 @@ public class ContactViewFactory {
         }
         
         holder.status.setImageBitmap(mIconStar[presenceIndex]);
+        holder.status2.setVisibility( (c.getOnlineResourceCount() > 1)? View.VISIBLE : View.GONE);
+        
         holder.jid.setText(c.getScreenName());
         holder.presence.setText(c.getStatusMessage());
         

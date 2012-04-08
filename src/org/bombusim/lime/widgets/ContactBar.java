@@ -34,19 +34,24 @@ public class ContactBar extends RelativeLayout{
         }
         
         ((TextView) findViewById(R.id.rit_jid))
-                    .setText(contact.getScreenName());
+                .setText(contact.getScreenName());
         
         ((TextView) findViewById(R.id.rit_presence))
-                    .setText(contact.getStatusMessage());
+                .setText(contact.getStatusMessage());
         
         TypedArray si = getResources().obtainTypedArray(R.array.statusIcons);
         Drawable std = si.getDrawable(contact.getPresence());
         
         ((ImageView) findViewById(R.id.rit_statusIcon))
-                    .setImageDrawable(std);
+                .setImageDrawable(std);
+        
+        boolean multipleResources = contact.getOnlineResourceCount() > 1;
+        
+        ((ImageView) findViewById(R.id.rit_statusIcon2))
+                .setVisibility(multipleResources ? View.VISIBLE : View.GONE );
         
         ((ImageView) findViewById(R.id.composing))
-                    .setVisibility( (composing) ? View.VISIBLE : View.GONE );
+                .setVisibility( (composing) ? View.VISIBLE : View.GONE );
 
     }
 

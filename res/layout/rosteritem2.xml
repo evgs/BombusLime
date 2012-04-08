@@ -45,6 +45,16 @@
         android:text="presence" />
 
     <ImageView
+        android:id="@+id/rit_statusIcon2"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignRight="@+id/rit_photo"
+        android:layout_alignTop="@+id/rit_presence"
+        android:layout_marginRight="5dip"
+        android:visibility="gone"
+        android:src="@drawable/status_online" />
+    
+    <ImageView
         android:id="@+id/rit_statusIcon"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"

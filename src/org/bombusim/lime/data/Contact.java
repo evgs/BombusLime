@@ -53,6 +53,8 @@ public class Contact implements Comparable<Contact>{
 	private Resource activeResource;
 	private ArrayList<Resource> resources;
 	
+	private int mOnlineCount;
+	
 	public final static int UPDATE_NONE = 0;
 	public final static int UPDATE_SAVE = 1;
 	public final static int UPDATE_DROP = 2;
@@ -98,6 +100,14 @@ public class Contact implements Comparable<Contact>{
     		Collections.sort(resources);
     		activeResource = resources.get(0);
     		
+            int count = 0;
+            
+            for (Resource r : resources) {
+                if (XmppPresence.isAvailable(r.presence)) count++;
+            }
+            
+            mOnlineCount = count;
+    		
         }
 		
 		return c;
@@ -114,17 +124,7 @@ public class Contact implements Comparable<Contact>{
 		return null;
 	}
 	
-	public int getOnlineResourceCount() {
-	    int count = 0;
-	    
-	    synchronized (resources) {
-	        for (Resource r : resources) {
-	            if (XmppPresence.isAvailable(r.presence)) count++;
-	        }
-        }
-	    
-	    return count;
-	}
+	public int getOnlineResourceCount() {  return mOnlineCount; }
 	
 	public int getPresence() { return activeResource.presence; }
 	
