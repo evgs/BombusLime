@@ -44,4 +44,13 @@ public class Resource implements Comparable<Resource>{
 		if (difference == 0) difference =  presence - another.presence; 
 		return difference;
 	}
+	
+	/**
+	 * user-readable resource presentation
+	 * @return String "resource (priority)"
+	 */
+	@Override
+	public String toString() {
+	    return resource + " (" + String.valueOf(priority) + ')';
+	}
 }

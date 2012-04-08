@@ -126,6 +126,12 @@ public class Contact implements Comparable<Contact>{
 	
 	public int getOnlineResourceCount() {  return mOnlineCount; }
 	
+	public ArrayList<Resource> getResources() {
+	    synchronized (resources) {
+	        return (ArrayList<Resource>) resources.clone();
+        }
+	}
+	
 	public int getPresence() { return activeResource.presence; }
 	
 	public boolean isAvailable() {

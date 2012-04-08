@@ -60,4 +60,6 @@ public class ContactBar extends RelativeLayout{
         
     }
     
+    public View getContactIconView() { return findViewById(R.id.rit_photo); }
+    
 }

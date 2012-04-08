@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <ImageView
+        android:id="@+id/rit_statusIcon"
+		android:layout_width="@dimen/avatarSize"
+		android:layout_height="@dimen/avatarSize"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_vertical"
+        android:scaleType="center"
+        android:layout_marginRight="6dip"
+        android:src="@drawable/status_online" />
+    
+    <TextView
+        android:id="@+id/rit_resource"
+        android:layout_width="fill_parent"
+        android:layout_height="35dip"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/rit_presence"
+        android:layout_toRightOf="@id/rit_statusIcon"
+        android:ellipsize="marquee"
+        android:gravity="center_vertical"
+        android:text="resource" />
+    
+    <TextView
+        android:id="@+id/rit_presence"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/rit_resource"
+        android:layout_toRightOf="@id/rit_statusIcon"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:text="presence" />
+
+ 
+    
+</RelativeLayout>

@@ -24,6 +24,7 @@ import java.security.InvalidParameterException;
 import org.bombusim.lime.Lime;
 import org.bombusim.lime.R;
 import org.bombusim.lime.activity.ActiveChats;
+import org.bombusim.lime.activity.ContactResourceSwitcher;
 import org.bombusim.lime.data.Chat;
 import org.bombusim.lime.data.ChatHistoryDbAdapter;
 import org.bombusim.lime.data.Contact;
@@ -238,6 +239,13 @@ public class ChatFragment extends SherlockFragment
             }
         });
 
+        contactBar.getContactIconView().setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ContactResourceSwitcher().showResources(getActivity(), visavis);
+            }
+        });
+        
 	    return v;
 	}
 
