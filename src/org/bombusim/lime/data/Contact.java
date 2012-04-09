@@ -310,6 +310,8 @@ public class Contact implements Comparable<Contact>{
     		for (Resource r : resources) {
     			r.presence = XmppPresence.PRESENCE_OFFLINE; 
     		}
+    		
+    		mOnlineCount = 0;
         }
 	}
 
