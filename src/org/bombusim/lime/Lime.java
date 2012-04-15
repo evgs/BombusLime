@@ -197,7 +197,7 @@ public class Lime extends Application {
 		StringBuilder sb = new StringBuilder();
 		sb.append(android.os.Build.MANUFACTURER).append(' ');
 		sb.append(android.os.Build.MODEL).append(" / Android");
-		sb.append(" sdk=").append(android.os.Build.VERSION.SDK);
+		sb.append(" sdk=").append(android.os.Build.VERSION.SDK_INT);
 		sb.append(' ').append(android.os.Build.VERSION.INCREMENTAL);
 		
 		return sb.toString();
