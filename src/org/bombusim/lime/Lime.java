@@ -191,10 +191,6 @@ public class Lime extends Application {
 		return version;
 	}
 
-	public XmppAccount getActiveAccount() {
-		return accounts.get(activeAccountIndex);
-	}
-	
 	public String getOsId() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(android.os.Build.MANUFACTURER).append(' ');
@@ -222,11 +218,28 @@ public class Lime extends Application {
 		return smilify;
 	}
 
-	public void addNewAccount() {
+	/**
+	 * Returns list of accounts
+	 * (thread-safe)  
+	 * @return copy of accounts list
+	 */
+	public ArrayList<XmppAccount> getAccounts() {
+	    synchronized (accounts) {
+	        return (ArrayList<XmppAccount>) accounts.clone();
+        }
+	}
+	
+	@Deprecated
+    public XmppAccount getActiveAccount() {
+        return accounts.get(activeAccountIndex);
+    }
+
+    public void addNewAccount() {
 		int active=AccountsFactory.addNew(accounts);
 		setActiveAccountIndex(active);
 	}
 
+    @Deprecated
 	public void setActiveAccountIndex(int active) {
 		AccountsFactory.saveActiveAccountIndex(getApplicationContext(), active);
 		activeAccountIndex = active;
@@ -241,10 +254,12 @@ public class Lime extends Application {
 		setActiveAccountIndex(accounts.size()-1);
 	}
 
+	@Deprecated
 	public String[] getAccountLabels() {
 		return AccountsFactory.getLabels(accounts);
 	}
 
+	@Deprecated
 	public int getActiveAccountIndex() { return activeAccountIndex; }
 
 }
