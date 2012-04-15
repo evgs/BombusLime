@@ -134,7 +134,9 @@ public class Lime extends Application {
 		//TODO: remove workaround when new AccountListActivity will be added 
 		if (activeAccountIndex >= accounts.size())
 			activeAccountIndex = 0;
-		roster=new Roster(getActiveAccount().userJid);
+		// full roster
+		roster = new Roster();
+		//roster=new Roster(getActiveAccount().userJid);
 	}
 
 	public void loadPreferences() {
