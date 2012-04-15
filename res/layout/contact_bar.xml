@@ -3,7 +3,7 @@
     android:id="@+id/contactBarWidget"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/avatarSize"
-    android:background="@android:drawable/dark_header"
+    android:background="@drawable/dark_header"
     >
     	
     <ImageView
