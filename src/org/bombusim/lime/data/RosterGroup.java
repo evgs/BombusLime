@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class RosterGroup implements Comparable<RosterGroup>{
+    public String rJid;
+    
 	public String groupName;
 	public ArrayList<Contact> contacts;
 	public boolean collapsed;
 	
 	public int onlineCount;
 	
-	public RosterGroup(String name) {
+	public RosterGroup(String name, String rJid) {
 		this.groupName = name;
+		this.rJid = rJid;
+		
 		contacts = new ArrayList<Contact>();
 	}
 

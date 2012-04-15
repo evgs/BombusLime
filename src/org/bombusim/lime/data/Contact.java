@@ -318,7 +318,7 @@ public class Contact implements Comparable<Contact>{
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Contact) {
-			return jid.equals(((Contact)o).getJid());
+			return jid.equals(((Contact)o).jid) && rosterJid.equals(((Contact)o).rosterJid);
 		} else return false;
 	}
 
@@ -333,6 +333,15 @@ public class Contact implements Comparable<Contact>{
 	public CharSequence getFullName() {
  		return (name==null)?
  				jid : name+ " <"+jid+">";
+	}
+	
+	/**
+	 * for debug purposes returns string in jid(rJid) form
+	 */
+	@Override
+	public String toString() {
+	    // TODO Auto-generated method stub
+	    return jid+'('+rosterJid+')';
 	}
 
 }

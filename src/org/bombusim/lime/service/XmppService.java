@@ -91,6 +91,7 @@ public class XmppService extends Service {
 
 	public XmppStream getXmppStream(String rosterJid) {
 		//TODO: select the stream by "fromJid"
+	    if ( !mStream.jid.equals(rosterJid) ) return null; //temporary
 		return mStream;
 	}
 
