@@ -495,6 +495,8 @@ public class RosterFragment extends SherlockListFragment {
         
         private void addContactToGroup(Contact contact, String groupName) {
             for (RosterGroup g : mGroups) {
+                if ( !g.rJid.equals(contact.getRosterJid()) ) continue;
+                
                 if (g.groupName.equals(groupName)) {
                     
                     g.contacts.add(contact);
@@ -506,7 +508,7 @@ public class RosterFragment extends SherlockListFragment {
                 }
             }
             
-            RosterGroup ng = new RosterGroup(groupName);
+            RosterGroup ng = new RosterGroup(groupName, contact.getRosterJid());
             ng.contacts.add(contact);
             mGroups.add(ng);
         }
