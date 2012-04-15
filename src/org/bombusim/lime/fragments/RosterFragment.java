@@ -574,92 +574,101 @@ public class RosterFragment extends SherlockListFragment {
 
                 ArrayList rosterObjects = new ArrayList();
                 
-                //0. add account item
-                //TODO: loop trough accounts
-                XmppAccount a = Lime.getInstance().getActiveAccount();
-                rosterObjects.add(a);
+                ArrayList<XmppAccount> accounts = Lime.getInstance().getAccounts();
                 
-                if (a.collapsed) {
-                    //TODO: next account
-                    releaseLock();
-                    return rosterObjects;
-                }
-                
-                if (a.userJid == null) {
-                    //TODO: remove this temporary workaround for empty account
-                    releaseLock();
-                    return rosterObjects;
-                }
-                
-                synchronized (mGroups) {
+                for (XmppAccount a : accounts) {
                     
-                    Roster roster = Lime.getInstance().getRoster();
+                    rosterObjects.add(a);
                     
-                    //0.1 add selfcontact
-                    
-                    Contact self = roster.getSelfContact(a.userJid);
-                    if (Lime.getInstance().prefs.selfContact || self.getOnlineResourceCount() > 1)
-                    rosterObjects.add(self);
-                    
-                    ArrayList<Contact> contacts = roster.getContactsCopy();
-                
-                    //1. reset groups
-                    for (RosterGroup group: mGroups) { group.clear(); }
-                
-                    //2. populate groups with contacts
-                    //TODO: collate by roster jid
-                    
-                    for (Contact contact: contacts) {
-                        
-                        if (contact instanceof SelfContact) continue;
-                        
-                        String allGroups = contact.getAllGroups();
-                        if (allGroups == null) {
-                            //TODO: group sorting indexes
-                            addContactToGroup(contact, "- No group");
-                            continue;
-                        }
-                        
-                        String cgroups[] = allGroups.split("\t");
-                        for (String cg : cgroups) {
-                            addContactToGroup(contact, cg);
-                        }
-                    }
-                
-                    //3. remove empty groups
-                    //3.1 sort non-empty groups
-                    int i=0;
-                    while (i<mGroups.size()) {
-                        if (mGroups.get(i).contacts.isEmpty()) { 
-                            mGroups.remove(i);
-                        } else {
-                            mGroups.get(i).sort();
-                            i++;
-                        }
+                    if (a.collapsed) {
+                        // next account
+                        continue;
                     }
                     
-                    //4. order groups
-                    Collections.sort(mGroups);
+                    if (a.userJid == null) {
+                        //TODO: remove this temporary workaround for empty account
+                        releaseLock();
+                        return rosterObjects;
+                    }
                     
-                    //5. add groups to roster
-                    //TODO 5.1 check if account collapsed
+                    synchronized (mGroups) {
+                        
+                        Roster roster = Lime.getInstance().getRoster();
+                        
+                        //0.1 add selfcontact
+                        
+                        Contact self = roster.getSelfContact(a.userJid);
+                        if (Lime.getInstance().prefs.selfContact || self.getOnlineResourceCount() > 1)
+                        rosterObjects.add(self);
+                        
+                        ArrayList<Contact> contacts = roster.getContactsCopy();
                     
-                    for (RosterGroup group : mGroups) {
-                        rosterObjects.add(group);
+                        //1. reset groups
+                        for (RosterGroup group: mGroups) {
+                            if ( group.rJid.equals(a.userJid) )  group.clear(); 
+                        }
+                    
+                        //2. populate groups with contacts
                         
-                        //skip contacts if group collapsed
-                        if (group.collapsed) continue;
-                        
-                        for (Contact contact : group.contacts) {
-                            // skip offlines
-                            if (hideOfflines) if (!contact.isAvailable())
-                                continue;
+                        for (Contact contact: contacts) {
                             
-                            rosterObjects.add(contact);
+                            if (contact instanceof SelfContact) continue;
+                            
+                            // collating roster by rJid
+                            if ( !contact.getRosterJid().equals(a.userJid) ) continue;
+                            
+                            String allGroups = contact.getAllGroups();
+                            if (allGroups == null) {
+                                //TODO: group sorting indexes
+                                addContactToGroup(contact, "- No group");
+                                continue;
+                            }
+                            
+                            String cgroups[] = allGroups.split("\t");
+                            for (String cg : cgroups) {
+                                addContactToGroup(contact, cg);
+                            }
                         }
-                    }
-
-                }
+                    
+                        //3. remove empty groups
+                        //3.1 sort non-empty groups
+                        int i=0;
+                        while (i<mGroups.size()) {
+                            if (mGroups.get(i).contacts.isEmpty()) { 
+                                mGroups.remove(i);
+                            } else {
+                                mGroups.get(i).sort();
+                                i++;
+                            }
+                        }
+                        
+                        //4. order groups
+                        //TODO: optimize sorting
+                        Collections.sort(mGroups);
+                        
+                        //5. add groups to roster
+                        //TODO 5.1 check if account collapsed
+                        
+                        for (RosterGroup group : mGroups) {
+                            
+                            if ( !group.rJid.equals(a.userJid) ) continue;
+                            
+                            rosterObjects.add(group);
+                            
+                            //skip contacts if group collapsed
+                            if (group.collapsed) continue;
+                            
+                            for (Contact contact : group.contacts) {
+                                // skip offlines
+                                if (hideOfflines) if (!contact.isAvailable())
+                                    continue;
+                                
+                                rosterObjects.add(contact);
+                            }
+                        }
+    
+                    } //synchronized (mgroups
+                } // accounts loop
 
                 
                 //TODO: add MUC
